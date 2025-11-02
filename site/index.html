@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>〇〇 &amp; △△'s Wedding Party</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <!-- Placeholder SVG hero; replace with WebP images in production -->
+      <svg class="hero-art" viewBox="0 0 1200 400" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="g" x1="0" x2="1">
+            <stop offset="0" stop-color="#f8c8d8"/>
+            <stop offset="1" stop-color="#ffd7b5"/>
+          </linearGradient>
+        </defs>
+        <rect width="1200" height="400" fill="url(#g)" />
+        <text x="50%" y="48%" dominant-baseline="middle" text-anchor="middle" font-size="44" fill="#222">〇〇 &amp; △△'s Wedding Party</text>
+        <text x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" font-size="20" fill="#222">202X年XX月XX日</text>
+      </svg>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="greeting">
+      <h2>ご挨拶</h2>
+      <p>親愛なる皆様へ。私たちの結婚式にぜひご出席いただきたく、ご案内申し上げます。以下のフォームよりご回答ください。</p>
+    </section>
+
+    <section class="details">
+      <h3>日時と場所</h3>
+      <ul>
+        <li><strong>日時</strong>: 202X年XX月XX日 (土)</li>
+        <li><strong>受付</strong>: HH:MM〜</li>
+        <li><strong>挙式</strong>: HH:MM〜</li>
+        <li><strong>披露宴</strong>: HH:MM〜</li>
+        <li><strong>場所</strong>: 〇〇迎賓館 △△の間</li>
+      </ul>
+    </section>
+
+    <section class="rsvp">
+      <h3>出欠回答フォーム</h3>
+      <p class="deadline" id="deadline">回答締切: <span id="deadline-date"></span></p>
+
+      <form id="rsvp-form" novalidate>
+        <label>お名前 <input type="text" name="name" id="name" required placeholder="山田 太郎"></label>
+        <label>ふりがな <input type="text" name="kana" id="kana" required placeholder="やまだ たろう"></label>
+
+        <fieldset class="attendance">
+          <legend>ご出席 / ご欠席 (必須)</legend>
+          <label><input type="radio" name="attendance" value="attend" required> ご出席</label>
+          <label><input type="radio" name="attendance" value="absent"> ご欠席</label>
+        </fieldset>
+
+        <label>メールアドレス <input type="email" name="email" id="email" required placeholder="you@example.com"></label>
+        <label>アレルギー <textarea name="allergy" id="allergy" rows="2" placeholder="例: 卵、乳"></textarea></label>
+        <label>メッセージ <textarea name="message" id="message" rows="3" placeholder="一言メッセージ"></textarea></label>
+
+        <div class="form-actions">
+          <button type="submit" id="submit">送信</button>
+        </div>
+      </form>
+
+      <div id="response" class="response" role="status" aria-live="polite"></div>
+    </section>
+
+    <section class="map">
+      <h3>会場アクセス</h3>
+      <!-- README asks to embed Google Maps via iframe -->
+      <div class="map-embed">
+        <iframe title="会場の地図" src="https://www.google.com/maps/embed?pb=!1m18" loading="lazy"></iframe>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© 202X 〇〇 &amp; △△</p>
+  </footer>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
