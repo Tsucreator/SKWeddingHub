@@ -1,0 +1,10 @@
+{
+  "name": "rsvp-lambda",
+  "version": "1.0.0",
+  "description": "Lambda to send RSVP emails via SES",
+  "main": "index.js",
+  "dependencies": {
+    "@aws-sdk/client-ses": "^3.0.0"
+  },
+  "license": "MIT"
+}

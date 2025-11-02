@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple decorative hero SVG used as lightweight placeholder -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" width="1200" height="400">
+  <defs>
+    <linearGradient id="lg" x1="0" x2="1">
+      <stop offset="0" stop-color="#f8c8d8"/>
+      <stop offset="1" stop-color="#ffd7b5"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="400" fill="url(#lg)"/>
+  <g fill="#222" font-family="Raleway, Arial, sans-serif">
+    <text x="50%" y="42%" font-size="48" text-anchor="middle" dominant-baseline="middle">〇〇 &amp; △△</text>
+    <text x="50%" y="58%" font-size="20" text-anchor="middle" dominant-baseline="middle">2025年12月12日</text>
+  </g>
+</svg>

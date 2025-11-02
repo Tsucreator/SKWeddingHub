@@ -5,22 +5,33 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>〇〇 &amp; △△'s Wedding Party</title>
   <link rel="stylesheet" href="styles.css">
+  <!-- Google Fonts used by the reference design -->
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600;700&family=Rouge+Script&display=swap" rel="stylesheet">
 </head>
 <body>
   <header class="hero">
     <div class="hero-inner">
-      <!-- Placeholder SVG hero; replace with WebP images in production -->
-      <svg class="hero-art" viewBox="0 0 1200 400" aria-hidden="true" focusable="false">
-        <defs>
-          <linearGradient id="g" x1="0" x2="1">
-            <stop offset="0" stop-color="#f8c8d8"/>
-            <stop offset="1" stop-color="#ffd7b5"/>
-          </linearGradient>
-        </defs>
-        <rect width="1200" height="400" fill="url(#g)" />
-        <text x="50%" y="48%" dominant-baseline="middle" text-anchor="middle" font-size="44" fill="#222">〇〇 &amp; △△'s Wedding Party</text>
-        <text x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" font-size="20" fill="#222">202X年XX月XX日</text>
-      </svg>
+      <div class="hero-content">
+        <h1 class="couple">〇〇 &amp; △△</h1>
+        <p class="subtitle">'s Wedding Party</p>
+        <p class="event-date" id="event-date">202X年XX月XX日</p>
+        <div class="countdown" id="countdown" aria-hidden="false">
+          <div class="countdown-item"><span class="num" id="cd-days">--</span><span class="label">days</span></div>
+          <div class="countdown-item"><span class="num" id="cd-hours">--</span><span class="label">hrs</span></div>
+          <div class="countdown-item"><span class="num" id="cd-mins">--</span><span class="label">mins</span></div>
+        </div>
+        <div class="hero-actions">
+          <a class="btn ghost" id="map-btn" href="#map">会場を見る</a>
+          <a class="btn" id="calendar-btn" href="#">カレンダーに追加</a>
+        </div>
+      </div>
+      <div class="hero-decor" aria-hidden="true">
+        <!-- decorative SVG hero image (placeholder) -->
+        <picture>
+          <source srcset="image/hero.svg" type="image/svg+xml">
+          <img src="image/hero.svg" alt="ヒーローイメージ" class="hero-art" loading="lazy">
+        </picture>
+      </div>
     </div>
   </header>
 

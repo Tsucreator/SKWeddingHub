@@ -1,4 +1,11 @@
 {
   "apiEndpoint": "",
-  "deadline": "202X年XX月XX日"
+  "deadline": "2025年12月12日",
+  "eventDateISO": "2025-12-12T11:00:00",
+  "calendar": {
+    "start": "2025-12-12T11:00:00",
+    "end": "2025-12-12T15:00:00",
+    "location": "〇〇迎賓館 △△の間",
+    "description": "私たちの結婚式にぜひお越しください。返信はこのフォームでお願いします。"
+  }
 }

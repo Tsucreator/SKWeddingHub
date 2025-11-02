@@ -1,7 +1,7 @@
 // Simple client-side logic for RSVP form.
 (function(){
   const cfgPath = 'config.json';
-  let config = { apiEndpoint: '', deadline: '202X-XX-XX' };
+  let config = { apiEndpoint: '', deadline: '202X-XX-XX', eventDateISO: '' };
 
   function $(id){ return document.getElementById(id); }
 
@@ -11,6 +11,16 @@
       if(res.ok) config = await res.json();
     }catch(e){ /* ignore, use defaults */ }
     $('deadline-date').textContent = config.deadline || '未設定';
+    // show event date if available
+    const eventDateEl = document.getElementById('event-date');
+    if(eventDateEl && config.eventDateISO){
+      try{
+        const d = new Date(config.eventDateISO);
+        if(!isNaN(d)) eventDateEl.textContent = d.toLocaleDateString('ja-JP', { year:'numeric', month:'long', day:'numeric' });
+      }catch(e){}
+    }
+    // initialize countdown
+    initCountdown(config.eventDateISO || config.deadline);
   }
 
   function showMessage(text, isError){
@@ -76,6 +86,84 @@
 
     $('submit').disabled = false;
   }
+
+  // --- Countdown utility ---
+  let countdownTimer = null;
+  function parseDateLike(input){
+    // accepts ISO or 'YYYY年MM月DD日' or plain YYYY-MM-DD
+    if(!input) return null;
+    // try ISO first
+    const asISO = new Date(input);
+    if(!isNaN(asISO)) return asISO;
+    // try extracting numbers
+    const m = input.match(/(\d{4}).*?(\d{1,2}).*?(\d{1,2})/);
+    if(m){ return new Date(Number(m[1]), Number(m[2])-1, Number(m[3])); }
+    return null;
+  }
+
+  function initCountdown(dateInput){
+    const container = document.getElementById('countdown');
+    if(!container) return;
+    const target = parseDateLike(dateInput);
+    if(!target) { container.style.display = 'none'; return; }
+
+    function tick(){
+      const now = new Date();
+      let diff = Math.max(0, target - now);
+      const days = Math.floor(diff / (1000*60*60*24));
+      diff -= days * (1000*60*60*24);
+      const hours = Math.floor(diff / (1000*60*60));
+      diff -= hours * (1000*60*60);
+      const mins = Math.floor(diff / (1000*60));
+      document.getElementById('cd-days').textContent = days;
+      document.getElementById('cd-hours').textContent = String(hours).padStart(2,'0');
+      document.getElementById('cd-mins').textContent = String(mins).padStart(2,'0');
+    }
+
+    tick();
+    if(countdownTimer) clearInterval(countdownTimer);
+    countdownTimer = setInterval(tick, 60*1000);
+  }
+
+  // Add-to-calendar (Google Calendar) helper
+  function makeGoogleCalendarLink(){
+    // use calendar fields from config if present
+    const title = encodeURIComponent((document.querySelector('.couple')?.textContent?.trim() || '') + " Wedding");
+    const cal = config.calendar || {};
+    // Google Calendar expects dates in YYYYMMDDTHHMMSSZ or YYYYMMDD format for all-day
+    function toGCalDatetime(iso){
+      if(!iso) return '';
+      // ensure UTC 'Z' suffix for simplicity
+      const d = new Date(iso);
+      if(isNaN(d)) return '';
+      const yyyy = d.getUTCFullYear();
+      const mm = String(d.getUTCMonth()+1).padStart(2,'0');
+      const dd = String(d.getUTCDate()).padStart(2,'0');
+      const hh = String(d.getUTCHours()).padStart(2,'0');
+      const mi = String(d.getUTCMinutes()).padStart(2,'0');
+      const ss = String(d.getUTCSeconds()).padStart(2,'0');
+      return `${yyyy}${mm}${dd}T${hh}${mi}${ss}Z`;
+    }
+
+    const start = toGCalDatetime(cal.start || config.eventDateISO || '');
+    const end = toGCalDatetime(cal.end || '');
+    if(!start) return '#';
+    const dates = end ? `${start}/${end}` : `${start}/${start}`;
+    const details = encodeURIComponent(cal.description || 'Invitation');
+    const location = encodeURIComponent(cal.location || '');
+    const url = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}&location=${location}`;
+    return url;
+  }
+
+  document.addEventListener('DOMContentLoaded', ()=>{
+    loadConfig();
+    const form = document.getElementById('rsvp-form');
+    form.addEventListener('submit', submitForm);
+    const cal = document.getElementById('calendar-btn');
+    if(cal){ cal.addEventListener('click', e=>{ e.preventDefault(); const href = makeGoogleCalendarLink(); if(href!=='#') window.open(href,'_blank'); }); }
+    const mapBtn = document.getElementById('map-btn');
+    if(mapBtn){ mapBtn.addEventListener('click', ()=>{ location.hash = 'map'; }); }
+  });
 
   document.addEventListener('DOMContentLoaded', ()=>{
     loadConfig();
