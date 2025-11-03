@@ -228,7 +228,29 @@
     handleScrollAnimation();
     window.addEventListener('scroll', handleScrollAnimation);
 
-    // Photo Slider initialization
+    // Hero Image Slideshow
+    function initHeroSlideshow() {
+      const heroImages = document.querySelectorAll('.hero-img');
+      let currentImageIndex = 0;
+
+      function showNextImage() {
+        // 現在のイメージを非表示に
+        heroImages[currentImageIndex].classList.remove('active');
+        // 次のイメージのインデックスを計算
+        currentImageIndex = (currentImageIndex + 1) % heroImages.length;
+        // 次のイメージを表示
+        heroImages[currentImageIndex].classList.add('active');
+      }
+
+      // 最初の画像を表示
+      heroImages[0].classList.add('active');
+      
+      // 3秒ごとに画像を切り替え
+      setInterval(showNextImage, 3000);
+    }
+
+    // Initialize slideshows
+    initHeroSlideshow();
     initPhotoSlider();
   });
 
