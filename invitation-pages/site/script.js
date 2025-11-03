@@ -199,8 +199,24 @@
     });
   }
 
+  // ヒーローイメージのスライドショー
+  function initHeroSlideshow() {
+    const heroImages = document.querySelectorAll('.hero-img');
+    let currentImageIndex = 0;
+
+    function showNextImage() {
+      heroImages.forEach(img => img.classList.remove('active'));
+      heroImages[currentImageIndex].classList.add('active');
+      currentImageIndex = (currentImageIndex + 1) % heroImages.length;
+    }
+
+    showNextImage(); // 初期表示
+    setInterval(showNextImage, 3000); // 3秒ごとに切り替え
+  }
+
   document.addEventListener('DOMContentLoaded', ()=>{
     loadConfig();
+    initHeroSlideshow();
     const form = document.getElementById('rsvp-form');
     form.addEventListener('submit', submitForm);
     const cal = document.getElementById('calendar-btn');
