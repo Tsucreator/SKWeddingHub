@@ -7,7 +7,7 @@ on:
       - main
     # "backend"ディレクトリ以下に変更があった場合のみ実行
     paths:
-      - 'api/lambda/**'
+      - 'invitation-pages/api/lambda/**'
 
 jobs:
   deploy:
@@ -26,7 +26,7 @@ jobs:
       # 3. 依存ライブラリのインストールとパッケージング
       - name: Install dependencies and create deployment package
         run: |
-          cd backend/  # backendディレクトリに移動
+          cd invitation-pages/api/lambda # backendディレクトリに移動
           pip install -r requirements.txt -t ./package
           cp lambda_function.py ./package/
           cd package/
