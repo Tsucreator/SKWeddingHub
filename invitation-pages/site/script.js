@@ -58,33 +58,39 @@
     const payload = collectForm();
     $('submit').disabled = true;
     showMessage('送信中…');
-
-    if(config.apiEndpoint){
-      try{
-        const res = await fetch(config.apiEndpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        if(res.ok){
-          showMessage('ご回答ありがとうございます。送信が完了しました。');
-          document.getElementById('rsvp-form').reset();
-        }else{
-          const txt = await res.text();
-          showMessage('送信に失敗しました: '+ (txt||res.status), true);
-        }
-      }catch(err){
-        showMessage('送信中にエラーが発生しました。ネットワークを確認してください。', true);
-      }
-    }else{
-      // mock behaviour when no backend configured
-      await new Promise(r=>setTimeout(r,800));
-      console.log('Mock RSVP payload:', payload);
-      showMessage('ご回答ありがとうございます（モック送信）。');
-      document.getElementById('rsvp-form').reset();
+    // Must have an API endpoint configured that fronts the Lambda (API Gateway)
+    if(!config.apiEndpoint){
+      showMessage('送信先が設定されていません。config.json の "apiEndpoint" に API Gateway の URL を設定してください。', true);
+      $('submit').disabled = false;
+      return;
     }
 
-    $('submit').disabled = false;
+    try{
+      const res = await fetch(config.apiEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      // Attempt to parse JSON response when possible
+      let data = null;
+      const text = await res.text();
+      try{ data = text ? JSON.parse(text) : null; }catch(e){ data = null; }
+
+      if(res.ok){
+        const message = (data && data.message) ? data.message : 'ご回答ありがとうございます。送信が完了しました。';
+        showMessage(message);
+        document.getElementById('rsvp-form').reset();
+      }else{
+        const errMsg = (data && data.error) ? data.error : (text || res.status);
+        showMessage('送信に失敗しました: ' + errMsg, true);
+      }
+    }catch(err){
+      console.error('Submit error:', err);
+      showMessage('送信中にエラーが発生しました。ネットワークを確認してください。', true);
+    }finally{
+      $('submit').disabled = false;
+    }
   }
 
   // --- Countdown utility ---
