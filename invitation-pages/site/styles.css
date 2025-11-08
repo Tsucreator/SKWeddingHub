@@ -140,6 +140,7 @@ body{font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;line-height:1.6;c
   min-height: 600px;
   overflow: hidden;
   background: #000;
+  margin-bottom: 80px; /* ヒーローとgreetingセクションの間に余白 */
 }
 
 /* Hero Images */
@@ -620,15 +621,35 @@ body{font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;line-height:1.6;c
 /* Section Background Colors */
 .greeting {
   background: #fef9f3; /* 薄いベージュ */
-  padding: 20px 20px 60px; /* 上を減らしてGIFと文章の距離を縮める */
+  padding: 100px 20px 60px; /* 上部に余白を追加 */
   margin: 0;
   width: 100%;
+  position: relative;
+}
+
+.greeting::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  max-width: 1400px;
+  height: 250%; /* 背景をさらに大きく */
+  background-image: url('image/message_back.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+  pointer-events: none;
 }
 
 .greeting > * {
-  max-width: 700px;
+  max-width: 600px;
   margin-left: auto;
   margin-right: auto;
+  position: relative;
+  z-index: 1; /* コンテンツを背景より前面に */
 }
 
 /* Message video wrapper */
@@ -644,14 +665,15 @@ body{font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;line-height:1.6;c
   height: auto;
   display: block;
 }
-/* Message GIF wrapper (overlap adjustment) */
+/* Message GIF wrapper */
 .message-gif-wrapper {
-  max-width: 320px; /* smaller size */
-  margin: -70px auto 8px; /* stronger upward overlap, minimal bottom space */
+  width: 60%; /* 横幅を60%に */
+  max-width: 400px;
+  margin: 0 auto -20px; /* 下の文章とオーバーラップ */
   display: flex;
   justify-content: center;
   position: relative;
-  z-index: 5; /* ensure it stays above background elements */
+  z-index: 5;
 }
 
 .message-gif-wrapper img {
@@ -663,8 +685,26 @@ body{font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;line-height:1.6;c
 
 @media (max-width: 540px) {
   .message-gif-wrapper { 
-    max-width: 240px; 
-    margin: -50px auto 6px; /* stronger overlap on small screens */
+    width: 60%; /* モバイルも60% */
+    max-width: 250px;
+    margin: 0 auto -15px; /* モバイルでもオーバーラップ */
+  }
+  
+  .greeting::before {
+    width: 95%;
+    max-width: 650px;
+    height: 180%; /* モバイルでも背景を大きく */
+  }
+  
+  .greeting > * {
+    max-width: 90%;
+  }
+  
+  .greeting p {
+    font-size: 0.75em; /* モバイルでさらに小さく */
+    line-height: 1.9;
+    padding: 0 50px;
+    text-align: center; /* モバイルも中央揃え */
   }
 }
 
@@ -926,12 +966,32 @@ h2, h3 {
   background: #fef9f3;
   text-align: center;
   width: 100%;
+  position: relative;
+}
+
+.greeting::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  max-width: 1000px;
+  height: 120%;
+  background-image: url('image/message_back.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+  pointer-events: none;
 }
 
 .greeting > * {
-  max-width: 700px;
+  max-width: 600px;
   margin-left: auto;
   margin-right: auto;
+  position: relative;
+  z-index: 1; /* コンテンツを背景より前面に */
 }
 
 .greeting h2 {
@@ -940,12 +1000,13 @@ h2, h3 {
 }
 
 .greeting p {
-  margin: 0;
-  font-size: 1.1em;
-  line-height: 2.2;
+  margin: 0 auto;
+  font-size: 0.85em; /* 文字サイズを下げる */
+  line-height: 2;
   letter-spacing: 0.05em;
   font-weight: 300;
-  text-align: left;
+  text-align: center; /* 中央揃え */
+  padding: 0 50px;
 }
 
 /* RSVP Section - Dear-Guest Style */
