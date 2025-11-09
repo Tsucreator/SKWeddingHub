@@ -49,6 +49,8 @@ jobs:
         run: |
           aws s3 sync invitation-pages/site "s3://$S3_BUCKET_NAME" \
             --delete \
+            --exclude "*.py" \
+            --exclude "rsvp_sender.py" \
             --exclude "*.psd" \
             --exclude "*.ai" \
             --exclude "*.xcf" \

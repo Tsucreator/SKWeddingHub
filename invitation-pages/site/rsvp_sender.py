@@ -27,7 +27,7 @@ def send_rsvp(form_data):
         (success: bool, message: str)
     """
     # Lambda関数のエンドポイントURL
-    LAMBDA_URL = "https://xxxxx.execute-api.ap-northeast-1.amazonaws.com/prod/rsvp"
+    LAMBDA_URL = "https://xxxxx.execute-api.ap-northeast-1.amazonaws.com/submit"
     
     try:
         # POSTリクエストを送信
