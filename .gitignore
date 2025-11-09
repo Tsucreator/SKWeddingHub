@@ -52,6 +52,14 @@ layer.zip
 # Do not commit real runtime config
 invitation-pages/site/config.json
 
+# Lambda layer build artifacts
+layers/**/*.zip
+layers/**/python/**
+
+# Local Lambda test events (do NOT commit)
+invitation-pages/api/lambda/test-event.json
+invitation-pages/api/lambda/test-*.json
+
 # Node (既存のNode.js関連ファイルがある場合のため)
 node_modules/
 npm-debug.log*

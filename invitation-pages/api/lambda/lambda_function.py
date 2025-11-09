@@ -177,7 +177,7 @@ def lambda_handler(event, context):
     - SESメール通知
     - 構造化ログ出力
     """
-    request_id = context.request_id if context else 'local'
+    request_id = context.aws_request_id if context else 'local'
     logger.info(f"Request started: {request_id}")
     
     try:
