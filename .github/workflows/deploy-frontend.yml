@@ -1,11 +1,11 @@
-name: Deploy Frontend to S3
+name: Deploy Invitation Frontend to S3
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'invitation-pages/site/**'
+      - 'invitation/site/**'
   workflow_dispatch:
 
 jobs:
@@ -45,12 +45,12 @@ jobs:
 
       - name: Generate runtime config.json
         run: |
-          jq --arg ep "$PROD_API_ENDPOINT" '.apiEndpoint = $ep' invitation-pages/site/config.sample.json > invitation-pages/site/config.json
-          echo "Generated config.json:" && cat invitation-pages/site/config.json
+          jq --arg ep "$PROD_API_ENDPOINT" '.apiEndpoint = $ep' invitation/site/config.sample.json > invitation/site/config.json
+          echo "Generated config.json:" && cat invitation/site/config.json
 
-      - name: Sync static site to S3
+      - name: Sync static site to S3 (under /invitation/ prefix)
         run: |
-          aws s3 sync invitation-pages/site "s3://$S3_BUCKET_NAME" \
+          aws s3 sync invitation/site "s3://$S3_BUCKET_NAME/invitation" \
             --delete \
             --exclude "*.py" \
             --exclude "*.psd" \
@@ -67,6 +67,6 @@ jobs:
 
       - name: Deployment Summary
         run: |
-          echo "✅ Frontend deployment complete"
-          echo "S3 Bucket: $S3_BUCKET_NAME"
+          echo "✅ Invitation frontend deployment complete"
+          echo "S3 Bucket: $S3_BUCKET_NAME/invitation"
           echo "API Endpoint: $PROD_API_ENDPOINT"

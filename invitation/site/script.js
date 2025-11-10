@@ -282,8 +282,14 @@
     let rotation = 0;
     const totalItems = items.length;
     const angleStep = 360 / totalItems; // 各アイテム間の角度
-    const isMobile = window.innerWidth <= 768;
-    const radius = isMobile ? 380 : 500; // 円筒の半径（モバイルは小さめ）
+    
+    function computeRadius() {
+      const w = window.innerWidth;
+      if (w <= 420) return 260;   // 極小端末
+      if (w <= 768) return 320;   // モバイル
+      return 500;                 // デスクトップ
+    }
+    let radius = computeRadius();
     
     // インジケーターを生成
     items.forEach((_, i) => {
@@ -294,24 +300,20 @@
       indicatorsContainer.appendChild(btn);
     });
     
-    function updateCarousel(smooth = true) {
+  function updateCarousel(smooth = true) {
       if (smooth) {
         track.style.transition = 'transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
       } else {
         track.style.transition = 'none';
       }
       
-      // トラック全体をY軸回転
+  // トラック全体をY軸回転（原点はCSSで中央に配置）
       track.style.transform = `rotateY(${rotation}deg)`;
       
       // 各アイテムを円筒状に配置
       items.forEach((item, i) => {
         const itemAngle = i * angleStep;
-        const rad = (itemAngle * Math.PI) / 180;
-        const x = Math.sin(rad) * radius;
-        const z = Math.cos(rad) * radius - radius;
-        
-        // 各アイテムを配置して、正面を向くように回転
+        // 各アイテムを円筒上に配置して正面を向かせる
         item.style.transform = `
           rotateY(${itemAngle}deg)
           translateZ(${radius}px)
@@ -431,6 +433,12 @@
     
     // 自動回転（オプション）
     // setInterval(nextSlide, 4000);
+
+    // 画面サイズ変更に追従（半径を再計算し、現在の角度のまま再配置）
+    window.addEventListener('resize', () => {
+      radius = computeRadius();
+      updateCarousel(false);
+    });
   }
 
   // --- DOMContentLoaded: ページの読み込み完了後に各種機能を初期化 ---

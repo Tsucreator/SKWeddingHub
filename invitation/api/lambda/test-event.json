@@ -1,0 +1,36 @@
+{
+  "version": "2.0",
+  "routeKey": "POST /submit",
+  "rawPath": "/submit",
+  "rawQueryString": "",
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-encoding": "gzip, deflate, br",
+    "accept-language": "ja,en-US;q=0.9,en;q=0.8",
+    "content-type": "application/json",
+    "host": "qxc7lzlayg.execute-api.ap-northeast-1.amazonaws.com",
+    "origin": "https://d3abc123xyz.cloudfront.net",
+    "referer": "https://d3abc123xyz.cloudfront.net/",
+    "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+  },
+  "requestContext": {
+    "accountId": "123456789012",
+    "apiId": "qxc7lzlayg",
+    "domainName": "qxc7lzlayg.execute-api.ap-northeast-1.amazonaws.com",
+    "domainPrefix": "qxc7lzlayg",
+    "http": {
+      "method": "POST",
+      "path": "/submit",
+      "protocol": "HTTP/1.1",
+      "sourceIp": "203.0.113.1",
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+    },
+    "requestId": "abc123def456ghi789",
+    "routeKey": "POST /submit",
+    "stage": "$default",
+    "time": "09/Nov/2025:12:34:56 +0000",
+    "timeEpoch": 1731157496000
+  },
+  "body": "{\"name\":\"山田太郎\",\"kana\":\"やまだたろう\",\"attendance\":\"attend\",\"email\":\"yamada.taro@example.com\",\"allergy\":\"エビ、カニ\",\"message\":\"ご結婚おめでとうございます！楽しみにしています。\"}",
+  "isBase64Encoded": false
+}

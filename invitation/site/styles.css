@@ -1302,43 +1302,69 @@ textarea {
   }
   
   .carousel-stage {
-    height: 380px;
+    height: 340px;
     perspective: 1000px;
   }
   
   .carousel-item {
-    width: 220px;
-    height: 300px;
-    margin-left: -110px; /* 幅の半分 */
-    margin-top: -150px;  /* 高さの半分 */
+    width: 180px;
+    height: 240px;
+    margin-left: -90px;  /* 幅の半分 */
+    margin-top: -120px;  /* 高さの半分 */
   }
   
   .carousel-btn {
-    width: 40px;
-    height: 40px;
-    font-size: 16px;
+    width: 38px;
+    height: 38px;
+    font-size: 15px;
   }
   
   .carousel-controls {
-    margin-top: 30px;
-    gap: 15px;
+    margin-top: 24px;
+    gap: 12px;
   }
   
   .carousel-indicators {
-    margin-top: 20px;
+    margin-top: 16px;
   }
   
   .carousel-indicator {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
   }
   
   .carousel-indicator.active {
-    width: 24px;
+    width: 18px;
   }
   
   .map {
     padding: 60px 15px;
+  }
+}
+
+/* さらに小さい端末向けの微調整 */
+@media (max-width: 420px) {
+  .carousel-stage {
+    height: 300px;
+    perspective: 900px;
+  }
+  .carousel-item {
+    width: 150px;
+    height: 200px;
+    margin-left: -75px;
+    margin-top: -100px;
+  }
+  .carousel-btn {
+    width: 34px;
+    height: 34px;
+    font-size: 14px;
+  }
+  .carousel-indicator {
+    width: 7px;
+    height: 7px;
+  }
+  .carousel-indicator.active {
+    width: 16px;
   }
 }
 
