@@ -60,6 +60,10 @@ layers/**/python/**
 invitation-pages/api/lambda/test-event.json
 invitation-pages/api/lambda/test-*.json
 
+# Lambda deployment artifacts (auto-generated in CI/CD)
+invitation-pages/api/lambda/lambda-deployment.zip
+invitation-pages/api/lambda/package/
+
 # Node (既存のNode.js関連ファイルがある場合のため)
 node_modules/
 npm-debug.log*
