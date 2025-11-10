@@ -185,41 +185,50 @@
 
     <section class="photos fade-in-section">
       <h3>Photo Gallery</h3>
-      <div class="photo-slider-container">
-        <button class="slider-nav prev" aria-label="前の写真へ" type="button">&#10094;</button>
-        <div class="photo-slider" role="region" aria-label="フォトギャラリー">
-          <div class="photo-item">
-            <div class="photo-placeholder">
-              <span>写真 1</span>
+      <div class="carousel-container">
+        <div class="carousel-stage">
+          <div class="carousel-track" id="carouselTrack">
+            <div class="carousel-item">
+              <div class="photo-placeholder">
+                <span>写真 1</span>
+              </div>
             </div>
-          </div>
-          <div class="photo-item">
-            <div class="photo-placeholder">
-              <span>写真 2</span>
+            <div class="carousel-item">
+              <div class="photo-placeholder">
+                <span>写真 2</span>
+              </div>
             </div>
-          </div>
-          <div class="photo-item">
-            <div class="photo-placeholder">
-              <span>写真 3</span>
+            <div class="carousel-item">
+              <div class="photo-placeholder">
+                <span>写真 3</span>
+              </div>
             </div>
-          </div>
-          <div class="photo-item">
-            <div class="photo-placeholder">
-              <span>写真 4</span>
+            <div class="carousel-item">
+              <div class="photo-placeholder">
+                <span>写真 4</span>
+              </div>
             </div>
-          </div>
-          <div class="photo-item">
-            <div class="photo-placeholder">
-              <span>写真 5</span>
+            <div class="carousel-item">
+              <div class="photo-placeholder">
+                <span>写真 5</span>
+              </div>
             </div>
-          </div>
-          <div class="photo-item">
-            <div class="photo-placeholder">
-              <span>写真 6</span>
+            <div class="carousel-item">
+              <div class="photo-placeholder">
+                <span>写真 6</span>
+              </div>
             </div>
           </div>
         </div>
-        <button class="slider-nav next" aria-label="次の写真へ" type="button">&#10095;</button>
+        <div class="carousel-controls">
+          <button class="carousel-btn prev" aria-label="前の写真へ" type="button">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button class="carousel-btn next" aria-label="次の写真へ" type="button">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+        <div class="carousel-indicators" id="carouselIndicators"></div>
       </div>
     </section>
 

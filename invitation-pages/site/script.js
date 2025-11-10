@@ -269,11 +269,175 @@
     }
   }
 
+  // --- 3D Revolver Carousel Logic ---
+  function init3DCarousel() {
+    const track = document.getElementById('carouselTrack');
+    const items = Array.from(track.querySelectorAll('.carousel-item'));
+    const prevBtn = document.querySelector('.carousel-btn.prev');
+    const nextBtn = document.querySelector('.carousel-btn.next');
+    const indicatorsContainer = document.getElementById('carouselIndicators');
+    
+    if (!track || items.length === 0) return;
+    
+    let rotation = 0;
+    const totalItems = items.length;
+    const angleStep = 360 / totalItems; // 各アイテム間の角度
+    const isMobile = window.innerWidth <= 768;
+    const radius = isMobile ? 380 : 500; // 円筒の半径（モバイルは小さめ）
+    
+    // インジケーターを生成
+    items.forEach((_, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'carousel-indicator';
+      btn.setAttribute('aria-label', `写真 ${i + 1} へ`);
+      btn.addEventListener('click', () => goToSlide(i));
+      indicatorsContainer.appendChild(btn);
+    });
+    
+    function updateCarousel(smooth = true) {
+      if (smooth) {
+        track.style.transition = 'transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+      } else {
+        track.style.transition = 'none';
+      }
+      
+      // トラック全体をY軸回転
+      track.style.transform = `rotateY(${rotation}deg)`;
+      
+      // 各アイテムを円筒状に配置
+      items.forEach((item, i) => {
+        const itemAngle = i * angleStep;
+        const rad = (itemAngle * Math.PI) / 180;
+        const x = Math.sin(rad) * radius;
+        const z = Math.cos(rad) * radius - radius;
+        
+        // 各アイテムを配置して、正面を向くように回転
+        item.style.transform = `
+          rotateY(${itemAngle}deg)
+          translateZ(${radius}px)
+        `;
+        
+        // 正面に近いアイテムを判定（中心から±45度以内）
+        const normalizedRotation = ((rotation % 360) + 360) % 360;
+        const itemRotation = ((itemAngle - normalizedRotation + 360) % 360);
+        const isCenterish = itemRotation < 45 || itemRotation > 315;
+        
+        if (isCenterish) {
+          item.classList.add('center');
+        } else {
+          item.classList.remove('center');
+        }
+      });
+      
+      // インジケーターの更新
+      const currentIndex = Math.round(-rotation / angleStep) % totalItems;
+      const normalizedIndex = ((currentIndex % totalItems) + totalItems) % totalItems;
+      const indicators = indicatorsContainer.querySelectorAll('.carousel-indicator');
+      indicators.forEach((ind, i) => {
+        if (i === normalizedIndex) {
+          ind.classList.add('active');
+        } else {
+          ind.classList.remove('active');
+        }
+      });
+    }
+    
+    function rotate(direction) {
+      rotation += direction * angleStep;
+      updateCarousel();
+    }
+    
+    function goToSlide(index) {
+      rotation = -index * angleStep;
+      updateCarousel();
+    }
+    
+    function nextSlide() {
+      rotate(-1); // 右へ回転（時計回り）
+    }
+    
+    function prevSlide() {
+      rotate(1); // 左へ回転（反時計回り）
+    }
+    
+    // ボタンイベント
+    if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+    if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+    
+    // ドラッグ/スワイプ対応
+    let startX = 0;
+    let currentX = 0;
+    let isDragging = false;
+    let startRotation = 0;
+    
+    function handleDragStart(clientX) {
+      startX = clientX;
+      currentX = clientX;
+      isDragging = true;
+      startRotation = rotation;
+      track.style.transition = 'none';
+    }
+    
+    function handleDragMove(clientX) {
+      if (!isDragging) return;
+      currentX = clientX;
+      const diff = currentX - startX;
+      // ドラッグ距離を角度に変換（感度調整）
+      const dragAngle = diff * 0.3;
+      rotation = startRotation + dragAngle;
+      updateCarousel(false);
+    }
+    
+    function handleDragEnd() {
+      if (!isDragging) return;
+      isDragging = false;
+      
+      // 最も近いスナップ位置に調整
+      const snapRotation = Math.round(rotation / angleStep) * angleStep;
+      rotation = snapRotation;
+      updateCarousel(true);
+    }
+    
+    track.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      handleDragStart(e.clientX);
+    });
+    
+    track.addEventListener('touchstart', (e) => {
+      handleDragStart(e.touches[0].clientX);
+    });
+    
+    document.addEventListener('mousemove', (e) => {
+      handleDragMove(e.clientX);
+    });
+    
+    document.addEventListener('touchmove', (e) => {
+      if (isDragging) {
+        handleDragMove(e.touches[0].clientX);
+      }
+    });
+    
+    document.addEventListener('mouseup', handleDragEnd);
+    document.addEventListener('touchend', handleDragEnd);
+    
+    // キーボード操作
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') prevSlide();
+      if (e.key === 'ArrowRight') nextSlide();
+    });
+    
+    // 初期表示
+    updateCarousel(false);
+    
+    // 自動回転（オプション）
+    // setInterval(nextSlide, 4000);
+  }
+
   // --- DOMContentLoaded: ページの読み込み完了後に各種機能を初期化 ---
   document.addEventListener('DOMContentLoaded', ()=>{
     loadConfig();
     initHeroSlideshow(); // ヒーロースライドショーを初期化
-    initPhotoSlider();  // フォトスライダーを初期化
+    init3DCarousel();    // 3Dカルーセルを初期化
 
     const form = document.getElementById('rsvp-form');
     form.addEventListener('submit', submitForm);
