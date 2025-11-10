@@ -226,18 +226,11 @@ def lambda_handler(event, context):
         data['attendance'] = normalize_attendance(data.get('attendance'))
         logger.info(f"Processing RSVP: {data.get('name')} ({data.get('attendance')})")
         
-        # 1. スプレッドシートに書き込み（任意機能）
+        # スプレッドシートに書き込み（メイン機能として実行）
         spreadsheet_success, spreadsheet_result = write_to_spreadsheet(data)
         
-        # スプレッドシート書き込みエラーは警告扱い（メールがメイン機能）
-        if not spreadsheet_success and os.environ.get('SECRET_NAME'):
-            logger.warning(f"Spreadsheet write failed but continuing: {spreadsheet_result}")
-        
-        # 2. メールを送信（必須機能）
-        email_success, email_result = send_email(data)
-        
-        if not email_success:
-            logger.error(f"Email send failed: {email_result}")
+        if not spreadsheet_success:
+            logger.error(f"Spreadsheet write failed: {spreadsheet_result}")
             return {
                 'statusCode': 500,
                 'headers': {
@@ -245,9 +238,14 @@ def lambda_handler(event, context):
                     'Content-Type': 'application/json'
                 },
                 'body': json.dumps({
-                    'error': 'メール送信に失敗しました。しばらく経ってから再度お試しください。'
+                    'error': 'データの保存に失敗しました。しばらく経ってから再度お試しください。'
                 }, ensure_ascii=False)
             }
+        
+        logger.info(f"Spreadsheet write success: {spreadsheet_result}")
+        
+        # SES機能は一時的に無効化
+        # email_success, email_result = send_email(data)
         
         # 成功レスポンス
         logger.info(f"Request completed successfully: {request_id}")
