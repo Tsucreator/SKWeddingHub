@@ -50,19 +50,19 @@ layer.zip
 .env.production.local
 
 # Do not commit real runtime config
-invitation-pages/site/config.json
+invitation/site/config.json
 
 # Lambda layer build artifacts
 layers/**/*.zip
 layers/**/python/**
 
 # Local Lambda test events (do NOT commit)
-invitation-pages/api/lambda/test-event.json
-invitation-pages/api/lambda/test-*.json
+invitation/api/lambda/test-event.json
+invitation/api/lambda/test-*.json
 
 # Lambda deployment artifacts (auto-generated in CI/CD)
-invitation-pages/api/lambda/lambda-deployment.zip
-invitation-pages/api/lambda/package/
+invitation/api/lambda/lambda-deployment.zip
+invitation/api/lambda/package/
 
 # Node (既存のNode.js関連ファイルがある場合のため)
 node_modules/

@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'invitation-pages/api/lambda/**'
+      - 'invitation/api/lambda/**'
   workflow_dispatch:
 
 jobs:
@@ -23,7 +23,7 @@ jobs:
 
       - name: Install dependencies and create deployment package
         run: |
-          cd invitation-pages/api/lambda
+          cd invitation/api/lambda
           pip install -r requirements.txt -t ./package
           cp lambda_function.py ./package/
           cd package/
@@ -40,7 +40,7 @@ jobs:
         run: |
           aws lambda update-function-code \
             --function-name ${{ secrets.LAMBDA_FUNCTION_NAME }} \
-            --zip-file fileb://invitation-pages/api/lambda/lambda-deployment.zip
+            --zip-file fileb://invitation/api/lambda/lambda-deployment.zip
 
       - name: Deployment Summary
         run: |
