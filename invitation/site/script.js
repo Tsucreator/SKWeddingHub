@@ -193,6 +193,22 @@
     return url;
   }
 
+  // Parallax effect for hero images
+  function handleHeroParallax() {
+    const heroImages = document.querySelector('.hero-images');
+    if (!heroImages) return;
+    
+    const scrollPosition = window.pageYOffset;
+    const heroHeight = document.querySelector('.hero')?.offsetHeight || 0;
+    
+    // Only apply parallax when within hero section
+    if (scrollPosition < heroHeight) {
+      // Move at 30% of scroll speed for subtle effect
+      const translateY = scrollPosition * 0.3;
+      heroImages.style.transform = `translateY(${translateY}px)`;
+    }
+  }
+
   // Scroll animation for sections with throttling for smoother performance
   let scrollTimeout;
   function handleScrollAnimation() {
@@ -466,6 +482,10 @@
     // スクロールアニメーションを初期化
     handleScrollAnimation();
     window.addEventListener('scroll', handleScrollAnimation);
+    
+    // パララックス効果を初期化
+    handleHeroParallax();
+    window.addEventListener('scroll', handleHeroParallax, { passive: true });
 
     // --- Scroll-triggered GIF reload without white flash ---
     // Strategy: Preload a cache-busted URL off-DOM, then swap src only after it's decoded.
