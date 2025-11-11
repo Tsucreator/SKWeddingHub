@@ -313,7 +313,7 @@ body{font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;line-height:1.6;c
 
 /* Photo Slider */
 .photos {
-  padding: 80px 20px;
+  padding: 80px 0;
   max-width: 100%;
   margin: 0;
   background: #f9fef9;
@@ -322,10 +322,10 @@ body{font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;line-height:1.6;c
 
 /* 3D Carousel Container - Revolver/Cylinder Style */
 .carousel-container {
-  max-width: 1200px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
   position: relative;
-  padding: 60px 20px;
+  padding: 60px 0;
 }
 
 .carousel-stage {
@@ -353,18 +353,34 @@ body{font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;line-height:1.6;c
 
 .carousel-item {
   position: absolute;
-  width: 280px;
-  height: 400px;
+  width: 200px;
+  height: 280px;
   left: 0;
   top: 0;
-  margin-left: -140px; /* 中心から左半分 */
-  margin-top: -200px;  /* 中心から上半分 */
+  margin-left: -100px; /* 中心から左半分 */
+  margin-top: -140px;  /* 中心から上半分 */
   transform-style: preserve-3d;
   backface-visibility: visible;
-  border-radius: 16px;
+  border-radius: 0;
   overflow: hidden;
-  box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+  box-shadow: none;
   transition: opacity 0.5s ease, filter 0.5s ease;
+}
+
+/* 横向きの写真（landscape） */
+.carousel-item.landscape {
+  width: 280px;
+  height: 200px;
+  margin-left: -140px;
+  margin-top: -100px;
+}
+
+/* 縦向きの写真（portrait） */
+.carousel-item.portrait {
+  width: 200px;
+  height: 280px;
+  margin-left: -100px;
+  margin-top: -140px;
 }
 
 .carousel-item.center {
@@ -1286,23 +1302,30 @@ textarea {
   }
   
   .photos {
-    padding: 60px 15px;
+    padding: 60px 0;
   }
   
   .carousel-container {
-    padding: 40px 10px;
+    padding: 40px 0;
   }
   
   .carousel-stage {
-    height: 340px;
+    height: 300px;
     perspective: 1000px;
   }
   
-  .carousel-item {
-    width: 180px;
-    height: 240px;
-    margin-left: -90px;  /* 幅の半分 */
-    margin-top: -120px;  /* 高さの半分 */
+  .carousel-item.portrait {
+    width: 150px;
+    height: 210px;
+    margin-left: -75px;
+    margin-top: -105px;
+  }
+  
+  .carousel-item.landscape {
+    width: 210px;
+    height: 150px;
+    margin-left: -105px;
+    margin-top: -75px;
   }
   
   .carousel-btn {
@@ -1337,14 +1360,20 @@ textarea {
 /* さらに小さい端末向けの微調整 */
 @media (max-width: 420px) {
   .carousel-stage {
-    height: 300px;
+    height: 260px;
     perspective: 900px;
   }
-  .carousel-item {
-    width: 150px;
-    height: 200px;
-    margin-left: -75px;
-    margin-top: -100px;
+  .carousel-item.portrait {
+    width: 120px;
+    height: 170px;
+    margin-left: -60px;
+    margin-top: -85px;
+  }
+  .carousel-item.landscape {
+    width: 170px;
+    height: 120px;
+    margin-left: -85px;
+    margin-top: -60px;
   }
   .carousel-btn {
     width: 34px;

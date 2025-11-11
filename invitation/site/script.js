@@ -285,9 +285,9 @@
     
     function computeRadius() {
       const w = window.innerWidth;
-      if (w <= 420) return 260;   // 極小端末
-      if (w <= 768) return 320;   // モバイル
-      return 500;                 // デスクトップ
+      if (w <= 420) return 220;   // 極小端末
+      if (w <= 768) return 280;   // モバイル
+      return 400;                 // デスクトップ
     }
     let radius = computeRadius();
     
@@ -320,8 +320,9 @@
         `;
         
         // 正面に近いアイテムを判定（中心から±45度以内）
+        // rotation が負の値で増加するため、itemAngle + rotation で実際の位置を計算
         const normalizedRotation = ((rotation % 360) + 360) % 360;
-        const itemRotation = ((itemAngle - normalizedRotation + 360) % 360);
+        const itemRotation = ((itemAngle + normalizedRotation) % 360);
         const isCenterish = itemRotation < 45 || itemRotation > 315;
         
         if (isCenterish) {
