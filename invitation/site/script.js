@@ -464,8 +464,74 @@
     });
   }
 
+  // --- Preload all images and GIFs before showing content ---
+  function preloadAssets() {
+    return new Promise((resolve) => {
+      const assetsToLoad = [];
+      
+      // Welcome GIF
+      const welcomeGif = document.querySelector('.welcome-animation');
+      if (welcomeGif && welcomeGif.src) {
+        assetsToLoad.push(welcomeGif.src);
+      }
+      
+      // Message GIF
+      const messageGif = document.getElementById('message-gif');
+      if (messageGif && messageGif.dataset.src) {
+        assetsToLoad.push(messageGif.dataset.src);
+      }
+      
+      // Hero images
+      const heroImages = document.querySelectorAll('.hero-img');
+      heroImages.forEach(img => {
+        if (img.src) assetsToLoad.push(img.src);
+      });
+      
+      // Preload all assets
+      let loadedCount = 0;
+      const totalAssets = assetsToLoad.length;
+      
+      if (totalAssets === 0) {
+        resolve();
+        return;
+      }
+      
+      assetsToLoad.forEach(src => {
+        const img = new Image();
+        img.onload = img.onerror = () => {
+          loadedCount++;
+          if (loadedCount >= totalAssets) {
+            // All assets loaded, wait a tiny bit for rendering
+            setTimeout(resolve, 100);
+          }
+        };
+        img.src = src;
+      });
+      
+      // Safety timeout: remove overlay after 10 seconds regardless
+      setTimeout(resolve, 10000);
+    });
+  }
+
+  // Remove initial overlay after assets are loaded
+  async function removeInitialOverlay() {
+    await preloadAssets();
+    const overlay = document.querySelector('.initial-overlay');
+    if (overlay) {
+      // Add loaded class to trigger fade-out
+      overlay.classList.add('loaded');
+      // After fade-out completes, remove from DOM
+      setTimeout(() => {
+        overlay.remove();
+      }, 1200);
+    }
+  }
+
   // --- DOMContentLoaded: ページの読み込み完了後に各種機能を初期化 ---
   document.addEventListener('DOMContentLoaded', ()=>{
+    // Start preloading and overlay removal
+    removeInitialOverlay();
+    
     loadConfig();
     initHeroSlideshow(); // ヒーロースライドショーを初期化
     init3DCarousel();    // 3Dカルーセルを初期化
@@ -487,28 +553,34 @@
     handleHeroParallax();
     window.addEventListener('scroll', handleHeroParallax, { passive: true });
 
-    // --- Scroll-triggered GIF reload without white flash ---
-    // Strategy: Preload a cache-busted URL off-DOM, then swap src only after it's decoded.
-    // This avoids showing a blank/placeholder frame between restarts.
+    // --- Message GIF: Load once on first view, then reload on subsequent views ---
     (function initScrollReplayGif(){
       const el = document.getElementById('message-gif');
       if(!el || !el.dataset.src) return;
-      // If this is the very first render and src is empty (or same as page), keep placeholder from HTML.
+      
+      let isFirstLoad = true;
       function bust(url){ return url + (url.includes('?') ? '&' : '?') + 't=' + Date.now(); }
 
       const observer = new IntersectionObserver((entries)=>{
         entries.forEach(entry=>{
           if(entry.isIntersecting){
-            if(el.dataset.playing === '1') return; // already started during this visibility window
+            if(el.dataset.playing === '1') return;
             el.dataset.playing = '1';
-            const nextUrl = bust(el.dataset.src);
-            const pre = new Image();
-            pre.decoding = 'sync';
-            pre.onload = ()=>{
-              // Only swap after decode to prevent flash
-              el.src = nextUrl;
-            };
-            pre.src = nextUrl;
+            
+            // First load: use preloaded image directly (no cache bust)
+            if(isFirstLoad) {
+              el.src = el.dataset.src;
+              isFirstLoad = false;
+            } else {
+              // Subsequent loads: cache-bust for replay
+              const nextUrl = bust(el.dataset.src);
+              const pre = new Image();
+              pre.decoding = 'sync';
+              pre.onload = ()=>{
+                el.src = nextUrl;
+              };
+              pre.src = nextUrl;
+            }
           } else {
             el.dataset.playing = '0';
           }

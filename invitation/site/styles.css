@@ -25,7 +25,14 @@ html {
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  animation: fadeOutOverlay 1s ease-out 5s forwards; /* 5秒後にフェードアウト */
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 1s ease-out, visibility 0s 1s;
+}
+
+.initial-overlay.loaded {
+  opacity: 0;
+  visibility: hidden;
 }
 
 .intro-animation {
