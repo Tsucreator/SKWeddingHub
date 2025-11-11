@@ -183,7 +183,7 @@ body{font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;line-height:1.6;c
 
 .countdown {
   display: flex;
-  gap: clamp(10px, 2vw, 25px);
+  gap: 20px;
   margin: 40px auto;
   justify-content: center;
   opacity: 0;
@@ -197,7 +197,7 @@ body{font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;line-height:1.6;c
 }
 .countdown-item {
   background: rgba(255,255,255,0.12);
-  padding: clamp(10px, 3vw, 20px);
+  padding: 20px;
   border-radius: 16px;
   backdrop-filter: blur(12px);
   text-align: center;
@@ -212,7 +212,7 @@ body{font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;line-height:1.6;c
 }
 .countdown-item .num {
   font-weight: 400;
-  font-size: clamp(24px, 5vw, 48px);
+  font-size: 48px;
   display: block;
   color: #fff;
   margin-bottom: 8px;
@@ -224,7 +224,7 @@ body{font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;line-height:1.6;c
   white-space: nowrap;
 }
 .countdown-item .label {
-  font-size: clamp(12px, 3vw, 16px);
+  font-size: 16px;
   color: rgba(255,255,255,0.9);
   letter-spacing: 2px;
   font-weight: 300;
@@ -252,18 +252,23 @@ body{font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;line-height:1.6;c
 
 @media (max-width: 768px) {
   .hero {
-    min-height: 100vh; /* スマホでは必ず画面の高さ分を確保 */
-    height: 100vh; /* 確実に画面いっぱいに */
+    min-height: 600px;
+    height: auto;
   }
   .countdown {
-    gap: 10px;
+    gap: 15px;
     margin: 20px auto;
     padding: 0 5px;
   }
   .countdown-item {
-    padding: 10px 5px;
+    padding: 15px 10px;
   }
-  /* Remove size adjustments as we're using clamp() now */
+  .countdown-item .num {
+    font-size: 32px;
+  }
+  .countdown-item .label {
+    font-size: 14px;
+  }
 }
 
 .hero-actions {
@@ -539,27 +544,14 @@ body{font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;line-height:1.6;c
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .hero {
-    min-height: 100vh;
-    height: 100vh;
+    min-height: 600px;
+    height: auto;
   }
   .couple {
     font-size: 48px;
   }
   .subtitle {
     font-size: 24px;
-  }
-  .countdown {
-    gap: 10px;
-  }
-  .countdown-item {
-    min-width: 80px;
-    padding: 10px;
-  }
-  .countdown-item .num {
-    font-size: 24px;
-  }
-  .countdown-item .label {
-    font-size: 12px;
   }
   .hero-actions {
     flex-direction: column;
