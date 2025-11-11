@@ -2,7 +2,7 @@ import json
 import os
 import re
 import logging
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 import boto3
 from botocore.exceptions import ClientError
 from email.mime.text import MIMEText
@@ -39,8 +39,9 @@ def write_to_spreadsheet(data):
         return True, "Spreadsheet integration disabled (gspread not available)"
 
     try:
-        # タイムスタンプ追加
-        timestamp = datetime.utcnow().isoformat() + 'Z'
+        # タイムスタンプ追加（日本時間 yyyy/mm/dd hh:mm:ss形式）
+        jst = timezone(timedelta(hours=9))
+        timestamp = datetime.now(jst).strftime('%Y/%m/%d %H:%M:%S')
         
         # 1. Secrets Managerから認証情報を取得
         session = boto3.session.Session()
