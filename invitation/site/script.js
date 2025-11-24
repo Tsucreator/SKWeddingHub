@@ -227,38 +227,7 @@
     }, 50); // 50msごとに実行（より滑らかに）
   }
 
-  // ヒーローイメージのスライドショー
-  function initHeroSlideshow() {
-    const heroWrappers = document.querySelectorAll('.hero-img-wrapper');
-    // 画像が1枚以下の場合はスライドショーを実行しない
-    if (heroWrappers.length <= 1) return;
 
-    let currentImageIndex = 0;
-    let isAnimating = false;
-
-    function showNextImage() {
-      if (isAnimating) return;
-      isAnimating = true;
-
-      const currentWrapper = heroWrappers[currentImageIndex];
-      const nextIndex = (currentImageIndex + 1) % heroWrappers.length;
-      const nextWrapper = heroWrappers[nextIndex];
-
-      nextWrapper.classList.add('active');
-      
-      setTimeout(() => {
-        currentWrapper.classList.remove('active');
-        currentImageIndex = nextIndex;
-        isAnimating = false;
-      }, 100); // CSSのトランジション時間と同じ
-    }
-
-    // 最初の画像を表示
-    heroWrappers[0].classList.add('active');
-    
-    // 4.5秒ごとに画像を切り替え
-    setInterval(showNextImage, 8000); // 表示時間(3s) + トランジション時間(1.5s)
-  }
 
   // Photo Slider functionality
   function initPhotoSlider() {
@@ -487,11 +456,11 @@
         assetsToLoad.push(profileGif.dataset.src);
       }
       
-      // Hero images
-      const heroImages = document.querySelectorAll('.hero-img');
-      heroImages.forEach(img => {
-        if (img.src) assetsToLoad.push(img.src);
-      });
+      // Hero image
+      const heroImage = document.querySelector('.hero-img');
+      if (heroImage && heroImage.src) {
+        assetsToLoad.push(heroImage.src);
+      }
       
       // Preload all assets
       let loadedCount = 0;
@@ -519,9 +488,17 @@
     });
   }
 
-  // Remove initial overlay after assets are loaded
+  // Remove initial overlay after assets are loaded AND minimum 3.5 seconds
   async function removeInitialOverlay() {
-    await preloadAssets();
+    const startTime = Date.now();
+    const minDisplayTime = 3500; // 最低3.5秒表示
+    
+    // アセットロードと最低表示時間の両方を待つ
+    await Promise.all([
+      preloadAssets(),
+      new Promise(resolve => setTimeout(resolve, minDisplayTime))
+    ]);
+    
     const overlay = document.querySelector('.initial-overlay');
     if (overlay) {
       // Add loaded class to trigger fade-out
@@ -539,7 +516,6 @@
     removeInitialOverlay();
     
     loadConfig();
-    initHeroSlideshow(); // ヒーロースライドショーを初期化
     init3DCarousel();    // 3Dカルーセルを初期化
 
     const form = document.getElementById('rsvp-form');

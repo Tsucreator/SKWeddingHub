@@ -85,27 +85,36 @@ body{font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;line-height:1.6;c
   transform: translateY(0);
 }
 
-.hero-img-wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  transition: opacity 1.5s ease-in-out;
-  z-index: 1;
-}
-
-.hero-img-wrapper.active {
-  opacity: 1;
-  z-index: 2;
-}
-
 .hero-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   opacity: 0.85;
+}
+
+/* モバイル用ヒーロー画像調整 */
+@media (max-width: 768px) {
+  .hero-img {
+    object-fit: contain;
+    object-position: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    min-height: 100vh;
+    height: 100vh;
+  }
+  
+  .hero-images {
+    height: 100%;
+  }
+  
+  .hero-img {
+    object-fit: cover;
+    object-position: center top;
+  }
 }
 .hero-inner {
   position: relative;
@@ -145,7 +154,6 @@ body{font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;line-height:1.6;c
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(180deg, rgba(0,0,0,0.3), rgba(0,0,0,0.5));
 }
 .hero-bg img {
   width: 100%;
@@ -658,8 +666,8 @@ body{font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;line-height:1.6;c
 }
 /* Message GIF wrapper */
 .message-gif-wrapper {
-  width: 60%; /* 横幅を60%に */
-  max-width: 400px;
+  width: 54%; /* 横幅を54%に（90%縮小） */
+  max-width: 360px;
   margin: 0 auto -20px; /* 下の文章とオーバーラップ */
   display: flex;
   justify-content: center;
@@ -676,8 +684,8 @@ body{font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;line-height:1.6;c
 
 @media (max-width: 540px) {
   .message-gif-wrapper { 
-    width: 60%; /* モバイルも60% */
-    max-width: 250px;
+    width: 54%; /* モバイルも54%（90%縮小） */
+    max-width: 225px;
     margin: 0 auto -15px; /* モバイルでもオーバーラップ */
   }
   
@@ -739,8 +747,8 @@ body{font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;line-height:1.6;c
 
 /* Profile GIF wrapper */
 .profile-gif-wrapper {
-  width: 60%;
-  max-width: 400px;
+  width: 54%;
+  max-width: 360px;
   margin: 0 auto 30px;
   display: flex;
   justify-content: center;
@@ -757,8 +765,8 @@ body{font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;line-height:1.6;c
 
 @media (max-width: 540px) {
   .profile-gif-wrapper { 
-    width: 60%;
-    max-width: 250px;
+    width: 54%;
+    max-width: 225px;
     margin: 0 auto 20px;
   }
 }
