@@ -71,7 +71,7 @@ body{font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;line-height:1.6;c
   min-height: 700px;
   overflow: hidden;
   background: #000;
-  margin-bottom: 40px; /* ヒーローとgreetingセクションの間に余白 */
+  margin-bottom: 0px;
 }
 
 /* Hero Images with Parallax */
@@ -204,93 +204,186 @@ body{font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;line-height:1.6;c
   text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
+.countdown-section {
+  position: relative;
+  padding: 150px 0;
+  background: #fff;
+  min-height: 80vh;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+}
+
+.countdown-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('image/countdown_bg_image.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.countdown-section > * {
+  position: relative;
+  z-index: 1;
+  padding: 0 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100%;
+  padding-top: 10%; /* 5%上部に移動 */
+}
+
 .countdown {
   display: flex;
-  gap: 20px;
-  margin: 40px auto;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
   opacity: 0;
   transform: translateY(20px);
   animation: slideUp 1.5s ease 0.9s forwards;
-  flex-wrap: nowrap;
   width: 100%;
   max-width: 600px;
   padding: 0 10px;
   box-sizing: border-box;
 }
-.countdown-item {
-  background: rgba(255,255,255,0.12);
-  padding: 20px;
-  border-radius: 16px;
-  backdrop-filter: blur(12px);
+
+.countdown-to {
   text-align: center;
-  flex: 1;
-  min-width: 0; /* Prevent flex items from overflowing */
-  border: 1px solid rgba(255,255,255,0.2);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
+  margin-bottom: 15px;
 }
-.countdown-item:hover {
-  transform: translateY(-5px);
-}
-.countdown-item .num {
-  font-weight: 400;
-  font-size: 48px;
-  display: block;
-  color: #fff;
-  margin-bottom: 8px;
-  font-family: 'Great Vibes', cursive;
-  line-height: 1;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-  position: relative;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-}
-.countdown-item .label {
-  font-size: 16px;
-  color: rgba(255,255,255,0.9);
-  letter-spacing: 2px;
+
+.countdown-to .to-text {
   font-weight: 300;
-  font-family: 'Great Vibes', cursive;
-  text-transform: none;
-  white-space: nowrap;
+  font-size: 25.2px; /* 90% of 28px */
+  color: #000;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.5px;
+  margin-right: 8px;
 }
-@keyframes numberFlip {
-  0% { transform: translateY(0); opacity: 1; }
-  50% { transform: translateY(-10px); opacity: 0; }
-  51% { transform: translateY(10px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
+
+.countdown-to .to-label {
+  font-weight: 400;
+  font-size: 32.2px; /* 115% of 28px */
+  color: #000;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.5px;
 }
-.countdown-item .num.flip {
-  animation: numberFlip 0.3s ease-out;
+
+.countdown-days {
+  text-align: center;
+  margin-bottom: 20px;
 }
-@keyframes glow {
-  0% { text-shadow: 0 0 5px rgba(255,255,255,0.5); }
-  50% { text-shadow: 0 0 20px rgba(255,255,255,0.8); }
-  100% { text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+
+.countdown-days .num {
+  font-weight: 600;
+  font-size: 129.6px; /* 150% of 86.4px */
+  color: #000;
+  font-family: 'Cinzel', serif;
+  line-height: 1;
+  margin-right: 10px;
+  letter-spacing: 1px;
 }
-.countdown-item:last-child .num {
-  animation: glow 2s infinite;
+
+.countdown-days .label {
+  font-size: 32px;
+  color: #000;
+  font-weight: 400;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 2px;
 }
+
+.countdown-time {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.time-item {
+  text-align: center;
+}
+
+.time-item .num {
+  font-weight: 500;
+  font-size: 36px; /* 150% of 24px */
+  color: #000;
+  font-family: 'Cormorant Garamond', serif;
+}
+
+.time-item .label {
+  font-size: 14px;
+  color: #000;
+  font-weight: 300;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+}
+
 
 @media (max-width: 768px) {
   .hero {
     min-height: 700px;
     height: auto;
   }
+  
+  .countdown-section {
+    padding: 20px 0 0 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+  }
+  
+  .countdown-section > * {
+    padding: 0 15px;
+    padding-top: 15%; /* 5%上部に移動 */
+  }
+  
+  .countdown-section::before {
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+  }
+  
   .countdown {
-    gap: 15px;
     margin: 20px auto;
     padding: 0 5px;
   }
-  .countdown-item {
-    padding: 15px 10px;
+  
+  .countdown-to .to-text {
+    font-size: 18px; /* 90% of 20px */
   }
-  .countdown-item .num {
-    font-size: 32px;
+  
+  .countdown-to .to-label {
+    font-size: 23px; /* 115% of 20px */
   }
-  .countdown-item .label {
-    font-size: 14px;
+  
+  .countdown-days .num {
+    font-size: 90px; /* 150% of 67.2px */
+  }
+  
+  .countdown-days .label {
+    font-size: 24px;
+  }
+  
+  .countdown-time {
+    gap: 10px;
+  }
+  
+  .time-item .num {
+    font-size: 25px; /* 150% of 20px */
+  }
+  
+  .time-item .label {
+    font-size: 12px;
   }
 }
 
@@ -610,26 +703,33 @@ body{font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;line-height:1.6;c
 }
 
 /* Main container */
+main {
+  background-color: #3a3a3a; /* ライトグレー */
+}
+
 .container {
   max-width: 100%;
   margin: 0;
   padding: 0;
   text-align: center;
+  background-color: #3a3a3a; /* ライトグレー */
 }
 
 /* Section Background Colors */
 .greeting {
-  background: #fff; /* 白へ統一 */
-  padding: 100px 20px 60px; /* 上部に余白を追加 */
+  padding: 50px 20px 60px; /* 上部paddingを半分に減らして上部に移動 */
   margin: 0;
   width: 100%;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
 .greeting::before {
   content: '';
   position: absolute;
-  top: 50%;
+  top: 45%; /* 位置を下げる */
   left: 50%;
   transform: translate(-50%, -50%);
   width: 100%;
@@ -1071,17 +1171,19 @@ h2, h3 {
 .greeting {
   max-width: 100%;
   margin: 0;
-  padding: 20px 20px 60px; /* GIFとの距離を保ちつつ白背景 */
-  background: #fff; /* 白へ統一 */
+  padding: 10px 20px 60px; /* 上部paddingを半分に減らして上部に移動 */
   text-align: center;
   width: 100%;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
 .greeting::before {
   content: '';
   position: absolute;
-  top: 50%;
+  top: 45%; /* 位置を下げる */
   left: 50%;
   transform: translate(-50%, -50%);
   width: 100%;
@@ -1350,7 +1452,6 @@ textarea {
   
   .greeting {
     padding: 40px 20px 40px; /* モバイル時も十分な白余白 */
-    background: #fff; /* 念のため白維持 */
   }
   
   .event-info {
@@ -1507,4 +1608,10 @@ textarea {
     display: block;
     margin: 10px 0;
   }
+}
+
+@media (max-width: 768px) {
+    .greeting {
+        padding: 20px 10px 40px;
+    }
 }
