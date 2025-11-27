@@ -728,7 +728,7 @@ main {
   padding: 80px 20px 120px;
   text-align: center;
   width: 100%;
-  min-height: 100vh;
+  min-height: 800px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -742,7 +742,7 @@ main {
   left: 50%;
   transform: translateX(-50%);
   width: 100vw;
-  height: 100vh;
+  height: 800px;
   background-image: url('image/message_bg_image.webp');
   background-size: contain;
   background-position: center;
@@ -967,6 +967,7 @@ main {
   
   .greeting {
     padding: 60px 20px 80px;
+    min-height: 600px;
   }
   
   .profile-grid {
