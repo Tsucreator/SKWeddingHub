@@ -122,7 +122,7 @@ h2, h3 {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding-top: 0vh;
+  padding-top: 33vh;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -1165,7 +1165,7 @@ textarea {
     min-height: 100vh; /* Fallback - use min-height for flexibility */
     min-height: calc(var(--vh, 1vh) * 100); /* JS-calculated */
     min-height: 100dvh; /* Modern browsers */
-    padding-top: 0vh;
+    padding-top: 13vh;
   }
   .section-content {
     padding: 15px;
@@ -1319,7 +1319,7 @@ textarea {
 
 /* Mobile Small (540px and below) */
 @media (max-width: 540px) {
-  .fullscreen-section { padding-top: 0vh; }
+  .fullscreen-section { padding-top: 8vh; }
 
   /* Message & Profile GIFs */
   .message-gif-wrapper,
