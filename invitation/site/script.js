@@ -5,8 +5,14 @@
   async function loadConfig(){
     try{
       const res = await fetch('config.json');
-      if(res.ok) Object.assign(config, await res.json());
-    }catch(e){}
+      if(res.ok){
+        Object.assign(config, await res.json());
+      }
+    }catch(e){
+      // add error logging here.
+      console.error('設定ファイルの読み込みに失敗しました。初期設定を使います。');
+      console.error(e); // logging error details.
+    }
     $('deadline-date').textContent = config.deadline || '未設定';
     // show event date if available
     const eventDateEl = document.getElementById('event-date');
@@ -23,7 +29,7 @@
       }catch(e){}
     }
     // initialize countdown
-    initCountdown(config.eventDateISO || config.deadline);
+    initCountdown(config.eventDateISO);
   }
 
   function showMessage(text, isError){
@@ -40,11 +46,11 @@
     // radio attendance may be missing; ensure present
     const att = form.querySelector('input[name="attendance"]:checked');
     obj.attendance = att ? att.value : '';
+    console.log('Collected form data:', obj);
     return obj;
   }
 
-  function validate(form){
-    // rely on HTML5 required + simple email check
+  function validate(){
     const email = $('email').value.trim();
     if(!email) return 'メールアドレスを入力してください。';
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return '有効なメールアドレスを入力してください。';
@@ -149,7 +155,7 @@
       }
 
       // 前回の値を保存して比較
-      if (!tick.prev) tick.prev = {days: -1, hours: -1, mins: -1, secs: -1};
+      if (!tick.prev) tick.prev = {days: -1, hours: -1, mins: -1, secs: -1}; // 初期化
       
       updateNumber('cd-days', days, tick.prev.days, false); // 日数は0埋めしない
       updateNumber('cd-hours', hours, tick.prev.hours, true);
@@ -167,279 +173,6 @@
     tick();
     if(countdownTimer) clearInterval(countdownTimer);
     countdownTimer = setInterval(tick, 1000); // 1秒ごとに更新
-  }
-
-  // Add-to-calendar (Google Calendar) helper
-  function makeGoogleCalendarLink(){
-    // use calendar fields from config if present
-    const title = encodeURIComponent((document.querySelector('.couple')?.textContent?.trim() || '') + " Wedding");
-    const cal = config.calendar || {};
-    // Google Calendar expects dates in YYYYMMDDTHHMMSSZ or YYYYMMDD format for all-day
-    function toGCalDatetime(iso){
-      if(!iso) return '';
-      // ensure UTC 'Z' suffix for simplicity
-      const d = new Date(iso);
-      if(isNaN(d)) return '';
-      const yyyy = d.getUTCFullYear();
-      const mm = String(d.getUTCMonth()+1).padStart(2,'0');
-      const dd = String(d.getUTCDate()).padStart(2,'0');
-      const hh = String(d.getUTCHours()).padStart(2,'0');
-      const mi = String(d.getUTCMinutes()).padStart(2,'0');
-      const ss = String(d.getUTCSeconds()).padStart(2,'0');
-      return `${yyyy}${mm}${dd}T${hh}${mi}${ss}Z`;
-    }
-
-    const start = toGCalDatetime(cal.start || config.eventDateISO || '');
-    const end = toGCalDatetime(cal.end || '');
-    if(!start) return '#';
-    const dates = end ? `${start}/${end}` : `${start}/${start}`;
-    const details = encodeURIComponent(cal.description || 'Invitation');
-    const location = encodeURIComponent(cal.location || '');
-    const url = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}&location=${location}`;
-    return url;
-  }
-
-  // Parallax effect for hero images
-  function handleHeroParallax() {
-    const heroImages = document.querySelector('.hero-images');
-    if (!heroImages) return;
-    
-    const scrollPosition = window.pageYOffset;
-    const heroHeight = document.querySelector('.hero')?.offsetHeight || 0;
-    
-    // Only apply parallax when within hero section
-    if (scrollPosition < heroHeight) {
-      // Move at 30% of scroll speed for subtle effect
-      const translateY = scrollPosition * 0.3;
-      heroImages.style.transform = `translateY(${translateY}px)`;
-    }
-  }
-
-  // Scroll animation for sections with throttling for smoother performance
-  let scrollTimeout;
-  function handleScrollAnimation() {
-    if (scrollTimeout) return;
-    
-    scrollTimeout = setTimeout(() => {
-      const sections = document.querySelectorAll('.fade-in-section');
-      sections.forEach(section => {
-        const sectionTop = section.getBoundingClientRect().top;
-        const windowHeight = window.innerHeight;
-        if (sectionTop < windowHeight * 0.85) { // Show when 85% visible
-          section.classList.add('is-visible');
-        }
-      });
-      
-      // Profile section animation removed - now displays directly
-      
-      scrollTimeout = null;
-    }, 50); // 50msごとに実行（より滑らかに）
-  }
-
-
-
-  // Photo Slider functionality
-  function initPhotoSlider() {
-    const slider = document.querySelector('.photo-slider');
-    const prevBtn = document.querySelector('.slider-nav.prev');
-    const nextBtn = document.querySelector('.slider-nav.next');
-
-    if (!slider || !prevBtn || !nextBtn) return;
-
-    const slideWidth = window.innerWidth < 768 ? 260 : 300; // width + gap
-    
-    function scrollToNext() {
-      slider.scrollBy({ left: slideWidth, behavior: 'smooth' });
-    }
-
-    function scrollToPrev() {
-      slider.scrollBy({ left: -slideWidth, behavior: 'smooth' });
-    }
-
-    nextBtn.addEventListener('click', scrollToNext);
-    prevBtn.addEventListener('click', scrollToPrev);
-
-    slider.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight') scrollToNext();
-      if (e.key === 'ArrowLeft') scrollToPrev();
-    });
-
-    if ('ontouchstart' in window) {
-      slider.style.webkitOverflowScrolling = 'touch';
-    }
-  }
-
-  // --- 3D Revolver Carousel Logic ---
-  function init3DCarousel() {
-    const track = document.getElementById('carouselTrack');
-    const items = Array.from(track.querySelectorAll('.carousel-item'));
-    const prevBtn = document.querySelector('.carousel-btn.prev');
-    const nextBtn = document.querySelector('.carousel-btn.next');
-    const indicatorsContainer = document.getElementById('carouselIndicators');
-    
-    if (!track || items.length === 0) return;
-    
-    let rotation = 0;
-    const totalItems = items.length;
-    const angleStep = 360 / totalItems; // 各アイテム間の角度
-    
-    function computeRadius() {
-      const w = window.innerWidth;
-      if (w <= 420) return 220;   // 極小端末
-      if (w <= 768) return 280;   // モバイル
-      return 400;                 // デスクトップ
-    }
-    let radius = computeRadius();
-    
-    // インジケーターを生成
-    items.forEach((_, i) => {
-      const btn = document.createElement('button');
-      btn.className = 'carousel-indicator';
-      btn.setAttribute('aria-label', `写真 ${i + 1} へ`);
-      btn.addEventListener('click', () => goToSlide(i));
-      indicatorsContainer.appendChild(btn);
-    });
-    
-  function updateCarousel(smooth = true) {
-      if (smooth) {
-        track.style.transition = 'transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
-      } else {
-        track.style.transition = 'none';
-      }
-      
-  // トラック全体をY軸回転（原点はCSSで中央に配置）
-      track.style.transform = `rotateY(${rotation}deg)`;
-      
-      // 各アイテムを円筒状に配置
-      items.forEach((item, i) => {
-        const itemAngle = i * angleStep;
-        // 各アイテムを円筒上に配置して正面を向かせる
-        item.style.transform = `
-          rotateY(${itemAngle}deg)
-          translateZ(${radius}px)
-        `;
-        
-        // 正面に近いアイテムを判定（中心から±45度以内）
-        // rotation が負の値で増加するため、itemAngle + rotation で実際の位置を計算
-        const normalizedRotation = ((rotation % 360) + 360) % 360;
-        const itemRotation = ((itemAngle + normalizedRotation) % 360);
-        const isCenterish = itemRotation < 45 || itemRotation > 315;
-        
-        if (isCenterish) {
-          item.classList.add('center');
-        } else {
-          item.classList.remove('center');
-        }
-      });
-      
-      // インジケーターの更新
-      const currentIndex = Math.round(-rotation / angleStep) % totalItems;
-      const normalizedIndex = ((currentIndex % totalItems) + totalItems) % totalItems;
-      const indicators = indicatorsContainer.querySelectorAll('.carousel-indicator');
-      indicators.forEach((ind, i) => {
-        if (i === normalizedIndex) {
-          ind.classList.add('active');
-        } else {
-          ind.classList.remove('active');
-        }
-      });
-    }
-    
-    function rotate(direction) {
-      rotation += direction * angleStep;
-      updateCarousel();
-    }
-    
-    function goToSlide(index) {
-      rotation = -index * angleStep;
-      updateCarousel();
-    }
-    
-    function nextSlide() {
-      rotate(-1); // 右へ回転（時計回り）
-    }
-    
-    function prevSlide() {
-      rotate(1); // 左へ回転（反時計回り）
-    }
-    
-    // ボタンイベント
-    if (prevBtn) prevBtn.addEventListener('click', prevSlide);
-    if (nextBtn) nextBtn.addEventListener('click', nextSlide);
-    
-    // ドラッグ/スワイプ対応
-    let startX = 0;
-    let currentX = 0;
-    let isDragging = false;
-    let startRotation = 0;
-    
-    function handleDragStart(clientX) {
-      startX = clientX;
-      currentX = clientX;
-      isDragging = true;
-      startRotation = rotation;
-      track.style.transition = 'none';
-    }
-    
-    function handleDragMove(clientX) {
-      if (!isDragging) return;
-      currentX = clientX;
-      const diff = currentX - startX;
-      // ドラッグ距離を角度に変換（感度調整）
-      const dragAngle = diff * 0.3;
-      rotation = startRotation + dragAngle;
-      updateCarousel(false);
-    }
-    
-    function handleDragEnd() {
-      if (!isDragging) return;
-      isDragging = false;
-      
-      // 最も近いスナップ位置に調整
-      const snapRotation = Math.round(rotation / angleStep) * angleStep;
-      rotation = snapRotation;
-      updateCarousel(true);
-    }
-    
-    track.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      handleDragStart(e.clientX);
-    });
-    
-    track.addEventListener('touchstart', (e) => {
-      handleDragStart(e.touches[0].clientX);
-    });
-    
-    document.addEventListener('mousemove', (e) => {
-      handleDragMove(e.clientX);
-    });
-    
-    document.addEventListener('touchmove', (e) => {
-      if (isDragging) {
-        handleDragMove(e.touches[0].clientX);
-      }
-    });
-    
-    document.addEventListener('mouseup', handleDragEnd);
-    document.addEventListener('touchend', handleDragEnd);
-    
-    // キーボード操作
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowLeft') prevSlide();
-      if (e.key === 'ArrowRight') nextSlide();
-    });
-    
-    // 初期表示
-    updateCarousel(false);
-    
-    // 自動回転（オプション）
-    // setInterval(nextSlide, 4000);
-
-    // 画面サイズ変更に追従（半径を再計算し、現在の角度のまま再配置）
-    window.addEventListener('resize', () => {
-      radius = computeRadius();
-      updateCarousel(false);
-    });
   }
 
   // --- Preload all images and GIFs before showing content ---
@@ -535,29 +268,36 @@
     console.log('=== DOMContentLoaded fired ===');
     // Start preloading and overlay removal
     removeInitialOverlay();
-    
     loadConfig();
-    init3DCarousel();    // 3Dカルーセルを初期化
 
     const form = document.getElementById('rsvp-form');
     if(form) form.addEventListener('submit', submitForm);
+    console.log('=== RSVP form submit Event listener for form submission set up ===');
 
-    const cal = document.getElementById('calendar-btn');
-    if(cal){ cal.addEventListener('click', e=>{ e.preventDefault(); const href = makeGoogleCalendarLink(); if(href!=='#') window.open(href,'_blank'); }); }
+    // Initialize photo slider
+    const options = {
+      root: null, 
+      rootMargin: "0px 0px -15% 0px", 
+      threshold: 0 
+    };
 
-    const mapBtn = document.getElementById('map-btn');
-    if(mapBtn){ mapBtn.addEventListener('click', ()=>{ location.hash = '#map'; }); }
+    // 2. IntersectionObserver
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          console.log('Section revealed:', entry.target);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, options);
 
-    // スクロールアニメーションを初期化
-    handleScrollAnimation();
-    window.addEventListener('scroll', handleScrollAnimation);
-    
-    // 初期表示時にも一度実行（ページ読み込み完了後少し待ってから）
-    setTimeout(handleScrollAnimation, 100);
-    
-    // パララックス効果を初期化
-    handleHeroParallax();
-    window.addEventListener('scroll', handleHeroParallax, { passive: true });
+    // 3. Scroll Animation
+    const sections = document.querySelectorAll('.fade-in-section');
+    sections.forEach(section => {
+      observer.observe(section);
+    });    
+    console.log('=== Scroll animation IntersectionObserver set up ===');
 
     // --- GIF replay helper function ---
     function setupGifReplay(elementId) {
