@@ -36,7 +36,7 @@ body {
 .hero-section {
   position: relative;
   width: 100%;
-  min-height: 100dvh; /* 画面いっぱい */
+  min-height: 100svh; /* 画面いっぱい */
   overflow: hidden; /* スクロール防ぐ */
   /* 背景：斜めのデザイン */
   /* Heroと同じ濃いグレーから、透明(下層の明るい色)へのグラデーション */
@@ -242,13 +242,13 @@ body {
 ------------------------------------------- */
 .countdown-card {
   position: absolute;
-  top: 30%;
+  top: 35%;
   left: 50%;
   transform: translate(-50%, -50%); /* 中央寄せ */
   width: 85%;
   max-height: 360px; /* PCで見ても大きくなりすぎないように */
   max-width: 450px; /* PCで見ても大きくなりすぎないように */
-  aspect-ratio: 8/10; /* 縦長のバランスを維持 */
+  aspect-ratio: 8.5/10; /* 縦長のバランスを維持 */
   z-index: 10;
   
   /* カードの背景（紙のような質感） */
