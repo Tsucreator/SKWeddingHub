@@ -880,3 +880,249 @@ body {
   height: 100%;
   object-fit: cover;
 }
+
+/* =========================================
+    Information Section Design
+========================================= */
+.info-section {
+  position: relative;
+  width: 100%;
+  /* コンテンツがはみ出ても背景が途切れないようmin-height */
+  min-height: 100svh;
+  /* 上下の余白 */
+  padding-bottom: clamp(4rem, 10vh, 8rem);
+  
+  /* 背景の2色分割（上30% グレー、下70% 白） */
+  background: linear-gradient(to bottom, #888 25%, #fff 25%);
+  
+  display: flex;
+  justify-content: center;
+}
+
+.info-container {
+  width: min(90%, 800px); /* 幅制限：PCで見やすさを維持 */
+  padding-top: 10svh; /* カードを少し下げるための余白 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rem; /* 各要素間の余白 */
+}
+
+/* -------------------------------------------
+   Layer 1: Schedule Card (浮いている枠)
+------------------------------------------- */
+.schedule-card {
+  /* 背景色：白 */
+  background-color: #ffffff;
+  /* 文字色：黒 */
+  color: #333;
+  
+  /* 高級感のある浮き出し影 */
+  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+  
+  /* 角丸（後で丸枠にする場合はここを50%などに変更） */
+  border-radius: 4px;
+  
+  /* サイズと余白 */
+  width: 100%;
+  max-width: 500px;
+  padding: 3rem 2rem;
+  text-align: center;
+  position: relative;
+  z-index: 2; /* 背景より手前 */
+}
+
+/* カード内のタイトル */
+.info-title {
+  font-family: 'Great Vibes', cursive; /* 筆記体 */
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  margin-bottom: 2rem;
+  line-height: 1.2;
+}
+
+/* 日付のデザイン */
+.schedule-date {
+  font-family: 'Baskerville', serif; /* 上品なセリフ体 */
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
+  padding: 1rem 0;
+  margin-bottom: 2.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.year {
+  font-size: 1.2rem;
+  letter-spacing: 0.1em;
+}
+
+.date-main {
+  font-size: clamp(2.5rem, 10vw, 4rem);
+  font-weight: 600;
+  line-height: 1;
+}
+
+.day {
+  font-size: 1.2rem;
+  text-transform: uppercase;
+}
+
+/* タイムライン（テーブル風） */
+.timeline-box {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  font-family: "Yu Mincho", "YuMincho", serif;
+  font-weight: 500;
+  max-width: 300px;
+  margin: 0 auto; /* 中央寄せ */
+}
+
+.timeline-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px dotted #ccc; /* 薄い点線で区切る */
+  padding-bottom: 0.5rem;
+}
+
+.timeline-row dt {
+  font-size: clamp(1rem, 4vw, 1.2rem);
+  letter-spacing: 0.2em; /* 日本語をゆったり表示 */
+}
+
+.timeline-row dd {
+  font-family: 'Baskerville', serif; /* 上品なセリフ体 */
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+/* -------------------------------------------
+   Layer 2: Venue Info (会場情報)
+------------------------------------------- */
+.venue-info {
+  text-align: center;
+  color: #333;
+  width: 100%;
+}
+
+.hotel-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.jp-name {
+  font-family: "Yu Mincho", "YuMincho", serif;
+  font-size: 1rem;
+  font-weight: 500;
+  display: block;
+  margin-top: 0.5rem;
+}
+
+.hall-details {
+  font-family: "Yu Mincho", "YuMincho", serif;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.hall-item {
+  font-size: 1rem;
+}
+
+.hall-item .label {
+  display: inline-block;
+  background-color: #333;
+  color: #fff;
+  font-size: 0.8rem;
+  padding: 2px 8px;
+  margin-right: 8px;
+  border-radius: 2px;
+  vertical-align: middle;
+}
+
+.hall-link {
+  color: #333;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: opacity 0.3s;
+}
+.hall-link:hover {
+  opacity: 0.7;
+}
+
+.venue-address {
+  font-style: normal;
+  font-family: "Yu Mincho", "YuMincho", serif;
+  line-height: 2;
+  margin-bottom: 2rem;
+  font-size: 0.95rem;
+}
+.website-link {
+  color: #666;
+  font-size: 0.9rem;
+  text-decoration: underline;
+}
+
+/* Google Map: レスポンシブ対応 */
+.map-container {
+  width: 100%;
+  /* アスペクト比をCSSで指定 (16:9 や 4:3 など) */
+  aspect-ratio: 16 / 9;
+  max-width: 600px;
+  margin: 0 auto;
+  border: 1px solid #ddd;
+  background-color: #eee;
+}
+
+.map-container iframe {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* -------------------------------------------
+   Layer 3: Message (ご案内)
+------------------------------------------- */
+.access-message {
+  text-align: center;
+  color: #333;
+  font-family: "Yu Mincho", "YuMincho", serif;
+  line-height: 2.2;
+}
+
+.access-message h3 {
+  font-family: 'Cormorant Garamond', serif; /* タイトルぽく */
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.1em;
+}
+.access-message h3::after {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 1px;
+  background-color: #333;
+  margin: 0.5rem auto 0;
+}
+
+.access-message p {
+  margin-bottom: 1.5rem;
+  font-size: clamp(0.9rem, 3.5vw, 1rem);
+}
+
+/* スマホでのみ改行を有効にするクラス */
+.sp-only {
+  display: none;
+}
+@media (max-width: 480px) {
+  .sp-only {
+    display: inline;
+  }
+}
