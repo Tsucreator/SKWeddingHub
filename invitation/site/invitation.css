@@ -95,7 +95,7 @@ body {
   top: 10%;
   left: 0;
   width: 100%;
-  height: 90%;
+  height: 90svh;
   background-color: var(--bg-color);
   z-index: -2; /* カードより後ろ */
   pointer-events: none;
@@ -109,8 +109,8 @@ body {
   z-index: 1;
   top: 4%;
   left: 10%;
-  width: 90%;
-  height: 85%;
+  width: 90svh;
+  height: 85svh;
 }
 
 .photo-frame {
@@ -169,7 +169,7 @@ body {
   top: 20%;
   left: 40%;
   transform: translate(-50%, -50%);
-  width: 80%;
+  width: 80svh;
   text-align: center;
   padding-bottom: 5%;
 }
@@ -246,7 +246,7 @@ body {
   left: 50%;
   transform: translate(-50%, -50%); /* 中央寄せ */
   width: 85%;
-  max-width: 360px; /* PCで見ても大きくなりすぎないように */
+  max-height: 360px; /* PCで見ても大きくなりすぎないように */
   max-width: 450px; /* PCで見ても大きくなりすぎないように */
   aspect-ratio: 8/10; /* 縦長のバランスを維持 */
   z-index: 10;
