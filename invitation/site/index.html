@@ -20,13 +20,29 @@
     <!-- フルスクリーンコンテナ -->
     <div class="fullscreen-container">
       <!-- ヒーロー画像セクション -->
-      <section class="fullscreen-section hero-section">
+      <section class="hero-section">
+        <!-- 背景レイヤー -->
+        <div class="hero-bg">
+          <img src="image/hero_image.webp" alt="Shinnosuke & Kaho" decoding="async">
+          <div class="gradient-overlay"></div>
+        </div>
+        
+        <!-- コンテンツレイヤー -->
+        <div class="hero-content">
+
+        </div>
       </section>
 
       <!-- カウントダウン背景画像セクション -->
-      <section class="fullscreen-section countdown-bg-section">
-        <div class="section-overlay"></div>
-        <div class="section-content">
+      <section class="countdown-section">
+        <!-- 背景レイヤー -->
+        <div class="countdown-bg">
+          <img src="image/countdown_bg_image.webp" alt="カウントダウン背景" decoding="async">
+          <div class="gradient-overlay"></div>
+        </div>
+        
+        <!-- コンテンツレイヤー -->
+        <div class="countdown-content">
           <div class="countdown" id="countdown" aria-hidden="false">
             <div class="countdown-to">
               <span class="to-text">To</span> <span class="to-label">2026.3.20</span>
@@ -44,9 +60,15 @@
       </section>
 
       <!-- メッセージ背景画像セクション -->
-      <section class="fullscreen-section message-bg-section">
-        <div class="section-overlay"></div>
-        <div class="section-content">
+      <section class="message-section">
+        <!-- 背景レイヤー -->
+        <div class="message-bg">
+          <img src="image/message_bg_image.webp" alt="メッセージ背景" decoding="async">
+          <div class="gradient-overlay"></div>
+        </div>
+        
+        <!-- コンテンツレイヤー -->
+        <div class="message-content">
           <!-- Handwriting GIF for Message heading -->
           <div class="message-gif-wrapper">
             <img
@@ -63,13 +85,19 @@
       </section>
 
       <!-- プロフィール背景画像セクション -->
-      <section class="fullscreen-section profile-bg-section">
-        <div class="section-overlay"></div>
-        <div class="section-content profile-content">
+      <section class="profile-section">
+        <!-- 背景レイヤー -->
+        <div class="profile-bg">
+          <img src="image/profile_bg_image.webp" alt="プロフィール背景" decoding="async">
+          <div class="gradient-overlay"></div>
+        </div>
+        
+        <!-- コンテンツレイヤー -->
+        <div class="profile-content">
           <div class="profile-gif-wrapper">
             <img
               id="profile-gif"
-              src="animation/Profile.webp"
+              src="animation/Profile.gif"
               alt="Profile handwritten animation"
               loading="lazy"
             />

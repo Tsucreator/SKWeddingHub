@@ -263,12 +263,89 @@
     }
   }
 
+/* =========================================
+    Gallery Initialization
+========================================= */
+function initGallery() {
+  // 画像が存在しない場合にエラーにならないようチェック
+  if(!document.querySelector('.main-gallery-slider')) return;
+
+  // 1. サムネイル用スライダーの設定
+  const thumbsSwiper = new Swiper('.thumbs-gallery-slider', {
+    spaceBetween: 10,
+    slidesPerView: 'auto',  // 固定数ではなくCSSに任せる
+    freeMode: true,
+    watchSlidesProgress: true,
+    breakpoints: {
+      768: { slidesPerView: 5 }
+    }
+  });
+
+  // 2. メインスライダーの設定
+  const mainSwiper = new Swiper('.main-gallery-slider', {
+    loop: true,               // 無限ループ
+    speed: 800,               // アニメーション速度（800msでぬるっとさせる）
+    spaceBetween: 0,          // スライド間の余白（CSSのscaleで調整するため0でOK）
+    centeredSlides: true,     // アクティブな画像を中央に
+    slidesPerView: 'auto',    // CSSで指定した幅に従う
+    grabCursor: true,         // PCで掴めるカーソル表示
+    
+    // サムネイルとの連携
+    thumbs: {
+      swiper: thumbsSwiper,
+    },
+    
+    // ナビゲーションボタン
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+
+    // イベントフック: スライドが変わった時の処理
+    on: {
+    init: function() {
+      // 初期化時にアクティブなスライドの画像を取得
+      const initialSrc = this.slides[this.activeIndex].querySelector('img').src;
+      updateGalleryBackground(initialSrc);
+    },
+    slideChange: function() {
+      // スライド切り替え時に、切り替え先のスライドの画像を取得
+      // this.slides[this.activeIndex] は常に「今見えているスライド」を指します
+      const currentSrc = this.slides[this.activeIndex].querySelector('img').src;
+      updateGalleryBackground(currentSrc);
+    }
+    }
+  });
+}
+
+// 背景画像のクロスフェード切り替え処理
+function updateGalleryBackground(src) {
+  if (!src) return;
+
+  const bgCurrent = document.getElementById('gallery-bg-current');
+  const bgNext = document.getElementById('gallery-bg-next');
+  
+  // 次の画像を裏(bgNext)にセット
+  bgNext.style.backgroundImage = `url(${src})`;
+  
+  // 現在の画像をフェードアウト
+  bgCurrent.style.opacity = 0;
+  
+  setTimeout(() => {
+    // アニメーション完了後に表の画像を差し替えて不透明に戻す
+    bgCurrent.style.backgroundImage = `url(${src})`;
+    bgCurrent.style.opacity = 1;
+  }, 1000); 
+}
+
   // --- DOMContentLoaded: ページの読み込み完了後に各種機能を初期化 ---
   document.addEventListener('DOMContentLoaded', ()=>{
     console.log('=== DOMContentLoaded fired ===');
     // Start preloading and overlay removal
     removeInitialOverlay();
     loadConfig();
+    initGallery();
+
 
     const form = document.getElementById('rsvp-form');
     if(form) form.addEventListener('submit', submitForm);
@@ -337,10 +414,8 @@
     
     // Setup GIF replay for Message and Profile
     setupGifReplay('message-gif');
-    // setupGifReplay('profile-gif'); // TEMPORARILY DISABLED - no image exists
-    
-    // Profile animation removed - section displays directly
-    
+    setupGifReplay('profile-gif');
+     
     // Mobile viewport height fix for address bar visibility changes
     function setViewportHeight() {
       // Get actual viewport height and set CSS custom property

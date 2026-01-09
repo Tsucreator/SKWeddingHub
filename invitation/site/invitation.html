@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Wedding Invitation</title>
+<!-- SwiperのCSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+<!-- メインのスタイルシート -->
+<link rel="stylesheet" href="invitation.css">
+<!-- フォント読み込み（名前部分用） -->
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- メインコンテンツ -->
+<main class="container">
+      <!-- ヒーロー画像セクション -->
+      <section class="hero-section">
+        <!-- Layer 2: 左上の装飾ライン -->
+        <!-- <div class="decor-lines" aria-hidden="true">
+          <span class="line line-1"></span>
+          <span class="line line-2"></span> -->
+        <!-- Layer 2: 背景の斜め線を入れる -->
+        <!-- 背景の斜め切り替え装飾（CSSで描画） -->
+        <div class="diagonal-bg-hero"></div>
+        <!-- 背景の斜め切り替え装飾の残りの箇所（CSSで描画） -->
+        <div class="diagonal-bg-hero-remain"></div>
+        <div class="diagonal-bg"></div>
+        </div>
+        <!-- Layer 3: 写真エリア -->
+        <div class="photo-layer">
+          <div class="photo-frame">
+        <!-- 写真: object-fitで枠いっぱいに表示 -->
+        <img src="./image/image3.webp" alt="Two of us" class="main-photo">
+          </div>
+        </div>
+        <!-- Layer 4: テキスト画像エリア -->
+        <div class="main-text-layer">
+          <h1 class="main-title">
+            Welcome To<br>Our Wedding
+          </h1>
+        </div>
+      </section>
+      
+      <!-- カウントダウンセクション -->
+      <section class="countdown-section fade-in-section">
+        <!-- 背景の斜め切り替え装飾（CSSで描画） -->
+        <div class="diagonal-bg-countdown"></div>
+        <!-- 背景の斜め切り替え装飾の残りの箇所（CSSで描画） -->
+        <div class="diagonal-bg-countdown-remain"></div>
+        <!-- カウントダウンカード -->
+        <div class="countdown-card">
+            <!-- 飾り枠のためのコンテナ -->
+            <div class="card-inner">
+              
+              <!-- 日付表示 -->
+              <div class="date-header">
+                <!-- <span class="to-label">Date</span> -->
+                <!-- <span id="event-date" class="target-date">202X.XX.XX</span> -->
+                <span class="to-label">Countdown</span>
+              </div>
+
+              <!-- カウントダウン本体 -->
+              <div id="countdown" class="countdown-timer">
+                <!-- Days (大きく表示) -->
+                <div class="cd-item cd-item-days">
+                  <span id="cd-days" class="cd-number main-number">0</span>
+                  <span class="cd-label">Days</span>
+                </div>
+
+                <!-- 時間・分・秒 (小さく横並び) -->
+                <div class="cd-sub-units">
+                  <div class="cd-item">
+                    <span id="cd-hours" class="cd-number sub-number">00</span>
+                    <span class="cd-label">hours</span>
+                  </div>
+                  <div class="cd-item">
+                    <span id="cd-mins" class="cd-number sub-number">00</span>
+                    <span class="cd-label">minutes</span>
+                  </div>
+                  <div class="cd-item">
+                    <span id="cd-secs" class="cd-number sub-number">00</span>
+                    <span class="cd-label">seconds</span>
+                  </div>
+                </div>
+
+              </div><!-- カウントダウン本体 -->
+          </div><!-- 飾り枠のためのコンテナ -->
+        </div><!-- カウントダウンカード -->
+        <!-- 下部の帯状写真 -->
+        <div class="bottom-banner-layer">
+          <img src="./image/image5.webp" alt="Hold hands" class="banner-photo">
+        </div>
+      </section>
+
+      <!-- Message Section -->
+      <section class="message-section">
+        <div class="message-container fade-in-section">
+          
+          <!-- Top Decoration (SVG: Elegant Floral Line) -->
+          <div class="message-decoration top">
+            <svg viewBox="0 0 300 40" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M150 35 C130 35 120 15 100 15 C80 15 70 30 50 30 C30 30 20 10 0 10" />
+              <path d="M150 35 C170 35 180 15 200 15 C220 15 230 30 250 30 C270 30 280 10 300 10" />
+              <path d="M150 35 V 5" stroke-width="1"/>
+              <circle cx="150" cy="5" r="3" fill="currentColor" stroke="none"/>
+              <path d="M140 25 Q130 5 110 10" stroke-width="1"/>
+              <path d="M160 25 Q170 5 190 10" stroke-width="1"/>
+            </svg>
+          </div>
+
+          <!-- Heading Image -->
+          <div class="message-heading">
+            <!-- 実際に使用するWebP画像パスを指定してください -->
+            <img src="./animation/Message.webp" alt="Message" width="200" height="80">
+          </div>
+
+          <!-- Message Body -->
+          <div class="message-body">
+            <p class="greeting">
+              拝啓　陽春の候<br>
+              ますますのご清祥のことと<br>
+              お慶び申し上げます
+            </p>
+            
+            <p>
+              このたび　私たちは<br>
+              結婚式を挙げることになりました
+            </p>
+            
+            <p>
+              つきましては　披露かたがた<br>
+              ささやかな宴をご用意申し上げたいと存じます
+            </p>
+            
+            <p>
+              ご多用中　まことに恐れ入りますが<br>
+              なにとぞお越しくださいますよう<br>
+              ご案内申し上げます
+            </p>
+            
+            <div class="closing">
+              <p>敬具</p>
+              <p class="date">2026年3月20日　吉日</p>
+            </div>
+          </div>
+
+          <!-- Bottom Decoration (Rotated SVG) -->
+          <div class="message-decoration bottom">
+            <svg viewBox="0 0 300 40" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M150 35 C130 35 120 15 100 15 C80 15 70 30 50 30 C30 30 20 10 0 10" />
+              <path d="M150 35 C170 35 180 15 200 15 C220 15 230 30 250 30 C270 30 280 10 300 10" />
+              <path d="M150 35 V 5" stroke-width="1"/>
+              <circle cx="150" cy="5" r="3" fill="currentColor" stroke="none"/>
+              <path d="M140 25 Q130 5 110 10" stroke-width="1"/>
+              <path d="M160 25 Q170 5 190 10" stroke-width="1"/>
+            </svg>
+          </div>
+
+        </div>
+        
+      </section>
+
+      <!-- Profile Section -->
+      <section class="profile-section">
+        <div class="profile-container">
+          <!-- 背景の斜め切り替え装飾（CSSで描画） -->
+          <div class="diagonal-bg-profile"></div>
+          <!-- 背景の斜め切り替え装飾の残りの箇所（CSSで描画） -->
+          <div class="diagonal-bg-profile-remain"></div>
+            
+          <!-- Heading Animation -->
+          <div class="profile-heading fade-in-section">
+            <!-- JSで再生制御するために id="profile-gif" と data-src を設定 -->
+            <img src="./animation/Profile.webp" alt="Profile" width="200" height="80">
+          </div>
+
+          <!-- Profiles Wrapper (Groom & Bride) -->
+          <div class="profiles-wrapper">
+            
+            <!-- Groom Card -->
+            <div class="profile-card fade-in-section">
+              <!-- アイコン画像エリア -->
+              <div class="profile-icon-frame">
+                <img src="./image/profile_groom.webp" alt="Groom Photo" class="profile-img">
+              </div>
+              
+              <!-- テキスト情報エリア -->
+              <div class="profile-info">
+                <p class="role-label">Groom</p>
+                <h3 class="profile-name">
+                  髙井 真之介
+                  <span class="furigana">たかい しんのすけ</span>
+                </h3>
+                
+                <div class="meta-data">
+                  <dl class="meta-item">
+                    <dt>出身</dt>
+                    <dd>神奈川件</dd>
+                  </dl>
+                  <dl class="meta-item">
+                    <dt>好きなもの</dt>
+                    <dd>読書、ピザ</dd>
+                  </dl>
+                </div>
+
+                <div class="profile-message">
+                  <p>
+                    この度晴れて郁穂さんと<br>
+                    結婚することとなりました
+                  </p>
+                  <p>
+                    今後とも新郎新婦共々<br>
+                    宜しくお願いします
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bride Card (構成はGroomと同じ) -->
+            <div class="profile-card fade-in-section">
+              <div class="profile-icon-frame">
+                <!-- Bride用の画像パスを指定してください -->
+                <img src="./image/profile_bride.webp" alt="Bride Photo" class="profile-img">
+              </div>
+              
+              <div class="profile-info">
+                <p class="role-label">Bride</p>
+                <h3 class="profile-name">
+                  鈴木 郁穂
+                  <span class="furigana">すずき かほ</span>
+                </h3>
+                
+                <div class="meta-data">
+                  <dl class="meta-item">
+                    <dt>出身</dt>
+                    <dd>千葉県</dd>
+                  </dl>
+                  <dl class="meta-item">
+                    <dt>好きなもの</dt>
+                    <dd>焼肉、旅行</dd>
+                  </dl>
+                </div>
+
+                <div class="profile-message">
+                  <p>
+                    未熟な二人ですが<br>
+                    温かく見守っていただければ幸いです
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- profiles-wrapper -->
+        </div><!-- profile-container -->
+      </section>
+
+      <section class="gallery-section">
+        <!-- 背景レイヤー（2枚構成でクロスフェードさせる） -->
+        <div class="gallery-bg-layer">
+          <div id="gallery-bg-current" class="gallery-bg-image"></div>
+          <div id="gallery-bg-next" class="gallery-bg-image"></div>
+          <div class="gallery-overlay"></div>
+        </div>
+
+        <div class="gallery-container fade-in-section">
+          <!-- 見出し -->
+          <div class="gallery-heading">
+            <!-- 画像がない場合のフォールバックとしてテキストも用意 -->
+            <img src="./animation/Gallery.webp" alt="Gallery" width="200" height="80" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+            <h2 class="fallback-title" style="display:none; font-family:'Yellowtail',cursive; font-size:3rem;">Gallery</h2>
+          </div>
+
+          <!-- メインスライダー -->
+          <div class="swiper main-gallery-slider">
+            <div class="swiper-wrapper">
+              <!-- 画像パスは環境に合わせて適宜変更してください -->
+              <div class="swiper-slide"><img src="./image/image2.webp" alt="Wedding Photo 1"></div>
+              <div class="swiper-slide"><img src="./image/image3.webp" alt="Wedding Photo 2"></div>
+              <div class="swiper-slide"><img src="./image/image4.webp" alt="Wedding Photo 3"></div>
+              <div class="swiper-slide"><img src="./image/image5.webp" alt="Wedding Photo 4"></div>
+              <div class="swiper-slide"><img src="./image/image6.webp" alt="Wedding Photo 5"></div>
+            </div>
+            
+            <!-- ナビゲーションボタン -->
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+          </div>
+
+          <!-- サムネイル（インジケーター） -->
+          <div class="swiper thumbs-gallery-slider">
+            <div class="swiper-wrapper">
+              <div class="swiper-slide"><img src="./image/image2.webp" alt="Thumb 1"></div>
+              <div class="swiper-slide"><img src="./image/image3.webp" alt="Thumb 2"></div>
+              <div class="swiper-slide"><img src="./image/image4.webp" alt="Thumb 3"></div>
+              <div class="swiper-slide"><img src="./image/image5.webp" alt="Thumb 4"></div>
+              <div class="swiper-slide"><img src="./image/image6.webp" alt="Thumb 5"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+    <p class="deadline" id="deadline"><strong><span id="deadline-date"></span>までにご一報賜りますようお願い申し上げます</strong></p>
+
+</main>
+
+<script src="script.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+
+</body>
+</html>

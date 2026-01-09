@@ -1,0 +1,880 @@
+/* リセットと基本設定 */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg-color: #333333; /* 背景色グレー */
+  --frame-border: 6px solid rgba(255, 255, 255, 0.9); /* 写真の枠線 */
+  --accent-color: #ffffff;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--accent-color);
+  font-family: 'Cormorant Garamond', serif;
+  overflow-x: hidden; /* 横スクロールだけ防ぐ */
+  overflow-y: auto;   /* 縦スクロールを有効にする */
+}
+
+/* 
+  画面全体の設定 
+  position: relative; にして、子要素の基準点にする
+*/
+.container {
+  position: relative;
+  width: 100%;
+  min-height: 100dvh; /* アドレスバーを考慮した画面いっぱい */
+}
+
+/* =============================
+    Hero Section Design
+================================ */
+
+.hero-section {
+  position: relative;
+  width: 100%;
+  min-height: 100dvh; /* 画面いっぱい */
+  overflow: hidden; /* スクロール防ぐ */
+  /* 背景：斜めのデザイン */
+  /* Heroと同じ濃いグレーから、透明(下層の明るい色)へのグラデーション */
+  background-color: var(--bg-color); /* 背景と同じ色 */
+  z-index: 1;
+}
+
+/* -------------------------------------------
+   Layer 2: 左上の装飾ライン（この設定で固定）
+------------------------------------------- */
+.decor-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* クリックを邪魔しない */
+  z-index: 4; /* 写真よりは下、あるいは上？ デザイン的に写真の上を通るなら数値を上げる */
+}
+
+.line {
+  position: absolute;
+  background-color: #fff;
+  height: 3px; /* 線の太さ */
+  width: 120%;  /* 線の長さ */
+  top: 10%;    /* 基準位置 */
+  left: -10%;  /* 画面外からスタート */
+}
+
+.line-1 {
+  transform: rotate(-10deg);
+  top: 4%;
+}
+
+.line-2 {
+  transform: rotate(-35deg);
+  top: 8%;
+  width: 70%;
+}
+
+/* 斜めの背景装飾レイヤー */
+.diagonal-bg-hero {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* 左上半分をHeroと同じ色(#333)にする */
+  background: linear-gradient(135deg, #555 55%, transparent 55.1%);
+  z-index: -1; /* カードより後ろ */
+  pointer-events: none;
+}
+/* 斜めの背景装飾レイヤー */
+.diagonal-bg-hero-remain {
+  position: absolute;
+  top: 10%;
+  left: 0;
+  width: 100%;
+  height: 90%;
+  background-color: var(--bg-color);
+  z-index: -2; /* カードより後ろ */
+  pointer-events: none;
+}
+
+/* -------------------------------------------
+   Layer 3: 写真エリア (この設定で固定）
+------------------------------------------- */
+.photo-layer {
+  position: absolute;
+  z-index: 1;
+  top: 4%;
+  left: 10%;
+  width: 90%;
+  height: 85%;
+}
+
+.photo-frame {
+  width: 100%;
+  height: 100%;
+  border: none; /* 枠線は擬似要素で作成 */
+  position: relative; /* 擬似要素の基準点 */
+  /* 枠の内側に写真を入れる設定 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #444; /* 画像読み込み前の仮色 */
+  overflow: hidden; /* 写真が枠からはみ出ないように */
+}
+
+/* 擬似要素で作る「白い枠線」 */
+.photo-layer::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 8px;  /* 下に8pxずらす */
+  left: -8px; /* 左に8pxずらす */
+  width: 100%;
+  height: 100%;
+  /* 白い枠線のデザイン */
+  background-color: #d0d0d0;
+  /* 重要: 写真より奥（背面）に配置する */
+  z-index: 0;
+}
+
+/* 写真の上に被せる半透明の黒 */
+.photo-frame::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3); 
+  z-index: 10;
+}
+
+.main-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 枠に合わせてトリミング */
+  display: block;
+}
+
+/* -------------------------------------------
+   Layer 4: テキスト設定 (追加)
+------------------------------------------- */
+.main-text-layer {
+  position: absolute;
+  z-index: 3;
+  top: 20%;
+  left: 40%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  text-align: center;
+  padding-bottom: 5%;
+}
+
+.main-title {
+  /* 読み込み済みの筆記体フォントを指定 */
+  font-family: 'Yellowtail', cursive;
+  color: #ffffff;
+  
+  /* 
+    レスポンシブな文字サイズ設定: clamp(最小値, 推奨値, 最大値)
+    - スマホ(幅狭)では 3.5rem (約56px) 確保
+    - 通常は画面幅の 13% (13vw) の大きさ
+    - 画面が大きくなりすぎても 7rem で止まる
+  */
+  font-size: clamp(2rem, 14vw, 7rem);
+  
+  /* 行間を詰めて筆記体の一体感を出す */
+  line-height: 1.2;
+  font-weight: 450;
+
+  /* 写真の上でも読めるように少し強めの影をつける */
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 1);
+
+  /* 改行(<br>)を有効にしつつ、文字全体は中央揃え */
+  text-align: center;
+  width: 100%;
+}
+
+
+/* =========================================
+    Countdown Section Design
+========================================= */
+
+.countdown-section {
+  position: relative;
+  width: 100%;
+  min-height: 100dvh; /* 画面いっぱい */
+  overflow-x: hidden; /* 横スクロールだけ防ぐ */
+  overflow-y: auto;   /* 縦スクロールを有効にする */
+  z-index: 1;
+}
+
+/* 斜めの背景装飾レイヤー */
+.diagonal-bg-countdown {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* 左上半分をHeroと同じ色(#333)にする */
+  background: linear-gradient(135deg, var(--bg-color) 55%, transparent 55.1%);
+  z-index: -1; /* カードより後ろ */
+  pointer-events: none;
+}
+/* 斜めの背景装飾レイヤー */
+.diagonal-bg-countdown-remain {
+  position: absolute;
+  top: 10%;
+  left: 0;
+  width: 100%;
+  height: 90%;
+  background-color: #888;
+  z-index: -2; /* カードより後ろ */
+  pointer-events: none;
+}
+
+/* -------------------------------------------
+  Layer 2: カウントダウンカード
+------------------------------------------- */
+.countdown-card {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* 中央寄せ */
+  width: 85%;
+  max-width: 360px; /* PCで見ても大きくなりすぎないように */
+  max-width: 450px; /* PCで見ても大きくなりすぎないように */
+  aspect-ratio: 8/10; /* 縦長のバランスを維持 */
+  z-index: 10;
+  
+  /* カードの背景（紙のような質感） */
+  background-color: #dcdcdc; /* シルバーグレー */
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5); /* 浮き上がる影 */
+  border-radius: 8px; /* 角丸 */
+  
+  /* 内部レイアウト */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+/* カード内側の装飾枠（二重線風） */
+.card-inner {
+  width: 100%;
+  height: 100%;
+  border: 2px solid #333; /* 内側の細い線 */
+  border-radius: 4px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #333; /* 文字色 */
+}
+
+/* 四隅の飾りを疑似要素で作る（インカーブ風の演出） */
+.card-inner::after {
+  content: "";
+  position: absolute;
+  top: -6px; left: -6px; right: -6px; bottom: -6px;
+  border: 4px double #333; /* 外側の太い二重線 */
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+/* -------------------------------------------
+   Layer 3: カウントダウン本体（この設定で固定）
+------------------------------------------- */
+.date-header {
+  font-family: 'Yellowtail', cursive;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+.to-label {
+  display: block;
+  font-size: clamp(1rem, 10vw, 4rem);
+}
+
+.target-date {
+  font-size: 2rem;
+}
+
+/* Countdown Main Container */
+.countdown-timer {
+  text-align: center;
+  width: 100%;
+}
+
+/* Days (Main Number) */
+.cd-item-days {
+  line-height: 1;
+}
+
+.main-number {
+  /* 巨大な文字サイズ */
+  font-family: 'Baskerville', serif; /* 上品なセリフ体 */
+  font-size: clamp(5rem, 25vw, 10rem); 
+  font-weight: 300;
+  display: block;
+  color: #222;
+}
+
+/* "Days" label position adjustment */
+.cd-item-days .cd-label {
+  font-family: 'Great Vibes', cursive; /* 筆記体 */
+  font-size: clamp(1rem, 9vw, 2.0rem); 
+  position: relative;
+  top: -10px;
+  margin-left: 20px;
+  color: #444;
+}
+
+/* Sub units (Hours, Mins, Secs) */
+.cd-sub-units {
+  display: flex;
+  justify-content: center;
+  gap: clamp(1rem, 6vw, 2rem); 
+ /* 要素間の隙間 */
+}
+
+.cd-sub-units .cd-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sub-number {
+  font-family: 'Baskerville', serif; /* 上品なセリフ体 */
+  font-size: clamp(1rem, 10vw, 4rem); 
+  font-weight: 200;
+  line-height: 1;
+}
+
+.cd-sub-units .cd-label {
+  font-family: 'Yellowtail', cursive;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 2px;
+}
+
+/* -------------------------------------------
+    Layer 4: 下部の帯状写真
+------------------------------------------- */
+.bottom-banner-layer {
+  position: absolute;
+  /* 画面の下部3/4の位置あたりに配置
+     下から配置し、カードの後ろに回るようにする */
+  bottom: 0; /* 少し浮かせるか、0にするか */
+  left: 0;
+  width: 100%;
+  height: 40dvh; /* 全体の20~25%程度 */
+  z-index: 5; /* 背景より前、カードより後ろ */
+  overflow: hidden;
+  opacity: 0.9; /* 少し背景と馴染ませる */
+  mix-blend-mode: multiply; /* 背景色と乗算して馴染ませる(お好みで通常表示ならnormal) */
+}
+
+.banner-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  /* 画像の上下にぼかしを入れて馴染ませるテクニック */
+  mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+}
+
+/* 
+  画面幅が広い(PC)場合の調整 
+  2カラムにならず、中央配置を維持するデザイン
+*/
+@media (min-width: 768px) {
+  .countdown-card {
+    max-width: 450px;
+    top: 50%; /* PCなら画面中央でOK */
+  }
+  .diagonal-bg {
+    /* PCなら角度を緩やかにする */
+    background: linear-gradient(115deg, var(--bg-color) 50%, transparent 50.1%);
+  }
+}
+
+
+/* =========================================
+    Message Section Design
+========================================= */
+.message-section {
+  position: relative;
+  width: 100%;
+  /* コンテンツ量に応じて高さは可変にする */
+  padding: clamp(1rem, 2vh, 3rem) 0; 
+  
+  /* 背景：#888をベースに、わずかに中央を明るくして奥行きを出す */
+  background-color: #888;
+  color: var(--text-white);
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* 装飾のはみ出し防止 */
+}
+
+.message-container {
+  width: min(85%, 600px); /* スマホで85%、PCでも最大600pxに制限 */
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* -------------------------------------------
+    Layer 1: 上下の装飾ライン
+------------------------------------------- */
+.message-decoration {
+  width: 100%;
+  height: auto;
+  color: var(--accent-gold); /* SVGのstroke色に適用される */
+  margin: 1rem 0;
+  opacity: 0.8;
+}
+
+.message-decoration svg {
+  width: 100%;
+  max-width: 300px; /* アイコンが巨大になりすぎないように */
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+/* 下部の装飾は上下反転させる */
+.message-decoration.bottom {
+  transform: rotate(180deg);
+  margin-top: 2rem;
+}
+
+.message-heading img {
+  width: auto;
+  height: auto;
+  max-width: 60%; /* 画面幅に応じて縮小 */
+  min-width: 150px; /* 小さくなりすぎ防止 */
+  object-fit: contain;
+  
+  /* 画像の色味が合わない場合の調整（必要に応じて） */
+  /* filter: brightness(0) invert(1); 白くする場合 */
+}
+
+/* -------------------------------------------
+    Layer 2: メッセージ本文
+------------------------------------------- */
+.message-body {
+  font-family: "Yu Mincho", "YuMincho", serif; /* 明朝体でフォーマルに */
+  font-size: clamp(1rem, 3.5vw, 2rem); /* 可変フォントサイズ */
+  line-height: 2.2; /* 句読点がないため広めに取る */
+  letter-spacing: 0.08em; /* ゆったりとした字間 */
+  font-weight: 500;
+  color: #fff;
+  
+  /* テキストにドロップシャドウで可読性向上 */
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.message-body p {
+  margin-bottom: 1.5rem; /* 段落ごとの余白 */
+}
+
+.message-body .greeting {
+  margin-bottom: 1.5rem;
+}
+
+.message-body .closing {
+  margin-top: 3rem;
+  text-align: right; /* 敬具と日付は右寄せでも綺麗 */
+  display: inline-block; /* 中央揃えの中でブロック化 */
+  width: 100%;
+  text-align: center; /* デザイン的には中央揃えの方がスマホで見やすい */
+}
+
+.message-body .date {
+  font-variant-numeric: lining-nums; /* 数字の高さを揃える */
+  margin-top: 0.5rem;
+}
+
+/* --- Mobile Adjustment (Optional) --- */
+@media (max-width: 480px) {
+  .message-body {
+    line-height: 2.0; /* スマホでは少し行間を詰める */
+  }
+  .message-body p {
+    margin-bottom: 1.5rem;
+  }
+}
+
+
+/* =========================================
+    Profile Section Design
+========================================= */
+.profile-section {
+  position: relative;
+  width: 100%;
+  padding: clamp(4rem, 10vh, 8rem) 0;
+  color: #fff;
+  overflow: hidden;
+}
+
+.profile-container {
+  width: min(90%, 1000px); /* 90%幅、最大1000px */
+  margin: 0 auto;
+  text-align: center;
+}
+.diagonal-bg-profile {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background-color: #888;
+  z-index: -2; /* カードより後ろ */
+  pointer-events: none;
+}
+/* 斜めの背景装飾レイヤー */
+.diagonal-bg-profile-remain {
+  position: absolute;
+  top: 10%;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: linear-gradient(320deg, var(--bg-color) 55%, transparent 55.1%);
+  z-index: -1; /* カードより後ろ */
+  pointer-events: none;
+}
+
+/* -------------------------------------------
+    Layer 1: 上部の装飾ライン
+------------------------------------------- */
+.profile-heading {
+  margin-bottom: 1rem;
+}
+
+.profile-heading img {
+  width: auto;
+  height: auto;
+  max-width: 50%;
+  min-width: 120px;
+  object-fit: contain;
+  /* 画像が黒文字の場合は反転させるフィルタ（必要に応じて有効化） */
+  /* filter: brightness(0) invert(1); */
+}
+
+/* Profiles Wrapper: PCでは横並び、スマホでは縦並び */
+.profiles-wrapper {
+  display: flex;
+  flex-direction: column; /* スマホデフォルト */
+  gap: 4rem; /* GroomとBrideの間隔 */
+  justify-content: center;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .profiles-wrapper {
+    flex-direction: row; /* PC・タブレットでは横並び */
+    align-items: flex-start; /* 上揃え */
+    gap: 2rem;
+  }
+}
+
+/* -------------------------------------------
+    Layer 2: 各プロフィールカード
+------------------------------------------- */
+.profile-card {
+  width: 100%;
+  max-width: 400px; /* カードが広がりすぎないように制限 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Icon Frame: 丸いアイコン */
+.profile-icon-frame {
+  /* 親要素(profile-card)の50%の幅 */
+  width: 75%;
+  /* コンテナクエリ的な相対指定 */
+  max-width: 200px; 
+  /* 正円を維持するための比率指定 */
+  aspect-ratio: 1 / 1; 
+  
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 2rem;
+  
+  /* 写真に少し影をつけて浮き出させる */
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  border: 4px solid rgba(255, 255, 255, 0.2); /* 薄い枠線 */
+  background-color: #ccc; /* 読み込み中の背景 */
+}
+
+.profile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 枠いっぱいにトリミング */
+  display: block;
+}
+
+
+/* -------------------------------------------
+    Layer 3: プロフィールテキストエリア
+------------------------------------------- */
+.profile-info {
+  font-family: "Yu Mincho", "YuMincho", serif;
+  text-align: center;
+}
+
+.role-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--accent-color);
+  letter-spacing: 0.05em;
+}
+
+.profile-name {
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.furigana {
+  display: block; /* 改行して下に表示 */
+  font-size: 0.6em; /* 本体の60%のサイズ */
+  margin-top: 0.3em;
+  opacity: 0.9;
+  font-weight: 400;
+}
+
+/* --- Meta Data Section --- */
+.meta-data {
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.meta-item {
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+}
+
+.meta-item dt {
+  opacity: 0.7;
+  font-size: 0.9em;
+}
+.meta-item dt::after {
+  content: "：";
+}
+
+.meta-item dd {
+  font-weight: 500;
+}
+
+/* Message Body */
+.profile-message {
+  font-size: 0.95rem;
+  line-height: 2.0;
+  opacity: 0.9;
+}
+
+.profile-message p {
+  margin-bottom: 1rem;
+}
+
+/* スクロールアニメーション用の初期状態 */
+.fade-in-section {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 1s ease-out, transform 1s ease-out;
+}
+
+.fade-in-section.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =========================================
+    Gallery Section Design
+========================================= */
+.gallery-section {
+  position: relative;
+  width: 100%;
+  /* 画面の高さの80%程度を確保して高級感を出す */
+  min-height: 80dvh;
+  padding: clamp(3rem, 8vh, 6rem) 0;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+
+/* -------------------------------------------
+   Layer 1: ぼかし背景画像レイヤー
+------------------------------------------- */
+.gallery-bg-layer {
+  position: absolute;
+  inset: 0; /* top, right, bottom, left: 0 */
+  z-index: -1;
+  overflow: hidden;
+  background-color: #333; /* 画像ロード前の背景色 */
+}
+
+/* ぼかし背景画像（共通） */
+.gallery-bg-image {
+  position: absolute;
+  inset: -20px; /* ぼかしの端が見えないように少し広げる */
+  background-size: cover;
+  background-position: center;
+  filter: blur(15px) brightness(0.6); /* ぼかし + 暗くする */
+  transition: opacity 1s ease-in-out; /* クロスフェード用のアニメーション */
+}
+
+/* 重ね順制御 */
+#gallery-bg-current { z-index: 1; opacity: 1; }
+#gallery-bg-next { z-index: 0; opacity: 1; }
+
+/* さらに上に乗せるオーバーレイ（文字を見やすくする調整） */
+.gallery-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(51,51,51,0.8), rgba(51,51,51,0.4) 30%, rgba(51,51,51,0.4) 70%, rgba(51,51,51,0.8));
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* -------------------------------------------
+   Layer 2: ギャラリーコンテンツエリア
+------------------------------------------- */
+
+/* --- コンテンツレイアウト --- */
+.gallery-container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.gallery-heading {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.gallery-heading img {
+  width: auto;
+  height: auto;
+  max-width: 60%;
+  min-width: 150px;
+}
+
+/* --- Main Slider Style --- */
+.main-gallery-slider {
+  width: 100%;
+  /* モバイルでは少し高さを抑え、PCでは大きく */
+  height: clamp(300px, 50vh, 500px);
+  padding-bottom: 2rem; /* 下の影や反射用スペース */
+}
+
+.main-gallery-slider .swiper-slide {
+  /* 中央寄せの設定 */
+  background-position: center;
+  background-size: cover;
+  /* スライドの幅: スマホなら画面の70%、PCなら適度な固定幅 */
+  width: clamp(250px, 70vw, 600px);
+  height: 100%;
+  
+  /* デフォルト（非アクティブ）の状態 */
+  opacity: 0.6;
+  transform: scale(0.85); /* 縮小 */
+  transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1); /* ぬるっとした動き */
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+}
+
+/* 中央（アクティブ）のスライド */
+.main-gallery-slider .swiper-slide-active {
+  opacity: 1;
+  transform: scale(1); /* 元のサイズ（拡大して見える） */
+  z-index: 10;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+  border: 2px solid rgba(255,255,255,0.8);
+}
+
+.main-gallery-slider .swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 矢印ナビゲーションのカスタマイズ */
+.swiper-button-next, .swiper-button-prev {
+  color: #fff; /* 白い矢印 */
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  width: 50px;
+  height: 50px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+  backdrop-filter: blur(4px);
+  transition: background 0.3s;
+  color: #fff;
+}
+.swiper-button-next:hover, .swiper-button-prev:hover {
+  background: rgba(255,255,255,0.3);
+}
+/* モバイルで矢印が邪魔なら消す（スワイプ前提） */
+@media (max-width: 480px) {
+  .swiper-button-next, .swiper-button-prev {
+    display: none;
+  }
+}
+
+/* --- Thumbs Slider Style (下の小さい画像列) --- */
+.thumbs-gallery-slider {
+  width: 100%;
+  max-width: 600px; /* サムネイル全体の幅制限 */
+  height: 80px;
+  padding: 10px 10%;
+}
+
+.thumbs-gallery-slider .swiper-slide {
+  width: 18%; /* 5枚くらい表示 */
+  height: 100%;
+  opacity: 0.4;
+  cursor: pointer;
+  transition: opacity 0.3s;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.thumbs-gallery-slider .swiper-slide-thumb-active {
+  opacity: 1;
+  border: 2px solid #fff;
+}
+
+.thumbs-gallery-slider .swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
