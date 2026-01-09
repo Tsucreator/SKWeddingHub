@@ -934,7 +934,7 @@ body {
 
 /* カード内のタイトル */
 .info-title {
-  font-family: 'Great Vibes', cursive; /* 筆記体 */
+  font-family: 'Yellowtail', cursive;
   font-size: clamp(2.5rem, 8vw, 4rem);
   margin-bottom: 2rem;
   line-height: 1.2;
@@ -1097,24 +1097,16 @@ body {
   line-height: 2.2;
 }
 
-.access-message h3 {
+.access-message h1 {
   font-family: 'Cormorant Garamond', serif; /* タイトルぽく */
   font-size: 1.5rem;
   margin-bottom: 1.5rem;
   letter-spacing: 0.1em;
 }
-.access-message h3::after {
-  content: "";
-  display: block;
-  width: 40px;
-  height: 1px;
-  background-color: #333;
-  margin: 0.5rem auto 0;
-}
 
 .access-message p {
   margin-bottom: 1.5rem;
-  font-size: clamp(0.9rem, 3.5vw, 1rem);
+  font-size: clamp(1rem, 3.5vw, 1.5rem);
 }
 
 /* スマホでのみ改行を有効にするクラス */
