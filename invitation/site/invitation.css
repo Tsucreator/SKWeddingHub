@@ -26,7 +26,7 @@ body {
 .container {
   position: relative;
   width: 100%;
-  min-height: 100dvh; /* アドレスバーを考慮した画面いっぱい */
+  min-height: 100svh; /* アドレスバーを考慮した画面いっぱい */
 }
 
 /* =============================
@@ -167,9 +167,9 @@ body {
   position: absolute;
   z-index: 3;
   top: 20%;
-  left: 40%;
+  left: 42%;
   transform: translate(-50%, -50%);
-  width: 80svh;
+  width: 80%;
   text-align: center;
   padding-bottom: 5%;
 }
@@ -207,7 +207,7 @@ body {
 .countdown-section {
   position: relative;
   width: 100%;
-  min-height: 100dvh; /* 画面いっぱい */
+  min-height: 100svh; /* 画面いっぱい */
   overflow-x: hidden; /* 横スクロールだけ防ぐ */
   overflow-y: auto;   /* 縦スクロールを有効にする */
   z-index: 1;
@@ -415,6 +415,7 @@ body {
 .message-section {
   position: relative;
   width: 100%;
+  min-height: 100svh;
   /* コンテンツ量に応じて高さは可変にする */
   padding: clamp(1rem, 2vh, 3rem) 0; 
   
