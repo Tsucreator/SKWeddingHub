@@ -301,42 +301,42 @@ function initGallery() {
       prevEl: '.swiper-button-prev',
     },
 
-    // イベントフック: スライドが変わった時の処理
-    on: {
-    init: function() {
-      // 初期化時にアクティブなスライドの画像を取得
-      const initialSrc = this.slides[this.activeIndex].querySelector('img').src;
-      updateGalleryBackground(initialSrc);
-    },
-    slideChange: function() {
-      // スライド切り替え時に、切り替え先のスライドの画像を取得
-      // this.slides[this.activeIndex] は常に「今見えているスライド」を指します
-      const currentSrc = this.slides[this.activeIndex].querySelector('img').src;
-      updateGalleryBackground(currentSrc);
-    }
-    }
+    // // イベントフック: スライドが変わった時の処理
+    // on: {
+    // init: function() {
+    //   // 初期化時にアクティブなスライドの画像を取得
+    //   const initialSrc = this.slides[this.activeIndex].querySelector('img').src;
+    //   updateGalleryBackground(initialSrc);
+    // },
+    // slideChange: function() {
+    //   // スライド切り替え時に、切り替え先のスライドの画像を取得
+    //   // this.slides[this.activeIndex] は常に「今見えているスライド」を指します
+    //   const currentSrc = this.slides[this.activeIndex].querySelector('img').src;
+    //   updateGalleryBackground(currentSrc);
+    // }
+    // }
   });
 }
 
-// 背景画像のクロスフェード切り替え処理
-function updateGalleryBackground(src) {
-  if (!src) return;
+// // 背景画像のクロスフェード切り替え処理
+// function updateGalleryBackground(src) {
+//   if (!src) return;
 
-  const bgCurrent = document.getElementById('gallery-bg-current');
-  const bgNext = document.getElementById('gallery-bg-next');
+//   const bgCurrent = document.getElementById('gallery-bg-current');
+//   const bgNext = document.getElementById('gallery-bg-next');
   
-  // 次の画像を裏(bgNext)にセット
-  bgNext.style.backgroundImage = `url(${src})`;
+//   // 次の画像を裏(bgNext)にセット
+//   bgNext.style.backgroundImage = `url(${src})`;
   
-  // 現在の画像をフェードアウト
-  bgCurrent.style.opacity = 0;
+//   // 現在の画像をフェードアウト
+//   bgCurrent.style.opacity = 0;
   
-  setTimeout(() => {
-    // アニメーション完了後に表の画像を差し替えて不透明に戻す
-    bgCurrent.style.backgroundImage = `url(${src})`;
-    bgCurrent.style.opacity = 1;
-  }, 1000); 
-}
+//   setTimeout(() => {
+//     // アニメーション完了後に表の画像を差し替えて不透明に戻す
+//     bgCurrent.style.backgroundImage = `url(${src})`;
+//     bgCurrent.style.opacity = 1;
+//   }, 1000); 
+// }
 
   // --- DOMContentLoaded: ページの読み込み完了後に各種機能を初期化 ---
   document.addEventListener('DOMContentLoaded', ()=>{

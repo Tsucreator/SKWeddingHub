@@ -185,7 +185,7 @@ body {
     - 通常は画面幅の 13% (13vw) の大きさ
     - 画面が大きくなりすぎても 7rem で止まる
   */
-  font-size: clamp(2rem, 14vw, 7rem);
+  font-size: clamp(2rem, 12vw, 7rem);
   
   /* 行間を詰めて筆記体の一体感を出す */
   line-height: 1.2;
@@ -246,6 +246,7 @@ body {
   left: 50%;
   transform: translate(-50%, -50%); /* 中央寄せ */
   width: 85%;
+  height: 100svh;
   max-height: 360px; /* PCで見ても大きくなりすぎないように */
   max-width: 450px; /* PCで見ても大きくなりすぎないように */
   aspect-ratio: 8.5/10; /* 縦長のバランスを維持 */
