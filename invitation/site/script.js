@@ -2,7 +2,7 @@
   const config = { apiEndpoint: '', deadline: '202X-XX-XX', eventDateISO: '' };
   const $ = id => document.getElementById(id);
 
-  
+
   async function loadConfig(){
     try{
       const res = await fetch('config.json');
@@ -134,12 +134,12 @@
     const err = validate();
     if(err){ showMessage(err, true); return; }
     const payload = collectForm();
-    $('submit').disabled = true;
+    $('submit-btn').disabled = true;
     showMessage('送信中…');
     // Must have an API endpoint configured that fronts the Lambda (API Gateway)
     if(!config.apiEndpoint){
       showMessage('送信先が設定されていません。config.json の "apiEndpoint" に API Gateway の URL を設定してください。', true);
-      $('submit').disabled = false;
+      $('submit-btn').disabled = false;
       return;
     }
 
@@ -167,7 +167,7 @@
       console.error('Submit error:', err);
       showMessage('送信中にエラーが発生しました。ネットワークを確認してください。', true);
     }finally{
-      $('submit').disabled = false;
+      $('submit-btn').disabled = false;
     }
   }
 
