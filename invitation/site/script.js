@@ -2,6 +2,7 @@
   const config = { apiEndpoint: '', deadline: '202X-XX-XX', eventDateISO: '' };
   const $ = id => document.getElementById(id);
 
+  
   async function loadConfig(){
     try{
       const res = await fetch('config.json');
@@ -9,18 +10,18 @@
         Object.assign(config, await res.json());
       }
     }catch(e){
-      // add error logging here.
+      // エラー時はデフォルト設定を使用
       console.error('設定ファイルの読み込みに失敗しました。初期設定を使います。');
       console.error(e); // logging error details.
     }
     $('deadline-date').textContent = config.deadline || '未設定';
-    // show event date if available
+    // イベント日表示を更新
     const eventDateEl = document.getElementById('event-date');
     if(eventDateEl && config.eventDateISO){
       try{
         const d = new Date(config.eventDateISO);
         if(!isNaN(d)) {
-          // Format as YYYY.M.D (no leading zeros)
+          // Format as YYYY.M.D (e.g., 2026.3.20)
           const year = d.getFullYear();
           const month = d.getMonth() + 1;
           const day = d.getDate();
@@ -28,35 +29,103 @@
         }
       }catch(e){}
     }
-    // initialize countdown
+    
+    // RSVPフォーム内の締切日表示を更新
+    const rsvpDeadline = document.getElementById('rsvp-deadline-date');
+    if(rsvpDeadline && config.deadline) {
+      // 2026-03-20 のような形式を "2026年3月20日" に変換して表示
+      try {
+         const d = new Date(config.deadline);
+         if(!isNaN(d)) {
+            rsvpDeadline.textContent = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
+         } else {
+            rsvpDeadline.textContent = config.deadline;
+         }
+      } catch(e) {
+         rsvpDeadline.textContent = config.deadline;
+      }
+    }
+    // カウントダウン初期化
     initCountdown(config.eventDateISO);
   }
 
+  // メッセージ表示
   function showMessage(text, isError){
-    const el = $('response');
-    el.textContent = text;
-    el.style.color = isError ? 'crimson' : 'green';
+    const el = document.getElementById('form-response');
+    if(el){
+        el.textContent = text;
+        el.style.color = isError ? '#d9534f' : '#333'; // エラー時は赤、成功時は黒
+    }
   }
 
+  // フォームデータ収集
   function collectForm(){
     const form = document.getElementById('rsvp-form');
-    const data = new FormData(form);
+    const formData = new FormData(form);
+    
     const obj = {};
-    for(const [k,v] of data.entries()) obj[k] = v;
-    // radio attendance may be missing; ensure present
-    const att = form.querySelector('input[name="attendance"]:checked');
-    obj.attendance = att ? att.value : '';
-    console.log('Collected form data:', obj);
+    
+    // 1. Python仕様に合わせる項目 (必須)
+    // attendanceはHTML修正により 'attend' か 'absent' が入ります
+    obj.attendance = formData.get('attendance') || ''; 
+    
+    // 名前: Python仕様では 'name' キー
+    obj.name = (formData.get('name_sei') || '') + ' ' + (formData.get('name_mei') || '');
+    
+    // かな: Python仕様では 'kana' キー
+    obj.kana = (formData.get('kana_sei') || '') + ' ' + (formData.get('kana_mei') || '');
+    
+    // メール: Python仕様では 'email' キー
+    obj.email = formData.get('email') || '';
+    
+    // アレルギー: Python仕様では 'allergy' キー
+    const allergies = formData.getAll('allergy[]');
+    const allergyOther = formData.get('allergy_other');
+    if(allergyOther) allergies.push(`その他(${allergyOther})`);
+    obj.allergy = allergies.length > 0 ? allergies.join(', ') : 'なし';
+    
+    // メッセージ: Python仕様では 'message' キー
+    obj.message = formData.get('message') || '';
+
+    // 2. 今回の要件で追加された項目 (Lambda側での対応が必要)
+    obj.guest_side = formData.get('guest_side') || ''; // 新郎ゲスト/新婦ゲスト
+    obj.gender = formData.get('gender') || '';         // 男性/女性/回答しない
+    obj.phone = formData.get('phone') || '';           // 電話番号
+    
+    // 住所結合
+    const zip = formData.get('zip_code') || '';
+    const pref = formData.get('pref') || '';
+    const city = formData.get('city') || '';
+    const street = formData.get('street') || '';
+    obj.address = `〒${zip} ${pref}${city}${street}`;
+
+    // 送信日時
+    obj.submitted_at = new Date().toISOString();
+
+    console.log('Sending payload:', obj);
     return obj;
   }
 
+  // フォームバリデーション
   function validate(){
-    const email = $('email').value.trim();
-    if(!email) return 'メールアドレスを入力してください。';
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return '有効なメールアドレスを入力してください。';
-    if(!$('name').value.trim()) return 'お名前を入力してください。';
-    if(!$('kana').value.trim()) return 'ふりがなを入力してください。';
-    if(!document.querySelector('input[name="attendance"]:checked')) return 'ご出席/ご欠席を選択してください。';
+    const form = document.getElementById('rsvp-form');
+    const formData = new FormData(form);
+
+    // 必須項目のチェック
+    if(!formData.get('attendance')) return 'ご出欠を選択してください。';
+    if(!formData.get('guest_side')) return '新郎ゲスト・新婦ゲストのいずれかを選択してください。';
+    
+    if(!formData.get('name_sei') || !formData.get('name_mei')) return 'お名前を入力してください。';
+    if(!formData.get('kana_sei') || !formData.get('kana_mei')) return 'ふりがなを入力してください。';
+    
+    const email = formData.get('email');
+    if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return '有効なメールアドレスを入力してください。';
+    
+    if(!formData.get('zip_code') || !formData.get('pref') || !formData.get('city') || !formData.get('street')) {
+        return 'ご住所をすべて入力してください。';
+    }
+    if(!formData.get('phone')) return '電話番号を入力してください。';
+
     return '';
   }
 
@@ -102,7 +171,7 @@
     }
   }
 
-  // --- Countdown utility ---
+  // カウントダウンタイマー
   let countdownTimer = null;
   function parseDateLike(input){
     // accepts ISO or 'YYYY年MM月DD日' or plain YYYY-MM-DD

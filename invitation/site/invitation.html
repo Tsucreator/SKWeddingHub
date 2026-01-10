@@ -381,7 +381,214 @@
 
         </div>
       </section>
-    <p class="deadline" id="deadline"><strong><span id="deadline-date"></span>までにご一報賜りますようお願い申し上げます</strong></p>
+
+      <!-- RSVP Section -->
+      <section class="rsvp-section" id="rsvp">
+        <div class="rsvp-container">
+          <!-- 白いカードエリア -->
+          <div class="rsvp-card fade-in-section">
+            
+            <!-- コーナーの装飾（SVGの花） -->
+            <div class="card-decor top-left">
+              <svg viewBox="0 0 100 100" fill="currentColor"><path d="M50,50 Q30,20 10,30 T0,50 Q20,80 50,50 M50,50 Q70,20 90,30 T100,50 Q80,80 50,50 M50,50 Q20,30 30,10 T50,0 Q80,30 50,50 M50,50 Q20,70 30,90 T50,100 Q80,70 50,50" opacity="0.8"/></svg>
+            </div>
+            <div class="card-decor top-right">
+              <svg viewBox="0 0 100 100" fill="currentColor"><path d="M50,50 Q30,20 10,30 T0,50 Q20,80 50,50 M50,50 Q70,20 90,30 T100,50 Q80,80 50,50 M50,50 Q20,30 30,10 T50,0 Q80,30 50,50 M50,50 Q20,70 30,90 T50,100 Q80,70 50,50" opacity="0.8"/></svg>
+            </div>
+
+            <div class="rsvp-header">
+              <h2 class="en-title">PRESENCE or ABSENCE</h2>
+              <p class="ja-title">ご出欠について</p>
+            </div>
+
+            <div class="rsvp-message">
+              <p>
+                お手数ではございますが　下記お日にち迄に<br>
+                出欠のご回答をくださいますよう<br>
+                お願い申し上げます
+              </p>
+              <p class="secondary-msg">
+                期日までのご回答が難しい場合は<br>
+                その旨を当方までご連絡いただけましたら幸いです
+              </p>
+              
+              <!-- 締切日 (JSで config.json から自動挿入) -->
+              <div class="deadline-display">
+                <span id="rsvp-deadline-date"><p class="deadline" id="deadline"><strong><span id="deadline-date"></span>までにご一報賜りますようお願い申し上げます</strong></p></span>
+              </div>
+            </div>
+
+            <!-- 入力フォーム -->
+            <form id="rsvp-form" class="rsvp-form">
+              <h1 class="form-section-title">ゲスト様入力フォーム</h1>
+            
+              <!-- 1. 出欠確認 (大きな円形デザイン) -->
+              <div class="form-group attendance-group">
+                <div class="attendance-options">
+                  <label class="attendance-label">
+                    <input type="radio" name="attendance" value="attend" class="visually-hidden" required>
+                    <div class="attendance-design">
+                      <span class="circle-mark"></span>
+                      <span class="text-ja">ご出席</span>
+                      <span class="text-en">Attend</span>
+                    </div>
+                  </label>
+                  <label class="attendance-label">
+                    <input type="radio" name="attendance" value="absent" class="visually-hidden">
+                    <div class="attendance-design">
+                      <span class="circle-mark"></span>
+                      <span class="text-ja">ご欠席</span>
+                      <span class="text-en">Decline</span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <hr class="divider">
+
+              <!-- 2. ゲスト区分 -->
+              <div class="form-group">
+                <label class="group-label">ゲスト様 <span class="badge-required">必須</span></label>
+                <div class="radio-group">
+                  <label class="radio-custom">
+                    <input type="radio" name="guest_side" value="新郎ゲスト" required>
+                    <span class="radio-fake"></span>
+                    <span class="label-text">新郎ゲスト</span>
+                  </label>
+                  <label class="radio-custom">
+                    <input type="radio" name="guest_side" value="新婦ゲスト">
+                    <span class="radio-fake"></span>
+                    <span class="label-text">新婦ゲスト</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- 3. お名前 -->
+              <div class="form-group">
+                <label class="group-label">お名前 <span class="badge-required">必須</span></label>
+                <div class="name-inputs">
+                  <input type="text" name="name_sei" placeholder="姓" required autocomplete="family-name">
+                  <input type="text" name="name_mei" placeholder="名" required autocomplete="given-name">
+                </div>
+              </div>
+
+              <!-- 4. ふりがな -->
+              <div class="form-group">
+                <label class="group-label">ふりがな <span class="badge-required">必須</span></label>
+                <div class="name-inputs">
+                  <input type="text" name="kana_sei" placeholder="せい" required>
+                  <input type="text" name="kana_mei" placeholder="めい" required>
+                </div>
+              </div>
+
+              <!-- 5. 性別 -->
+              <div class="form-group">
+                <label class="group-label">性別</label>
+                <div class="radio-group">
+                  <label class="radio-custom">
+                    <input type="radio" name="gender" value="男性">
+                    <span class="radio-fake"></span>
+                    <span class="label-text">男性</span>
+                  </label>
+                  <label class="radio-custom">
+                    <input type="radio" name="gender" value="女性">
+                    <span class="radio-fake"></span>
+                    <span class="label-text">女性</span>
+                  </label>
+                  <label class="radio-custom">
+                    <input type="radio" name="gender" value="回答しない">
+                    <span class="radio-fake"></span>
+                    <span class="label-text">回答しない</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- 6. メールアドレス -->
+              <div class="form-group">
+                <label class="group-label">メールアドレス <span class="badge-required">必須</span></label>
+                <p class="input-note">回答の確認メールをお送りします</p>
+                <input type="email" name="email" class="full-width" placeholder="example@email.com" required autocomplete="email">
+              </div>
+
+              <hr class="divider">
+
+              <!-- 7. 住所 -->
+              <div class="form-group">
+                <label class="group-label">ご住所 <span class="badge-required">必須</span></label>
+                <p class="input-note">招待状・引出物等の発送に利用いたします</p>
+                <div class="address-inputs">
+                  <div class="zip-row">
+                    <span>〒</span>
+                    <input type="text" name="zip_code" placeholder="000-0000" class="input-zip" autocomplete="postal-code" onKeyUp="AjaxZip3.zip2addr(this,'','pref','city');">
+                  </div>
+                  <input type="text" name="pref" placeholder="都道府県" class="input-pref" autocomplete="address-level1">
+                  <input type="text" name="city" placeholder="市区町村" class="full-width" autocomplete="address-level2">
+                  <input type="text" name="street" placeholder="番地・建物名・部屋番号" class="full-width" autocomplete="address-line1">
+                </div>
+              </div>
+
+              <!-- 8. 電話番号 -->
+              <div class="form-group">
+                <label class="group-label">電話番号 <span class="badge-required">必須</span></label>
+                <input type="tel" name="phone" class="full-width" placeholder="090-0000-0000" required autocomplete="tel">
+              </div>
+
+              <hr class="divider">
+
+              <!-- 9. アレルギー (Grid Layout) -->
+              <div class="form-group">
+                <label class="group-label">アレルギー有無</label>
+                <p class="input-note">該当するものにチェックを入れてください</p>
+                <div class="allergy-grid">
+                  <!-- 28品目リスト -->
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="えび"><span class="box-fake"></span>えび</label>
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="かに"><span class="box-fake"></span>かに</label>
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="くるみ"><span class="box-fake"></span>くるみ</label>
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="小麦"><span class="box-fake"></span>小麦</label>
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="そば"><span class="box-fake"></span>そば</label>
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="卵"><span class="box-fake"></span>卵</label>
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="乳"><span class="box-fake"></span>乳</label>
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="落花生"><span class="box-fake"></span>落花生</label>
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="アーモンド"><span class="box-fake"></span>アーモンド</label>
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="あわび"><span class="box-fake"></span>あわび</label>
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="いか"><span class="box-fake"></span>いか</label>
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="いくら"><span class="box-fake"></span>いくら</label>
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="オレンジ"><span class="box-fake"></span>オレンジ</label>
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="カシューナッツ"><span class="box-fake"></span>カシューナッツ</label>
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="キウイフルーツ"><span class="box-fake"></span>キウイ</label>
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="牛肉"><span class="box-fake"></span>牛肉</label>
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="ごま"><span class="box-fake"></span>ごま</label>
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="さけ"><span class="box-fake"></span>さけ</label>
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="さば"><span class="box-fake"></span>さば</label>
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="大豆"><span class="box-fake"></span>大豆</label>
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="鶏肉"><span class="box-fake"></span>鶏肉</label>
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="バナナ"><span class="box-fake"></span>バナナ</label>
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="豚肉"><span class="box-fake"></span>豚肉</label>
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="マカダミアナッツ"><span class="box-fake"></span>マカダミア</label>
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="もも"><span class="box-fake"></span>もも</label>
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="やまいも"><span class="box-fake"></span>やまいも</label>
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="りんご"><span class="box-fake"></span>りんご</label>
+                  <label class="checkbox-custom"><input type="checkbox" name="allergy[]" value="ゼラチン"><span class="box-fake"></span>ゼラチン</label>
+                </div>
+              </div>
+
+              <!-- 10. メッセージ -->
+              <div class="form-group">
+                <label class="group-label">メッセージ</label>
+                <textarea name="message" rows="5" class="full-width" placeholder="新郎新婦へのお祝いメッセージや伝えたいことをご自由にご記入ください"></textarea>
+              </div>
+
+              <!-- 送信ボタン -->
+              <div class="submit-area">
+                <button type="submit" id="submit-btn" class="submit-btn">回答を送信する</button>
+                <p id="form-response" class="form-response"></p>
+              </div>
+
+            </form>
+
+          </div><!-- rsvp-card -->
+        </div>
+      </section>
 
 </main>
 
