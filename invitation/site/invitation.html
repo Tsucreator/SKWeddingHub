@@ -61,8 +61,7 @@
               <div id="countdown" class="countdown-timer">
                 <!-- Days (大きく表示) -->
                 <div class="cd-item cd-item-days">
-                  <span id="cd-days" class="cd-number main-number">0</span>
-                  <span class="cd-label">Days</span>
+                  <span id="cd-days" class="cd-number main-number">0</span><span class="cd-label">Days</span>
                 </div>
 
                 <!-- 時間・分・秒 (小さく横並び) -->
@@ -189,17 +188,6 @@
                   髙井 真之介
                   <span class="furigana">たかい しんのすけ</span>
                 </h3>
-                
-                <div class="meta-data">
-                  <dl class="meta-item">
-                    <dt>出身</dt>
-                    <dd>神奈川件</dd>
-                  </dl>
-                  <dl class="meta-item">
-                    <dt>好きなもの</dt>
-                    <dd>読書　ピザ</dd>
-                  </dl>
-                </div>
 
                 <div class="profile-message">
                   <p>
@@ -228,17 +216,6 @@
                   <span class="furigana">すずき かほ</span>
                 </h3>
                 
-                <div class="meta-data">
-                  <dl class="meta-item">
-                    <dt>出身</dt>
-                    <dd>千葉県</dd>
-                  </dl>
-                  <dl class="meta-item">
-                    <dt>好きなもの</dt>
-                    <dd>焼肉　旅行</dd>
-                  </dl>
-                </div>
-
                 <div class="profile-message">
                   <p>
                     未熟な二人ですが<br>
@@ -393,7 +370,7 @@
             </div>
 
             <div class="rsvp-header">
-              <h2 class="en-title">PRESENCE or ABSENCE</h2>
+              <h2 class="en-title">R.S.V.P.</h2>
               <p class="ja-title">ご出欠について</p>
             </div>
 
@@ -417,7 +394,7 @@
 
             <!-- 入力フォーム -->
             <form id="rsvp-form" class="rsvp-form">
-              <h1 class="form-section-title">ゲスト様入力フォーム</h1>
+              <h1 class="form-section-title">入力フォーム</h1>
             
               <!-- 1. 出欠確認 (大きな円形デザイン) -->
               <div class="form-group attendance-group">
@@ -509,30 +486,7 @@
 
               <hr class="divider">
 
-              <!-- 7. 住所 -->
-              <div class="form-group">
-                <label class="group-label">ご住所 <span class="badge-required">必須</span></label>
-                <p class="input-note">招待状・引出物等の発送に利用いたします</p>
-                <div class="address-inputs">
-                  <div class="zip-row">
-                    <span>〒</span>
-                    <input type="text" name="zip_code" placeholder="000-0000" class="input-zip" autocomplete="postal-code" onKeyUp="AjaxZip3.zip2addr(this,'','pref','city');">
-                  </div>
-                  <input type="text" name="pref" placeholder="都道府県" class="input-pref" autocomplete="address-level1">
-                  <input type="text" name="city" placeholder="市区町村" class="full-width" autocomplete="address-level2">
-                  <input type="text" name="street" placeholder="番地・建物名・部屋番号" class="full-width" autocomplete="address-line1">
-                </div>
-              </div>
-
-              <!-- 8. 電話番号 -->
-              <div class="form-group">
-                <label class="group-label">電話番号 <span class="badge-required">必須</span></label>
-                <input type="tel" name="phone" class="full-width" placeholder="090-0000-0000" required autocomplete="tel">
-              </div>
-
-              <hr class="divider">
-
-              <!-- 9. アレルギー (Grid Layout) -->
+              <!-- 7. アレルギー (Grid Layout) -->
               <div class="form-group">
                 <label class="group-label">アレルギー有無</label>
                 <p class="input-note">該当するものにチェックを入れてください</p>
@@ -569,7 +523,7 @@
                 </div>
               </div>
 
-              <!-- 10. メッセージ -->
+              <!-- 8. メッセージ -->
               <div class="form-group">
                 <label class="group-label">メッセージ</label>
                 <textarea name="message" rows="5" class="full-width" placeholder="新郎新婦へのお祝いメッセージや伝えたいことをご自由にご記入ください"></textarea>
@@ -577,7 +531,7 @@
 
               <!-- 送信ボタン -->
               <div class="submit-area">
-                <button type="submit" id="submit-btn" class="submit-btn">回答を送信する</button>
+                <button type="submit" id="submit-btn" class="submit-btn">送信する</button>
                 <p id="form-response" class="form-response"></p>
               </div>
 

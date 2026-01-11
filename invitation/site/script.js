@@ -90,14 +90,6 @@
     // 2. 今回の要件で追加された項目 (Lambda側での対応が必要)
     obj.guest_side = formData.get('guest_side') || ''; // 新郎ゲスト/新婦ゲスト
     obj.gender = formData.get('gender') || '';         // 男性/女性/回答しない
-    obj.phone = formData.get('phone') || '';           // 電話番号
-    
-    // 住所結合
-    const zip = formData.get('zip_code') || '';
-    const pref = formData.get('pref') || '';
-    const city = formData.get('city') || '';
-    const street = formData.get('street') || '';
-    obj.address = `〒${zip} ${pref}${city}${street}`;
 
     // 送信日時
     obj.submitted_at = new Date().toISOString();
@@ -120,11 +112,6 @@
     
     const email = formData.get('email');
     if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return '有効なメールアドレスを入力してください。';
-    
-    if(!formData.get('zip_code') || !formData.get('pref') || !formData.get('city') || !formData.get('street')) {
-        return 'ご住所をすべて入力してください。';
-    }
-    if(!formData.get('phone')) return '電話番号を入力してください。';
 
     return '';
   }

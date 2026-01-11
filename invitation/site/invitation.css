@@ -196,7 +196,7 @@ body {
 
 .main-title {
   /* 読み込み済みの筆記体フォントを指定 */
-  font-family: 'Yellowtail', cursive;
+  font-family: 'Cormorant Garamond', serif;
   color: #ffffff;
   
   /* 
@@ -312,10 +312,10 @@ body {
    Layer 3: カウントダウン本体（この設定で固定）
 ------------------------------------------- */
 .date-header {
-  font-family: 'Yellowtail', cursive;
+  font-family: 'Cormorant Garamond', serif;
   font-size: 1.2rem;
   font-weight: 600;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
   text-align: center;
 }
 
@@ -336,7 +336,7 @@ body {
 
 /* Days (Main Number) */
 .cd-item-days {
-  line-height: 1;
+  line-height: 1.1;
 }
 
 .main-number {
@@ -350,11 +350,10 @@ body {
 
 /* "Days" label position adjustment */
 .cd-item-days .cd-label {
-  font-family: 'Great Vibes', cursive; /* 筆記体 */
+  font-family: 'Cormorant Garamond', serif;
   font-size: clamp(1rem, 9vw, 2.0rem); 
   position: relative;
   top: -10px;
-  margin-left: 20px;
   color: #444;
 }
 
@@ -380,7 +379,7 @@ body {
 }
 
 .cd-sub-units .cd-label {
-  font-family: 'Yellowtail', cursive;
+  font-family: 'Cormorant Garamond', serif;
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -681,33 +680,6 @@ body {
   font-weight: 400;
 }
 
-/* --- Meta Data Section --- */
-.meta-data {
-  margin-bottom: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  font-size: 0.95rem;
-}
-
-.meta-item {
-  display: flex;
-  justify-content: center;
-  gap: 1em;
-}
-
-.meta-item dt {
-  opacity: 0.7;
-  font-size: 0.9em;
-}
-.meta-item dt::after {
-  content: "：";
-}
-
-.meta-item dd {
-  font-weight: 500;
-}
-
 /* Message Body */
 .profile-message {
   font-size: 0.95rem;
@@ -954,7 +926,7 @@ body {
 
 /* カード内のタイトル */
 .info-title {
-  font-family: 'Yellowtail', cursive;
+  font-family: 'Cormorant Garamond', serif;
   font-size: clamp(2.5rem, 8vw, 4rem);
   margin-bottom: 2rem;
   line-height: 1.2;
@@ -1291,7 +1263,6 @@ body {
 /* テキスト入力共通 */
 input[type="text"],
 input[type="email"],
-input[type="tel"],
 textarea {
   width: 100%;
   padding: 0.8rem;
@@ -1316,20 +1287,6 @@ input:focus, textarea:focus {
   gap: 1rem;
 }
 .name-inputs input { width: 100%; }
-
-/* 住所入力 */
-.address-inputs {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-}
-.zip-row {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-.input-zip { width: 120px !important; }
-.input-pref { width: 150px !important; }
 
 /* -----------------------------
    Custom Attendance Button

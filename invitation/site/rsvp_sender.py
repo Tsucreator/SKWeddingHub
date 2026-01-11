@@ -20,8 +20,6 @@ def send_rsvp(form_data):
             'kana': str,
             'gender': str,     # 男性 / 女性 / 回答しない
             'email': str,
-            'address': str,
-            'phone': str,
             'allergy': str,
             'message': str,
             'submitted_at': str # ISOフォーマットの日時文字列
@@ -73,8 +71,6 @@ def handle_form_submission():
         'kana': 'やまだ たろう',
         'gender': '男性',                 # 追加項目
         'email': 'yamada@example.com',
-        'address': '〒100-0001 東京都千代田区千代田1-1', # 追加項目
-        'phone': '090-1234-5678',         # 追加項目
         'allergy': '卵アレルギー',
         'message': 'お招きありがとうございます。',
         'submitted_at': datetime.now().isoformat() # JS側と同様に送信日時を追加
