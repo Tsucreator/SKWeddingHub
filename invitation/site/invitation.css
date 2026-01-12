@@ -1133,61 +1133,126 @@ body {
 
 /* -------------------------------------------
    Layer 3: Guide Message (ご案内) 
+   高級紙カード風デザイン
 ------------------------------------------- */
 .access-message {
+  /* レイアウトとサイズ */
+  width: 100%;
+  max-width: 680px; /* 少し幅を広げて余白を持たせる */
+  margin-top: 4rem; /* 上の地図との距離 */
+  padding: 4rem 2rem; /* 内側の余白をたっぷりとる */
+  position: relative; /* 擬似要素（内側の線）の基準 */
+  
+  /* --- 紙の質感と浮遊感の演出 --- */
+  
+  /* ベースの色：少し温かみのある白 */
+  background-color: #fdfbf9;
+  
+  /* 紙の繊維のような微細なノイズをCSSグラデーションで表現 */
+  background-image: 
+    linear-gradient(0deg, transparent 96%, rgba(0, 0, 0, 0.02) 97%, rgba(0, 0, 0, 0.02) 98%, transparent 99%),
+    linear-gradient(90deg, transparent 96%, rgba(0, 0, 0, 0.02) 97%, rgba(0, 0, 0, 0.02) 98%, transparent 99%);
+  background-size: 8px 8px; /* 細かいパターンにして質感に見せる */
+
+  /* 浮き上がるような影 */
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+  
+  /* 角を少し丸く */
+  border-radius: 4px;
+
+  /* 文字設定 */
   text-align: center;
   color: #333;
   font-family: "Yu Mincho", "YuMincho", serif;
-  width: 100%;
-  max-width: 600px; /* 読みやすい幅に制限 */
-  margin-top: 2rem;
 }
 
+/* カード内側の装飾線（金箔押しの枠のようなイメージ） */
+.access-message::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  border: 1px solid #d4c4a8; /* 淡いゴールドベージュの線 */
+  border-radius: 2px;
+  pointer-events: none; /* 文字選択の邪魔をしない */
+}
+
+/* タイトルスタイル */
 .access-title {
-  /* 日本語の見出しも見やすく */
   font-family: "Yu Mincho", "YuMincho", serif;
-  font-size: 1.5rem;
-  margin-bottom: 3rem;
-  letter-spacing: 0.2em;
-  font-weight: 600;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.3em;
+  font-weight: 500;
+  color: #222;
 }
 
 /* 各案内ブロック */
 .guide-block {
-  margin-bottom: 3rem; /* 項目ごとの間隔 */
+  margin-bottom: 3.5rem; /* ゆったりとした間隔 */
+  position: relative;
+  z-index: 1; /* 装飾線より上に文字を表示 */
 }
 
-/* 小見出しスタイル */
+/* 小見出し（デザイン変更：下線ではなく、小さく上品に） */
 .guide-block h3 {
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  margin-bottom: 0.8rem;
-  letter-spacing: 0.05em;
-  color: #333;
-  /* 上下に淡い装飾線を入れて区切るデザイン */
-  display: inline-block;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 4px;
+  margin-bottom: 1.2rem;
+  letter-spacing: 0.1em;
+  color: #555; /* 真っ黒ではなく濃いグレーで優しく */
+  display: block;
+}
+/* 小見出しの下に短い飾り線を入れる */
+.guide-block h3::after {
+  content: "";
+  display: block;
+  width: 30px;
+  height: 1px;
+  background-color: #d4c4a8; /* 枠線と同じ色 */
+  margin: 0.5rem auto 0; /* 中央揃え */
 }
 
 .guide-block p {
-  font-size: 0.95rem;
-  line-height: 2.2;
-  margin-bottom: 0;
-  /* スマホでの読みやすさ調整 */
-  font-size: clamp(0.9rem, 3.5vw, 1rem);
+  font-size: 1rem;
+  line-height: 2.4; /* 行間を広げて読みやすく */
+  letter-spacing: 0.05em;
+  color: #333;
 }
 
 /* 連絡先エリア */
 .guide-contact {
-  margin-top: 0.5rem;
+  margin-top: 1rem;
   font-weight: 500;
+  display: inline-block;
+  background-color: rgba(255,255,255,0.6); /* 文字が読みやすいよう背景を少し白く */
+  padding: 0.5rem 1rem;
 }
+
 .guide-contact a {
   color: #333;
   text-decoration: none;
-  border-bottom: 1px dotted #333;
+  border-bottom: 1px solid #ccc;
+  transition: border-color 0.3s;
 }
+.guide-contact a:hover {
+  border-color: #333;
+}
+
+/* スマホ調整 */
+@media (max-width: 480px) {
+  .access-message {
+    padding: 3rem 1.5rem; /* スマホでは余白を少し詰める */
+    width: 95%; /* 横幅いっぱい近くまで使う */
+  }
+  .guide-block p {
+    font-size: 0.9rem;
+    line-height: 2.2;
+  }
+}
+
 
 /* =========================================
     RSVP Section Design
