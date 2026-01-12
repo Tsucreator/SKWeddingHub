@@ -120,7 +120,7 @@ body {
   width: 100%;
   height: 100%;
   /* 左上半分をHeroと同じ色(#333)にする */
-  background: linear-gradient(135deg, #555 55%, transparent 55.1%);
+  background: linear-gradient(150deg, #555 55%, transparent 55.1%);
   z-index: -1; /* カードより後ろ */
   pointer-events: none;
 }
@@ -570,7 +570,7 @@ body {
   width: 100%;
   height: 50%;
   background-color: #888;
-  z-index: -2; /* カードより後ろ */
+  z-index: 0;
   pointer-events: none;
 }
 /* 斜めの背景装飾レイヤー */
@@ -580,8 +580,8 @@ body {
   left: 0;
   width: 100%;
   height: 50%;
-  background: linear-gradient(320deg, var(--bg-color) 55%, transparent 55.1%);
-  z-index: -1; /* カードより後ろ */
+  background: linear-gradient(330deg, var(--bg-color) 55%, transparent 55.1%);
+  z-index: 0;
   pointer-events: none;
 }
 
