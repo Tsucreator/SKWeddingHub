@@ -11,24 +11,39 @@
   --accent-color: #ffffff;
 }
 
+/* Base Layout (PC・スマホ共通の土台) */
 body {
-  background-color: var(--bg-color);
-  color: var(--accent-color);
-  font-family: 'Cormorant Garamond', serif;
-  overflow-x: hidden; /* 横スクロールだけ防ぐ */
-  overflow-y: auto;   /* 縦スクロールを有効にする */
+  /* PC画面全体の色（中身より少し暗くすると高級感が出ます） */
+  background-color: #222; 
+  /* コンテンツを画面中央に配置する */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* 縦は上揃え */
+  min-height: 100svh;
+  margin: 0;
+  
+  /* PC背景用のパターンなどを入れてもOK */
+  background-image: radial-gradient(#333 1px, transparent 1px);
+  background-size: 20px 20px;
 }
 
-/* 
-  画面全体の設定 
-  position: relative; にして、子要素の基準点にする
-*/
+/* 2. Container (スマホ画面の役割) */
 .container {
   position: relative;
-  width: 100%;
-  min-height: 100svh; /* アドレスバーを考慮した画面いっぱい */
+  width: 100%; /* 基本は親要素に合わせて100% */
+  /* 最近の大型スマホ(iPhone Pro Max等)を考慮して 430px〜500px が標準的 */
+  max-width: 480px;   
+  min-height: 100svh; /* 縦方向は最低でも画面いっぱい確保 */
+  
+  /* 背景色（デザイン本来の背景色） */
+  background-color: var(--bg-color); 
+  /* 中央配置の念押し（flex非対応ブラウザ等の保険） */
+  margin: 0 auto;   
+  /* PCで見たときに「浮き上がっている」ように見せる影 */
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+  /* 枠からはみ出した斜め背景などを切り取る */
+  overflow: hidden; 
 }
-
 /* =========================================
    Utility Classes (ユーティリティ)
 ========================================= */
@@ -198,14 +213,7 @@ body {
   /* 読み込み済みの筆記体フォントを指定 */
   font-family: 'Cormorant Garamond', serif;
   color: #ffffff;
-  
-  /* 
-    レスポンシブな文字サイズ設定: clamp(最小値, 推奨値, 最大値)
-    - スマホ(幅狭)では 3.5rem (約56px) 確保
-    - 通常は画面幅の 13% (13vw) の大きさ
-    - 画面が大きくなりすぎても 7rem で止まる
-  */
-  font-size: clamp(2rem, 12vw, 7rem);
+  font-size: clamp(2rem, 10vw, 3.5rem);
   
   /* 行間を詰めて筆記体の一体感を出す */
   line-height: 1.2;
@@ -321,7 +329,7 @@ body {
 
 .to-label {
   display: block;
-  font-size: clamp(1rem, 10vw, 4rem);
+  font-size: clamp(1rem, 6vw, 3rem);
 }
 
 .target-date {
@@ -342,7 +350,7 @@ body {
 .main-number {
   /* 巨大な文字サイズ */
   font-family: 'Baskerville', serif; /* 上品なセリフ体 */
-  font-size: clamp(5rem, 25vw, 10rem); 
+  font-size: clamp(5rem, 12vw, 7rem); 
   font-weight: 300;
   display: block;
   color: #222;
@@ -373,7 +381,7 @@ body {
 
 .sub-number {
   font-family: 'Baskerville', serif; /* 上品なセリフ体 */
-  font-size: clamp(1rem, 10vw, 4rem); 
+  font-size: clamp(1rem, 5vw, 3rem); 
   font-weight: 200;
   line-height: 1;
 }
@@ -420,7 +428,7 @@ body {
 @media (min-width: 768px) {
   .countdown-card {
     max-width: 450px;
-    top: 50%; /* PCなら画面中央でOK */
+    top: 35%;
   }
   .diagonal-bg {
     /* PCなら角度を緩やかにする */
@@ -497,7 +505,7 @@ body {
 ------------------------------------------- */
 .message-body {
   font-family: "Yu Mincho", "YuMincho", serif; /* 明朝体でフォーマルに */
-  font-size: clamp(1rem, 3.5vw, 2rem); /* 可変フォントサイズ */
+  font-size: clamp(1rem, 1.5vw, 2.5rem);
   line-height: 2.2; /* 句読点がないため広めに取る */
   letter-spacing: 0.08em; /* ゆったりとした字間 */
   font-weight: 500;
@@ -1019,6 +1027,7 @@ body {
 /* --- 会場詳細エリアのレイアウト変更 --- */
 .hall-details {
   font-family: "Yu Mincho", "YuMincho", serif;
+  margin-top: 1rem;
   margin-bottom: 3rem;
   
   /* グリッドレイアウトで制御 */
@@ -1326,7 +1335,7 @@ body {
 }
 .rsvp-message p {
   margin-bottom: 1.5rem;
-  font-size: clamp(1rem, 3.5vw, 1.5rem);
+  font-size: clamp(0.5rem, 2vw, 1rem);
 }
 
 .secondary-msg { font-size: 0.85rem; opacity: 0.9; }
@@ -1359,7 +1368,7 @@ body {
 }
 .form-section-title {
   text-align: center;
-  font-size: clamp(1.5rem, 4.5vw, 2rem);
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
   margin-bottom: 2rem;
   letter-spacing: 0.1em;
   position: relative;
