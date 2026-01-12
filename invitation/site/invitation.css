@@ -213,7 +213,7 @@ body {
   /* 読み込み済みの筆記体フォントを指定 */
   font-family: 'Cormorant Garamond', serif;
   color: #ffffff;
-  font-size: clamp(2rem, 10vw, 3.5rem);
+  font-size: clamp(3rem, 10vw, 3.5rem);
   
   /* 行間を詰めて筆記体の一体感を出す */
   line-height: 1.2;
@@ -249,7 +249,7 @@ body {
   width: 100%;
   height: 100%;
   /* 左上半分をHeroと同じ色(#333)にする */
-  background: linear-gradient(135deg, var(--bg-color) 55%, transparent 55.1%);
+  background: linear-gradient(145deg, var(--bg-color) 55%, transparent 55.1%);
   z-index: -1; /* カードより後ろ */
   pointer-events: none;
 }
@@ -329,7 +329,7 @@ body {
 
 .to-label {
   display: block;
-  font-size: clamp(1rem, 6vw, 3rem);
+  font-size: clamp(2rem, 6vw, 3rem);
 }
 
 .target-date {
@@ -381,7 +381,7 @@ body {
 
 .sub-number {
   font-family: 'Baskerville', serif; /* 上品なセリフ体 */
-  font-size: clamp(1rem, 5vw, 3rem); 
+  font-size: clamp(2rem, 5vw, 3rem); 
   font-weight: 200;
   line-height: 1;
 }
@@ -1100,7 +1100,7 @@ body {
   text-decoration: underline;
   text-underline-offset: 4px;
   transition: opacity 0.3s;
-  font-size: 1rem;
+  font-size: 0.85rem;
   font-weight: 500;
   line-height: 1.5;
 }
@@ -1335,7 +1335,7 @@ body {
 }
 .rsvp-message p {
   margin-bottom: 1.5rem;
-  font-size: clamp(0.5rem, 2vw, 1rem);
+  font-size: clamp(1rem, 2.5vw, 1.1rem);
 }
 
 .secondary-msg { font-size: 0.85rem; opacity: 0.9; }
