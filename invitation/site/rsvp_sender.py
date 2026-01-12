@@ -3,7 +3,26 @@
 """
 import json
 import requests
+import os
 from datetime import datetime
+
+def load_config():
+    """
+    config.jsonから設定を読み込む
+    
+    Returns:
+    --------
+    dict: 設定データ
+    """
+    try:
+        # config.jsonのパスを取得（このスクリプトと同じディレクトリ）
+        config_path = os.path.join(os.path.dirname(__file__), 'config.json')
+        with open(config_path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        raise FileNotFoundError("config.json が見つかりません")
+    except json.JSONDecodeError:
+        raise ValueError("config.json の形式が正しくありません")
 
 def send_rsvp(form_data):
     """
@@ -30,14 +49,17 @@ def send_rsvp(form_data):
     tuple
         (success: bool, message: str)
     """
-    # Lambda関数のエンドポイントURL
-    # ※実際のURLに書き換えてください
-    LAMBDA_URL = "https://xxxxx.execute-api.ap-northeast-1.amazonaws.com/submit"
+    # config.jsonからAPIエンドポイントを読み込み
+    try:
+        config = load_config()
+        lambda_url = config['apiEndpoint']
+    except (FileNotFoundError, ValueError, KeyError) as e:
+        return False, f"設定エラー: {str(e)}"
     
     try:
         # POSTリクエストを送信
         response = requests.post(
-            LAMBDA_URL,
+            lambda_url,
             json=form_data,
             headers={'Content-Type': 'application/json'}
         )
