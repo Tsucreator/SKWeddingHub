@@ -1161,8 +1161,8 @@ body {
 
 .en-title {
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(1.8rem, 6vw, 2.5rem);
-  letter-spacing: 0.05em;
+  font-size: clamp(2rem, 7vw, 2.5rem);
+  letter-spacing: 0.2em;
   color: #222;
   margin-bottom: 0.5rem;
 }

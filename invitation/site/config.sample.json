@@ -1,11 +1,5 @@
 {
-  "apiEndpoint": "",
-  "deadline": "2026-02-20",
-  "eventDateISO": "2026-03-20T10:00:00",
-  "calendar": {
-    "start": "2026-03-20T10:00:00",
-    "end": "2026-03-20T14:00:00",
-    "location": "〇〇迎賓館 △△の間",
-    "description": "私たちの結婚式にぜひお越しください。返信はこのフォームでお願いします。"
-  }
+  "apiEndpoint": "https://xxxxxxx.execute-api.ap-northeast-1.amazonaws.com/submit",
+  "deadline": "2026-02-21",
+  "eventDateISO": "2026-03-20T10:00:00"
 }
