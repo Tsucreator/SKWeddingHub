@@ -1,5 +1,5 @@
 (function(){
-  const config = { apiEndpoint: '', deadline: '202X-XX-XX', eventDateISO: '' };
+  const config = { apiEndpoint: '', deadline: '2026-02-21', eventDateISO: '' };
   const $ = id => document.getElementById(id);
 
 

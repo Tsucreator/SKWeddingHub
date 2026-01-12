@@ -885,7 +885,7 @@ body {
   padding-bottom: clamp(4rem, 10vh, 8rem);
   
   /* 背景の2色分割（上30% グレー、下70% 白） */
-  background: linear-gradient(to bottom, #888 25%, #fff 25%);
+  background: linear-gradient(to bottom, #888 15%, #fff 15%);
   
   display: flex;
   justify-content: center;
@@ -992,7 +992,7 @@ body {
 }
 
 /* -------------------------------------------
-   Layer 2: Venue Info (会場情報)
+   Layer 2: Venue Info (会場情報) 
 ------------------------------------------- */
 .venue-info {
   text-align: center;
@@ -1016,27 +1016,74 @@ body {
   margin-top: 0.5rem;
 }
 
+/* --- 会場詳細エリアのレイアウト変更 --- */
 .hall-details {
   font-family: "Yu Mincho", "YuMincho", serif;
-  margin-bottom: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  margin-bottom: 3rem;
+  
+  /* グリッドレイアウトで制御 */
+  display: grid;
+  /* スマホ(初期値): 1列 */
+  grid-template-columns: 1fr; 
+  gap: 2rem;
+  width: 100%;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* PC/タブレット以上で2列にする */
+@media (min-width: 600px) {
+  .hall-details {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
 }
 
 .hall-item {
-  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem; /* 画像とテキストの間隔 */
+}
+
+/* サムネイル画像の枠 */
+.hall-thumb {
+  width: 100%;
+  /* 黄金比に近い比率、または16:9で統一 */
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.hall-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 枠いっぱいにトリミング */
+  transition: transform 0.5s ease;
+}
+
+/* ホバー時に画像を少しズームさせる演出（お好みで） */
+.hall-item:hover .hall-thumb img {
+  transform: scale(1.05);
+}
+
+.hall-text-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
 }
 
 .hall-item .label {
   display: inline-block;
   background-color: #333;
   color: #fff;
-  font-size: 0.8rem;
-  padding: 2px 8px;
-  margin-right: 8px;
+  font-size: 0.75rem;
+  padding: 3px 10px;
   border-radius: 2px;
-  vertical-align: middle;
+  letter-spacing: 0.05em;
 }
 
 .hall-link {
@@ -1044,6 +1091,9 @@ body {
   text-decoration: underline;
   text-underline-offset: 4px;
   transition: opacity 0.3s;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
 }
 .hall-link:hover {
   opacity: 0.7;
@@ -1055,7 +1105,9 @@ body {
   line-height: 2;
   margin-bottom: 2rem;
   font-size: 0.95rem;
+  margin-top: 2rem; /* hall-detailsとの間隔 */
 }
+
 .website-link {
   color: #666;
   font-size: 0.9rem;
@@ -1080,35 +1132,61 @@ body {
 }
 
 /* -------------------------------------------
-   Layer 3: Message (ご案内)
+   Layer 3: Guide Message (ご案内) 
 ------------------------------------------- */
 .access-message {
   text-align: center;
   color: #333;
   font-family: "Yu Mincho", "YuMincho", serif;
-  line-height: 2.2;
+  width: 100%;
+  max-width: 600px; /* 読みやすい幅に制限 */
+  margin-top: 2rem;
 }
 
-.access-message h1 {
-  font-family: 'Cormorant Garamond', serif; /* タイトルぽく */
+.access-title {
+  /* 日本語の見出しも見やすく */
+  font-family: "Yu Mincho", "YuMincho", serif;
   font-size: 1.5rem;
-  margin-bottom: 1.5rem;
-  letter-spacing: 0.1em;
+  margin-bottom: 3rem;
+  letter-spacing: 0.2em;
+  font-weight: 600;
 }
 
-.access-message p {
-  margin-bottom: 1.5rem;
-  font-size: clamp(1rem, 3.5vw, 1.5rem);
+/* 各案内ブロック */
+.guide-block {
+  margin-bottom: 3rem; /* 項目ごとの間隔 */
 }
 
-/* スマホでのみ改行を有効にするクラス */
-.sp-only {
-  display: none;
+/* 小見出しスタイル */
+.guide-block h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+  letter-spacing: 0.05em;
+  color: #333;
+  /* 上下に淡い装飾線を入れて区切るデザイン */
+  display: inline-block;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 4px;
 }
-@media (max-width: 480px) {
-  .sp-only {
-    display: inline;
-  }
+
+.guide-block p {
+  font-size: 0.95rem;
+  line-height: 2.2;
+  margin-bottom: 0;
+  /* スマホでの読みやすさ調整 */
+  font-size: clamp(0.9rem, 3.5vw, 1rem);
+}
+
+/* 連絡先エリア */
+.guide-contact {
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+.guide-contact a {
+  color: #333;
+  text-decoration: none;
+  border-bottom: 1px dotted #333;
 }
 
 /* =========================================
