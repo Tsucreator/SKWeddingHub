@@ -1148,7 +1148,6 @@ body {
   /* レイアウトとサイズ */
   width: 100%;
   max-width: 680px; /* 少し幅を広げて余白を持たせる */
-  margin-top: 4rem; /* 上の地図との距離 */
   padding: 4rem 2rem; /* 内側の余白をたっぷりとる */
   position: relative; /* 擬似要素（内側の線）の基準 */
   
