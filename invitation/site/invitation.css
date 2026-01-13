@@ -1367,7 +1367,7 @@ body {
 }
 .form-section-title {
   text-align: center;
-  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-size: clamp(1.5rem, 2vw, 2rem);
   margin-bottom: 2rem;
   letter-spacing: 0.1em;
   position: relative;
