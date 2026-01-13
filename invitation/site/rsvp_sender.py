@@ -37,7 +37,6 @@ def send_rsvp(form_data):
             'guest_side': str, # 新郎ゲスト / 新婦ゲスト
             'name': str,
             'kana': str,
-            'gender': str,     # 男性 / 女性 / 回答しない
             'email': str,
             'allergy': str,
             'message': str,
@@ -91,7 +90,6 @@ def handle_form_submission():
         'guest_side': '新郎ゲスト',         # 追加項目
         'name': '山田 太郎',
         'kana': 'やまだ たろう',
-        'gender': '男性',                 # 追加項目
         'email': 'yamada@example.com',
         'allergy': '卵アレルギー',
         'message': 'お招きありがとうございます。',
