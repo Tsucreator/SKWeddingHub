@@ -1,50 +1,34 @@
-import { useState } from 'react'
-import axios from 'axios'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Layout from './components/Layout';
+import Login from './pages/Login';
+import Home from './pages/Home';
+import Schedule from './pages/Schedule';
+import Menu from './pages/Menu';
+import SeatMap from './pages/SeatMap';
 
 function App() {
-  const [email, setEmail] = useState('');
-  const [user, setUser] = useState(null);
-
-  const handleLogin = async () => {
-    try {
-      // あなたのAPI GatewayのURLに書き換えてください
-      const response = await axios.post('https://qlydtknsq4.execute-api.ap-northeast-1.amazonaws.com/prod/login', {
-        email: email
-      });
-      setUser(response.data);
-      localStorage.setItem('guest', JSON.stringify(response.data));
-      alert('ログイン成功！');
-    } catch (error) {
-      alert('メールアドレスが見つかりません');
-    }
-  };
+  // ログインチェック関数
+  const isAuthenticated = () => !!localStorage.getItem('guest');
 
   return (
-    <div style={{ padding: '40px', textAlign: 'center', fontFamily: 'serif' }}>
-      <h1 style={{ color: '#D4AF37' }}>Welcome to Our Wedding</h1>
-      
-      {!user ? (
-        <div>
-          <p>招待状を受け取ったメールアドレスを入力してください</p>
-          <input 
-            type="email" 
-            value={email} 
-            onChange={(e) => setEmail(e.target.value)}
-            style={{ padding: '10px', width: '80%', maxWidth: '300px' }}
-          />
-          <br /><br />
-          <button onClick={handleLogin} style={{ padding: '10px 20px', backgroundColor: '#D4AF37', color: '#fff', border: 'none' }}>
-            ログイン
-          </button>
-        </div>
-      ) : (
-        <div>
-          <h2>ようこそ、{user.name} 様</h2>
-          <p>お席は {user.table_id} テーブルです</p>
-        </div>
-      )}
-    </div>
-  )
+    <BrowserRouter>
+      <Routes>
+        {/* ログイン画面（ナビなし） */}
+        <Route path="/login" element={<Login />} />
+
+        {/* 認証が必要なページ（Layoutコンポーネントの中で表示） */}
+        <Route 
+          path="/" 
+          element={isAuthenticated() ? <Layout /> : <Navigate to="/login" />}
+        >
+          <Route index element={<Home />} />
+          <Route path="schedule" element={<Schedule />} />
+          <Route path="menu" element={<Menu />} />
+          <Route path="map" element={<SeatMap />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
