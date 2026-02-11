@@ -8,7 +8,7 @@ function App() {
   const handleLogin = async () => {
     try {
       // あなたのAPI GatewayのURLに書き換えてください
-      const response = await axios.post('https://qlydtknsq4.execute-api.ap-northeast-1.amazonaws.com/login', {
+      const response = await axios.post('https://qlydtknsq4.execute-api.ap-northeast-1.amazonaws.com/prod/login', {
         email: email
       });
       setUser(response.data);

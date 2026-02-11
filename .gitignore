@@ -78,3 +78,7 @@ yarn-error.log*
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Infrastructure notes (contains secrets — DO NOT commit)
+infrastructure-notes.md
+*.secrets
