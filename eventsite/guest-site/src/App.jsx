@@ -11,7 +11,7 @@ function App() {
   const isAuthenticated = () => !!localStorage.getItem('guest');
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/eventsite">
       <Routes>
         {/* ログイン画面（ナビなし） */}
         <Route path="/login" element={<Login />} />
