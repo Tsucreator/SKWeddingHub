@@ -7,7 +7,6 @@ import Menu from './pages/Menu';
 import SeatMap from './pages/SeatMap';
 
 function App() {
-  // ログインチェック関数
   const isAuthenticated = () => !!localStorage.getItem('guest');
 
   return (
@@ -16,7 +15,7 @@ function App() {
         {/* ログイン画面（ナビなし） */}
         <Route path="/login" element={<Login />} />
 
-        {/* 認証が必要なページ（Layoutコンポーネントの中で表示） */}
+        {/* 認証が必要なページ */}
         <Route 
           path="/" 
           element={isAuthenticated() ? <Layout /> : <Navigate to="/login" />}
@@ -26,6 +25,9 @@ function App() {
           <Route path="menu" element={<Menu />} />
           <Route path="map" element={<SeatMap />} />
         </Route>
+
+        {/* /index.html や未知のパスは全てトップへリダイレクト */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
