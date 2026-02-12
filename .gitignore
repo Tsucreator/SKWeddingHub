@@ -82,3 +82,6 @@ Thumbs.db
 # Infrastructure notes (contains secrets — DO NOT commit)
 infrastructure-notes.md
 *.secrets
+
+# Local knowledge notes (personal learning notes — DO NOT commit)
+knowledge.md
