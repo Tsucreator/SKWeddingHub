@@ -12,7 +12,11 @@ const SEATS_API_ENDPOINT = import.meta.env.VITE_SEATS_API_ENDPOINT
  */
 const calcSeatPositions = (cx, cy, radius, seats) => {
   const result = [];
-  const startAngle = -Math.PI / 3;
+  // 奇数 → 頂点を真下 (π/2) に配置
+  // 偶数 → 辺が水平になるよう半頂点分ずらす (-π/2 + π/seats)
+  const startAngle = seats % 2 === 0
+    ? -Math.PI / 2 + Math.PI / seats
+    : Math.PI / 2;
   for (let i = 0; i < seats; i++) {
     const angle = startAngle + (2 * Math.PI * i) / seats;
     result.push({
@@ -24,7 +28,7 @@ const calcSeatPositions = (cx, cy, radius, seats) => {
   return result;
 };
 
-// --- テーブル定義 ---
+// --- テーブル定義（seats は全体マップ用のデフォルト値、詳細ビューでは API データで上書き） ---
 const guestTables = [
   { id: 'A', x: 80,  y: 165, seats: 6 },
   { id: 'B', x: 200, y: 165, seats: 6 },
@@ -123,19 +127,23 @@ const OverviewMap = ({ userData, onSelectTable }) => {
    座席詳細ビュー（1テーブル拡大）
    ======================================== */
 const TABLE_DETAIL_R = 70;      // テーブル円の半径
-const SEAT_ORBIT = 110;         // テーブル中心→席中心
-const SEAT_R = 26;              // 席の半径（名前表示のため少し拡大）
+const SEAT_ORBIT = 130;         // テーブル中心→席名テキスト中心
 const SVG_W = 340;              // SVG 幅
 const TABLE_CX = SVG_W / 2;    // テーブル中心 X
 const HEAD_AREA = 40;           // メインテーブルインジケータ用の上部余白
-const TABLE_CY = HEAD_AREA + SEAT_ORBIT + SEAT_R + 10; // テーブル中心 Y
-const SVG_H = TABLE_CY + SEAT_ORBIT + SEAT_R + 30;     // SVG 高さ
+const TABLE_CY = HEAD_AREA + SEAT_ORBIT + 25; // テーブル中心 Y
+const SVG_H = TABLE_CY + SEAT_ORBIT + 40;     // SVG 高さ
 
 const SeatDetailView = ({ tableId, userData, seatGuests, loadingSeats, onBack }) => {
   const table = guestTables.find((t) => t.id === tableId);
   if (!table) return null;
 
-  const seats = calcSeatPositions(TABLE_CX, TABLE_CY, SEAT_ORBIT, table.seats);
+  // 席数を API データの seat_id 最大値から動的に決定する
+  const dynamicSeatCount = seatGuests && seatGuests.length > 0
+    ? Math.max(...seatGuests.map((g) => Number(g.seat_id)))
+    : table.seats;  // API データ未取得時はデフォルト値にフォールバック
+
+  const seats = calcSeatPositions(TABLE_CX, TABLE_CY, SEAT_ORBIT, dynamicSeatCount);
   const userTableId = userData?.table_id;
   const userSeatId = userData?.seat_id;
   const isMySeat = (sId) =>
@@ -191,68 +199,59 @@ const SeatDetailView = ({ tableId, userData, seatGuests, loadingSeats, onBack })
             {tableId}
           </text>
 
-          {/* 各席 */}
+          {/* 各席 — 円形枠なし、名前テキストのみ配置 */}
           {seats.map((s) => {
             const mine = isMySeat(s.seatId);
             const guest = getGuestInfo(s.seatId);
+            // ゲスト名 (フルネーム) を表示、データ未取得時は席番号
+            const displayName = guest
+              ? `${guest.name}${guest.honorific ? ` ${guest.honorific}` : ''}`
+              : String(s.seatId);
+            const relation = guest?.relationship || '';
+
             return (
               <g key={s.seatId}>
-                {/* 自分の席にパルスリング */}
+                {/* 自分の席にハイライト背景（角丸矩形） */}
                 {mine && (
-                  <circle
-                    cx={s.x} cy={s.y} r={SEAT_R + 4}
-                    fill="none"
+                  <rect
+                    x={s.x - 48} y={s.y - 16}
+                    width="96" height="32"
+                    rx="6"
+                    fill="rgba(201, 169, 110, 0.15)"
                     stroke="var(--color-gold)"
-                    strokeWidth="2"
+                    strokeWidth="1.5"
                     className={styles.pulseRing}
                   />
                 )}
-                <circle
-                  cx={s.x} cy={s.y} r={SEAT_R}
-                  fill={mine ? "var(--color-gold)" : "#fff"}
-                  stroke={mine ? "var(--color-gold-dark)" : "#ccc"}
-                  strokeWidth={mine ? 3 : 1}
-                  style={{ transition: 'all 0.3s' }}
-                />
 
-                {/* ゲスト名 or 席番号 */}
-                {guest ? (
-                  <>
-                    <text
-                      x={s.x} y={s.y - 2}
-                      textAnchor="middle"
-                      fill={mine ? "#fff" : "#333"}
-                      fontSize="10" fontWeight="bold"
-                    >
-                      {/* 名前が長い場合は姓のみ表示 */}
-                      {guest.name.length > 4
-                        ? guest.name.split(/\s+/)[0]
-                        : guest.name}
-                    </text>
-                    <text
-                      x={s.x} y={s.y + 12}
-                      textAnchor="middle"
-                      fill={mine ? "rgba(255,255,255,0.8)" : "#999"}
-                      fontSize="8"
-                    >
-                      {guest.relationship}
-                    </text>
-                  </>
-                ) : (
+                {/* ゲスト名（フルネーム） */}
+                <text
+                  x={s.x} y={s.y + 1}
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  fill={mine ? "var(--color-gold-dark)" : "#333"}
+                  fontSize={guest ? "14" : "16"}
+                  fontWeight="bold"
+                >
+                  {displayName}
+                </text>
+
+                {/* 間柄（名前の下） */}
+                {relation && (
                   <text
-                    x={s.x} y={s.y + 5}
+                    x={s.x} y={s.y + 24}
                     textAnchor="middle"
-                    fill={mine ? "#fff" : "#888"}
-                    fontSize="14" fontWeight={mine ? "bold" : "normal"}
+                    fill={mine ? "var(--color-gold)" : "#999"}
+                    fontSize="12"
                   >
-                    {s.seatId}
+                    {relation}
                   </text>
                 )}
 
-                {/* YOU ラベル */}
+                {/* YOU ラベル（名前の上） */}
                 {mine && (
                   <text
-                    x={s.x} y={s.y - SEAT_R - 8}
+                    x={s.x} y={s.y - 20}
                     textAnchor="middle"
                     fill="var(--color-gold-dark)"
                     fontSize="11" fontWeight="bold"
@@ -269,7 +268,7 @@ const SeatDetailView = ({ tableId, userData, seatGuests, loadingSeats, onBack })
       {/* テーブルメンバー一覧 (テキスト) */}
       {seatGuests && seatGuests.length > 0 && (
         <div className={styles.guestList}>
-          <h4 className={styles.guestListTitle}>テーブル {tableId} のメンバー</h4>
+          <h4 className={styles.guestListTitle}>テーブル {tableId} のご出席者</h4>
           <ul className={styles.guestListUl}>
             {seatGuests.map((g) => {
               const isMe = String(userData?.seat_id) === String(g.seat_id)
@@ -279,7 +278,6 @@ const SeatDetailView = ({ tableId, userData, seatGuests, loadingSeats, onBack })
                   key={g.seat_id}
                   className={`${styles.guestListItem} ${isMe ? styles.guestListItemMe : ''}`}
                 >
-                  <span className={styles.guestSeatNum}>{g.seat_id}</span>
                   <span className={styles.guestName}>
                     {g.name}{g.honorific ? ` ${g.honorific}` : ''}
                   </span>
@@ -320,9 +318,15 @@ const SeatMap = () => {
       const res = await axios.get(SEATS_API_ENDPOINT, {
         params: { table_id: tableId },
       });
+      console.log('Seats API raw response:', JSON.stringify(res.data, null, 2));
+
+      // レスポンス形状に応じて seats 配列を取得
+      const seats = res.data.seats || res.data.Items || (Array.isArray(res.data) ? res.data : []);
+      console.log('Parsed seats:', seats);
+
       setSeatGuestsCache((prev) => ({
         ...prev,
-        [tableId]: res.data.seats,
+        [tableId]: seats,
       }));
     } catch (err) {
       console.error('Failed to fetch seat data:', err);
