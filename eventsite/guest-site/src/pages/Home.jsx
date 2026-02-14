@@ -30,7 +30,7 @@ const Home = () => {
         <h1 style={{ fontFamily: 'serif', fontSize: '2.5rem', marginBottom: '10px', letterSpacing: '0.1em' }}>
           Welcome
         </h1>
-        <p style={{ fontSize: '1rem', letterSpacing: '0.2em' }}>2025.07.07</p>
+        <p style={{ fontSize: '1rem', letterSpacing: '0.2em' }}>2026.03.20</p>
       </div>
 
       {/* メッセージセクション */}
@@ -38,7 +38,7 @@ const Home = () => {
         <p style={{ fontSize: '1.2rem', marginBottom: '20px', fontFamily: 'serif' }}>
           {guestName} 様
         </p>
-        <p style={{ fontSize: '0.9rem', color: '#666' }}>
+        <p style={{ fontSize: '0.85rem', color: '#666' }}>
           本日はご多用の中 ご列席いただき<br />
           誠にありがとうございます<br />
           <br />
