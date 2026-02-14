@@ -1,0 +1,44 @@
+/* =============================================
+   Layout — Shell + Bottom Navigation
+   ============================================= */
+
+.shell {
+  background-color: var(--color-bg-light);
+  min-height: 100vh;
+  padding-bottom: 80px; /* ナビの高さ分 */
+}
+
+/* --- Bottom Navigation --- */
+
+.nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  max-width: 500px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--color-black);
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 0;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+  border-top: 1px solid #333;
+  z-index: 1000;
+}
+
+.navItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 10px;
+  color: #888;
+  transition: color 0.2s;
+}
+
+.navItem.active {
+  color: var(--color-gold);
+}
+
+.navLabel {
+  margin-top: 4px;
+}

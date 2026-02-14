@@ -1,0 +1,145 @@
+/* =============================================
+   Login Page
+   ============================================= */
+
+.container {
+  width: 100%;
+  max-width: 480px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background: radial-gradient(circle at center, #2a2a2a 0%, var(--color-black) 100%);
+  color: var(--color-white);
+
+  /* safe-area 対応 */
+  padding-top: max(20px, env(safe-area-inset-top));
+  padding-bottom: max(20px, env(safe-area-inset-bottom));
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.contentInner {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* --- Typography --- */
+
+.title {
+  color: var(--color-gold);
+  font-size: 32px;
+  letter-spacing: 0.2em;
+  margin: 0 0 10px 0;
+  font-weight: 400;
+  width: 100%;
+  word-break: break-word;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 2;
+  letter-spacing: 0.15em;
+  margin-bottom: 48px;
+}
+
+/* --- Form --- */
+
+.formWrapper {
+  width: 100%;
+}
+
+.inputField {
+  width: 100%;
+  padding: 16px;
+  font-size: 16px; /* iOS ズーム防止のため 16px 以上 */
+  font-family: var(--font-serif);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: 2px;
+  color: #fff;
+  outline: none;
+  transition: all 0.3s ease;
+  appearance: none;
+}
+
+.inputField:focus {
+  border-color: var(--color-gold);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.15);
+}
+
+.loginButton {
+  width: 100%;
+  margin-top: 24px;
+  padding: 16px;
+  background-color: var(--color-gold);
+  color: var(--color-black);
+  border: none;
+  border-radius: 2px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  transition: opacity 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.loginButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* --- Error Message --- */
+
+.errorMessage {
+  margin-top: 16px;
+  padding: 12px;
+  font-size: 13px;
+  color: #ff8a8a;
+  background: rgba(255, 100, 100, 0.08);
+  border: 1px solid rgba(255, 100, 100, 0.2);
+  border-radius: 4px;
+  text-align: center;
+}
+
+/* --- Animation --- */
+
+.fadeIn {
+  animation: fadeIn 1.2s ease-in-out;
+  width: 100%;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Responsive --- */
+
+@media screen and (max-width: 374px) {
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .title {
+    font-size: 26px;
+  }
+}
+
+@media screen and (min-width: 411px) {
+  .container {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}

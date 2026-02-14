@@ -1,0 +1,62 @@
+/* =============================================
+   Seat Map Page
+   ============================================= */
+
+.page {
+  padding: 20px;
+  background-color: #fff;
+  min-height: 100vh;
+}
+
+/* --- Header --- */
+
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.title {
+  color: var(--color-gold-dark);
+  font-weight: 400;
+  font-size: 1.5rem;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: var(--color-text-light);
+  margin-top: 8px;
+}
+
+/* --- User Info Banner --- */
+
+.userBanner {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #F9F3E5;
+  border: 1px solid var(--color-gold);
+  border-radius: 8px;
+}
+
+.userName {
+  font-weight: bold;
+}
+
+.tableId {
+  font-size: 24px;
+  color: var(--color-gold);
+  font-weight: bold;
+}
+
+/* --- Zoom Area --- */
+
+.zoomArea {
+  border: 1px solid #eee;
+  overflow: hidden;
+  background-color: #fafafa;
+  border-radius: 12px;
+}
+
+.mapInner {
+  width: 400px;
+  height: 500px;
+}
