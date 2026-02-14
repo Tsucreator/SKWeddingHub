@@ -10,9 +10,9 @@
 /* --- Hero Section --- */
 
 .hero {
-  height: 60vh;
+  height: 100vh;
   background-color: #E5E5E5;
-  background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070');
+  background-image: url('../assets/hero.webp');
   background-size: cover;
   background-position: center;
   display: flex;
@@ -28,24 +28,31 @@
   margin-bottom: 10px;
   letter-spacing: 0.1em;
   font-weight: 400;
+  text-shadow:
+    0 0 20px rgba(0, 0, 0, 1),
+    0 0 40px rgba(0, 0, 0, 1),
+    0 2px 4px rgba(0, 0, 0, 1);
 }
 
 .heroDate {
   font-size: 1rem;
   letter-spacing: 0.2em;
+  text-shadow:
+    0 0 15px rgba(0, 0, 0, 1),
+    0 2px 4px rgba(0, 0, 0, 1);
 }
 
 /* --- Message Section --- */
 
 .message {
-  padding: 40px 20px;
+  padding: 30px 20px;
   text-align: center;
   line-height: 2;
 }
 
 .guestName {
-  font-size: 1.2rem;
-  margin-bottom: 20px;
+  font-size: 1.6rem;
+  margin-bottom: 30px;
 }
 
 .greeting {

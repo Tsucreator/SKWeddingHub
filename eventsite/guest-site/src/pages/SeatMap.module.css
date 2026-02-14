@@ -57,6 +57,11 @@
 }
 
 .mapInner {
-  width: 400px;
-  height: 500px;
+  width: 100%;
+}
+
+.mapSvg {
+  display: block;
+  width: 100%;
+  height: auto;
 }

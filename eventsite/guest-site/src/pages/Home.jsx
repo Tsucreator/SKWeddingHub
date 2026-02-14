@@ -32,7 +32,7 @@ const Home = () => {
 
         <div className={styles.divider}>
           <p className={styles.hint}>
-            # 進行やメニューは下のアイコンからご確認いただけます
+            進行やメニューは下のアイコンからご確認いただけます
           </p>
         </div>
       </div>

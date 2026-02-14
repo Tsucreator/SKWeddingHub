@@ -19,11 +19,21 @@ const SeatMap = () => {
     }
   }, []);
 
+  // メインテーブル側から 4 → 3 → 3 の配置
   const tables = [
-    { id: 'A', x: 100, y: 100, name: 'Table A' },
-    { id: 'B', x: 300, y: 100, name: 'Table B' },
-    { id: 'C', x: 100, y: 300, name: 'Table C' },
-    { id: 'D', x: 300, y: 300, name: 'Table D' },
+    // 1列目（メインテーブルに近い）: 4卓
+    { id: 'A', x: 80,  y: 140, name: 'Table A' },
+    { id: 'B', x: 200, y: 140, name: 'Table B' },
+    { id: 'C', x: 320, y: 140, name: 'Table C' },
+    { id: 'D', x: 440, y: 140, name: 'Table D' },
+    // 2列目（中央）: 3卓
+    { id: 'E', x: 140, y: 270, name: 'Table E' },
+    { id: 'F', x: 260, y: 270, name: 'Table F' },
+    { id: 'G', x: 380, y: 270, name: 'Table G' },
+    // 3列目（奥）: 3卓
+    { id: 'H', x: 140, y: 400, name: 'Table H' },
+    { id: 'I', x: 260, y: 400, name: 'Table I' },
+    { id: 'J', x: 380, y: 400, name: 'Table J' },
   ];
 
   return (
@@ -43,10 +53,10 @@ const SeatMap = () => {
       <div className={styles.zoomArea}>
         <QuickPinchZoom onUpdate={onUpdate} wheelScaleFactor={500}>
           <div ref={imgRef} className={styles.mapInner}>
-            <svg width="400" height="500" viewBox="0 0 400 500">
+            <svg viewBox="0 0 520 470" className={styles.mapSvg}>
               {/* 高砂（メインテーブル） */}
-              <rect x="100" y="20" width="200" height="40" fill="var(--color-black)" rx="4" />
-              <text x="200" y="45" textAnchor="middle" fill="var(--color-gold)" fontSize="12">Main Table</text>
+              <rect x="130" y="20" width="260" height="40" fill="var(--color-black)" rx="4" />
+              <text x="260" y="45" textAnchor="middle" fill="var(--color-gold)" fontSize="14">Main Table</text>
 
               {tables.map((t) => {
                 const isMyTable = userData?.table_id === t.id;
