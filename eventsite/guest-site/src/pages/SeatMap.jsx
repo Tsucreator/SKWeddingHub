@@ -111,19 +111,21 @@ const OverviewMap = ({ userData, onSelectTable }) => {
 const TABLE_DETAIL_R = 70;      // テーブル円の半径
 const SEAT_ORBIT = 110;         // テーブル中心→席中心
 const SEAT_R = 22;              // 席の半径
-const CENTER = 160;             // SVG の中心座標
+const SVG_W = 320;              // SVG 幅
+const TABLE_CX = SVG_W / 2;    // テーブル中心 X
+const HEAD_AREA = 40;           // メインテーブルインジケータ用の上部余白
+const TABLE_CY = HEAD_AREA + SEAT_ORBIT + SEAT_R + 10; // テーブル中心 Y
+const SVG_H = TABLE_CY + SEAT_ORBIT + SEAT_R + 20;     // SVG 高さ
 
 const SeatDetailView = ({ tableId, userData, onBack }) => {
   const table = guestTables.find((t) => t.id === tableId);
   if (!table) return null;
 
-  const seats = calcSeatPositions(CENTER, CENTER, SEAT_ORBIT, table.seats);
+  const seats = calcSeatPositions(TABLE_CX, TABLE_CY, SEAT_ORBIT, table.seats);
   const userTableId = userData?.table_id;
   const userSeatId = userData?.seat_id;
   const isMySeat = (sId) =>
     userTableId === tableId && String(userSeatId) === String(sId);
-
-  const svgSize = (CENTER + SEAT_ORBIT + SEAT_R + 10) * 2;
 
   return (
     <div className={styles.detailArea}>
@@ -132,14 +134,32 @@ const SeatDetailView = ({ tableId, userData, onBack }) => {
       </button>
 
       <div className={styles.detailSvgWrap}>
-        <svg viewBox={`0 0 ${svgSize} ${svgSize}`} className={styles.detailSvg}>
+        <svg viewBox={`0 0 ${SVG_W} ${SVG_H}`} className={styles.detailSvg}>
+          {/* メインテーブル方向インジケータ */}
+          <line
+            x1={TABLE_CX - 50} y1={20}
+            x2={TABLE_CX + 50} y2={20}
+            stroke="var(--color-gold)" strokeWidth="2"
+          />
+          <polygon
+            points={`${TABLE_CX},6 ${TABLE_CX - 6},18 ${TABLE_CX + 6},18`}
+            fill="var(--color-gold)"
+          />
+          <text
+            x={TABLE_CX} y={34}
+            textAnchor="middle" fill="var(--color-text-muted)"
+            fontSize="9"
+          >
+            メインテーブル側
+          </text>
+
           {/* テーブル本体 */}
           <circle
-            cx={CENTER} cy={CENTER} r={TABLE_DETAIL_R}
+            cx={TABLE_CX} cy={TABLE_CY} r={TABLE_DETAIL_R}
             fill="#FBF5E8" stroke="var(--color-gold)" strokeWidth="2"
           />
           <text
-            x={CENTER} y={CENTER + 6}
+            x={TABLE_CX} y={TABLE_CY + 6}
             textAnchor="middle" fill="var(--color-gold-dark)"
             fontWeight="bold" fontSize="28"
           >
@@ -201,14 +221,11 @@ const SeatMap = () => {
     <div className={styles.page}>
       <div className={styles.header}>
         <h2 className={styles.title}>座席表</h2>
-        {!selectedTable && (
-          <p className={styles.subtitle}>ピンチ操作で拡大・縮小できます</p>
-        )}
         {userData && (
           <div className={styles.userBanner}>
             <span className={styles.userName}>{userData.name} 様</span>
             <br />
-            <span className={styles.tableId}>Table {userData.table_id}</span>
+            <span className={styles.tableId}>テーブル {userData.table_id}-{userData.seat_id}</span>
           </div>
         )}
       </div>

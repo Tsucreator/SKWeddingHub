@@ -1,35 +1,49 @@
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-const { DynamoDBDocumentClient, GetCommand } = require("@aws-sdk/lib-dynamodb");
+const { DynamoDBDocumentClient, ScanCommand } = require("@aws-sdk/lib-dynamodb");
 
 const client = new DynamoDBClient({});
 const dynamo = DynamoDBDocumentClient.from(client);
 
 exports.handler = async (event) => {
-    // API Gateway経由の場合、bodyは文字列で来るのでパースが必要
     let email;
     try {
         const body = JSON.parse(event.body);
         email = body.email;
     } catch (e) {
-        return { statusCode: 400, body: JSON.stringify({ message: "Invalid request" }) };
+        return {
+            statusCode: 400,
+            headers: { "Access-Control-Allow-Origin": "*" },
+            body: JSON.stringify({ message: "Invalid request" })
+        };
+    }
+
+    if (!email) {
+        return {
+            statusCode: 400,
+            headers: { "Access-Control-Allow-Origin": "*" },
+            body: JSON.stringify({ message: "Email is required" })
+        };
     }
 
     const params = {
         TableName: 'WeddingGuests',
-        Key: { email: email }
+        FilterExpression: 'email = :email',
+        ExpressionAttributeValues: {
+            ':email': email
+        }
     };
 
     try {
-        const result = await dynamo.send(new GetCommand(params));
-        if (result.Item) {
+        const result = await dynamo.send(new ScanCommand(params));
+        if (result.Items && result.Items.length > 0) {
             return {
                 statusCode: 200,
                 headers: {
-                    "Access-Control-Allow-Origin": "*", // 本番ではドメインを絞るのが理想
+                    "Access-Control-Allow-Origin": "*",
                     "Access-Control-Allow-Methods": "POST,GET,OPTIONS",
                     "Access-Control-Allow-Headers": "Content-Type"
                 },
-                body: JSON.stringify(result.Item)
+                body: JSON.stringify(result.Items[0])
             };
         } else {
             return {
