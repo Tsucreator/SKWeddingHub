@@ -2,94 +2,229 @@ import { useCallback, useRef, useEffect, useState } from "react";
 import QuickPinchZoom, { make3dTransformValue } from "react-quick-pinch-zoom";
 import styles from './SeatMap.module.css';
 
-const SeatMap = () => {
+/**
+ * 円形テーブル周囲に seats 個の席を配置する座標を返す。
+ * 右上 (≈ 1時方向) を seat 1 とし、時計回りに番号が増える。
+ */
+const calcSeatPositions = (cx, cy, radius, seats) => {
+  const result = [];
+  const startAngle = -Math.PI / 3;
+  for (let i = 0; i < seats; i++) {
+    const angle = startAngle + (2 * Math.PI * i) / seats;
+    result.push({
+      seatId: i + 1,
+      x: cx + radius * Math.cos(angle),
+      y: cy + radius * Math.sin(angle),
+    });
+  }
+  return result;
+};
+
+// --- テーブル定義 ---
+const guestTables = [
+  { id: 'A', x: 80,  y: 165, seats: 6 },
+  { id: 'B', x: 200, y: 165, seats: 6 },
+  { id: 'C', x: 320, y: 165, seats: 6 },
+  { id: 'D', x: 440, y: 165, seats: 6 },
+  { id: 'E', x: 140, y: 305, seats: 8 },
+  { id: 'F', x: 260, y: 305, seats: 8 },
+  { id: 'G', x: 380, y: 305, seats: 8 },
+  { id: 'H', x: 140, y: 445, seats: 8 },
+  { id: 'I', x: 260, y: 445, seats: 8 },
+  { id: 'J', x: 380, y: 445, seats: 8 },
+];
+
+/* ========================================
+   全体マップビュー（テーブル粒度）
+   ======================================== */
+const OverviewMap = ({ userData, onSelectTable }) => {
   const imgRef = useRef();
+  const onUpdate = useCallback(({ x, y, scale }) => {
+    if (imgRef.current) {
+      imgRef.current.style.setProperty(
+        "transform",
+        make3dTransformValue({ x, y, scale })
+      );
+    }
+  }, []);
+
+  const userTableId = userData?.table_id;
+
+  return (
+    <div className={styles.zoomArea}>
+      <QuickPinchZoom onUpdate={onUpdate} wheelScaleFactor={500}>
+        <div ref={imgRef} className={styles.mapInner}>
+          <svg viewBox="0 0 520 510" className={styles.mapSvg}>
+            {/* 高砂 */}
+            <rect x="180" y="20" width="160" height="40" fill="var(--color-black)" rx="4" />
+            <text x="260" y="45" textAnchor="middle" fill="var(--color-gold)" fontSize="12" fontWeight="bold">
+              メインテーブル
+            </text>
+
+            {guestTables.map((t) => {
+              const myTable = userTableId === t.id;
+              return (
+                <g
+                  key={t.id}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => onSelectTable(t.id)}
+                >
+                  <circle
+                    cx={t.x} cy={t.y} r="40"
+                    fill={myTable ? "var(--color-gold)" : "#fff"}
+                    stroke={myTable ? "var(--color-gold-dark)" : "#ccc"}
+                    strokeWidth={myTable ? "3" : "1"}
+                    style={{ transition: 'all 0.3s' }}
+                  />
+                  <text
+                    x={t.x} y={t.y + 6}
+                    textAnchor="middle"
+                    fill={myTable ? "#fff" : "#333"}
+                    fontWeight="bold" fontSize="16"
+                  >
+                    {t.id}
+                  </text>
+                  {myTable && (
+                    <text
+                      x={t.x} y={t.y + 58}
+                      textAnchor="middle"
+                      fill="var(--color-gold-dark)"
+                      fontSize="11" fontWeight="bold"
+                    >
+                      Your Table
+                    </text>
+                  )}
+                </g>
+              );
+            })}
+          </svg>
+        </div>
+      </QuickPinchZoom>
+      <p className={styles.tapHint}>テーブルをタップすると座席が確認できます</p>
+    </div>
+  );
+};
+
+/* ========================================
+   座席詳細ビュー（1テーブル拡大）
+   ======================================== */
+const TABLE_DETAIL_R = 70;      // テーブル円の半径
+const SEAT_ORBIT = 110;         // テーブル中心→席中心
+const SEAT_R = 22;              // 席の半径
+const CENTER = 160;             // SVG の中心座標
+
+const SeatDetailView = ({ tableId, userData, onBack }) => {
+  const table = guestTables.find((t) => t.id === tableId);
+  if (!table) return null;
+
+  const seats = calcSeatPositions(CENTER, CENTER, SEAT_ORBIT, table.seats);
+  const userTableId = userData?.table_id;
+  const userSeatId = userData?.seat_id;
+  const isMySeat = (sId) =>
+    userTableId === tableId && String(userSeatId) === String(sId);
+
+  const svgSize = (CENTER + SEAT_ORBIT + SEAT_R + 10) * 2;
+
+  return (
+    <div className={styles.detailArea}>
+      <button className={styles.backButton} onClick={onBack}>
+        ← 全体に戻る
+      </button>
+
+      <div className={styles.detailSvgWrap}>
+        <svg viewBox={`0 0 ${svgSize} ${svgSize}`} className={styles.detailSvg}>
+          {/* テーブル本体 */}
+          <circle
+            cx={CENTER} cy={CENTER} r={TABLE_DETAIL_R}
+            fill="#FBF5E8" stroke="var(--color-gold)" strokeWidth="2"
+          />
+          <text
+            x={CENTER} y={CENTER + 6}
+            textAnchor="middle" fill="var(--color-gold-dark)"
+            fontWeight="bold" fontSize="28"
+          >
+            {tableId}
+          </text>
+
+          {/* 各席 */}
+          {seats.map((s) => {
+            const mine = isMySeat(s.seatId);
+            return (
+              <g key={s.seatId}>
+                <circle
+                  cx={s.x} cy={s.y} r={SEAT_R}
+                  fill={mine ? "var(--color-gold)" : "#fff"}
+                  stroke={mine ? "var(--color-gold-dark)" : "#ccc"}
+                  strokeWidth={mine ? 3 : 1}
+                  style={{ transition: 'all 0.3s' }}
+                />
+                <text
+                  x={s.x} y={s.y + 5}
+                  textAnchor="middle"
+                  fill={mine ? "#fff" : "#888"}
+                  fontSize="14" fontWeight={mine ? "bold" : "normal"}
+                >
+                  {s.seatId}
+                </text>
+                {mine && (
+                  <text
+                    x={s.x} y={s.y - SEAT_R - 6}
+                    textAnchor="middle"
+                    fill="var(--color-gold-dark)"
+                    fontSize="11" fontWeight="bold"
+                  >
+                    YOU
+                  </text>
+                )}
+              </g>
+            );
+          })}
+        </svg>
+      </div>
+    </div>
+  );
+};
+
+/* ========================================
+   メインコンポーネント
+   ======================================== */
+const SeatMap = () => {
   const [userData, setUserData] = useState(null);
+  const [selectedTable, setSelectedTable] = useState(null);
 
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem('guest'));
     setUserData(data);
   }, []);
 
-  const onUpdate = useCallback(({ x, y, scale }) => {
-    const { current: img } = imgRef;
-    if (img) {
-      const value = make3dTransformValue({ x, y, scale });
-      img.style.setProperty("transform", value);
-    }
-  }, []);
-
-  // メインテーブル側から 4 → 3 → 3 の配置
-  const tables = [
-    // 1列目（メインテーブルに近い）: 4卓
-    { id: 'A', x: 80,  y: 140, name: 'Table A' },
-    { id: 'B', x: 200, y: 140, name: 'Table B' },
-    { id: 'C', x: 320, y: 140, name: 'Table C' },
-    { id: 'D', x: 440, y: 140, name: 'Table D' },
-    // 2列目（中央）: 3卓
-    { id: 'E', x: 140, y: 270, name: 'Table E' },
-    { id: 'F', x: 260, y: 270, name: 'Table F' },
-    { id: 'G', x: 380, y: 270, name: 'Table G' },
-    // 3列目（奥）: 3卓
-    { id: 'H', x: 140, y: 400, name: 'Table H' },
-    { id: 'I', x: 260, y: 400, name: 'Table I' },
-    { id: 'J', x: 380, y: 400, name: 'Table J' },
-  ];
-
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-        <h2 className={styles.title}>SEAT MAP</h2>
-        <p className={styles.subtitle}>ピンチ操作で拡大・縮小できます</p>
+        <h2 className={styles.title}>座席表</h2>
+        {!selectedTable && (
+          <p className={styles.subtitle}>ピンチ操作で拡大・縮小できます</p>
+        )}
         {userData && (
           <div className={styles.userBanner}>
-            <span className={styles.userName}>{userData.name} 様のテーブルは</span>
+            <span className={styles.userName}>{userData.name} 様</span>
             <br />
-            <span className={styles.tableId}>【 {userData.table_id} 】</span> です
+            <span className={styles.tableId}>Table {userData.table_id}</span>
           </div>
         )}
       </div>
 
-      <div className={styles.zoomArea}>
-        <QuickPinchZoom onUpdate={onUpdate} wheelScaleFactor={500}>
-          <div ref={imgRef} className={styles.mapInner}>
-            <svg viewBox="0 0 520 470" className={styles.mapSvg}>
-              {/* 高砂（メインテーブル） */}
-              <rect x="130" y="20" width="260" height="40" fill="var(--color-black)" rx="4" />
-              <text x="260" y="45" textAnchor="middle" fill="var(--color-gold)" fontSize="14">Main Table</text>
-
-              {tables.map((t) => {
-                const isMyTable = userData?.table_id === t.id;
-                return (
-                  <g key={t.id}>
-                    <circle
-                      cx={t.x} cy={t.y} r="40"
-                      fill={isMyTable ? "var(--color-gold)" : "#fff"}
-                      stroke={isMyTable ? "var(--color-gold-dark)" : "#ccc"}
-                      strokeWidth={isMyTable ? "4" : "1"}
-                      style={{ transition: 'all 0.3s' }}
-                    />
-                    <text
-                      x={t.x} y={t.y + 5}
-                      textAnchor="middle"
-                      fill={isMyTable ? "#fff" : "#333"}
-                      fontWeight="bold"
-                      fontSize="16"
-                    >
-                      {t.id}
-                    </text>
-                    {isMyTable && (
-                      <text x={t.x} y={t.y + 60} textAnchor="middle" fill="var(--color-gold-dark)" fontSize="12" fontWeight="bold">
-                        Your Seat
-                      </text>
-                    )}
-                  </g>
-                );
-              })}
-            </svg>
-          </div>
-        </QuickPinchZoom>
-      </div>
+      {selectedTable ? (
+        <SeatDetailView
+          tableId={selectedTable}
+          userData={userData}
+          onBack={() => setSelectedTable(null)}
+        />
+      ) : (
+        <OverviewMap
+          userData={userData}
+          onSelectTable={setSelectedTable}
+        />
+      )}
     </div>
   );
 };

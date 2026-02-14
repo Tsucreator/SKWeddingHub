@@ -44,7 +44,8 @@
 
 ### 4.1 ログイン (Auth) — ✅ 実装済み
 - 招待状送付先メールアドレスによる簡易認証。
-- **フロー:** メールアドレス入力 → API Gateway (POST) → Lambda (`weddingGuestLogin`) → DynamoDB `WeddingGuests` テーブル照合 → ゲスト情報返却。
+- **フロー:** メールアドレス入力 → API Gateway (POST) → Lambda (`weddingGuestLogin`) → DynamoDB `WeddingGuests` テーブルを `email` で検索 → ゲスト情報返却。
+- **DB 検索方式:** パーティションキーは `guest_id` (Number) のため、`email` での検索には GSI (Global Secondary Index) または Scan + FilterExpression を使用する。（TODO: 方式を確定し Lambda を修正）
 - **セッション保持:** `localStorage` にゲスト情報 (JSON) を保存。再アクセス時はログイン画面をスキップ。
 - **認証ガード:** 未ログイン時は全ページを `/login` にリダイレクト (React Router `<Navigate>`)。
 - **API エンドポイント:** 環境変数 `VITE_API_ENDPOINT` で管理予定（現在はハードコード — 要改善）。
@@ -81,20 +82,34 @@
 ### WeddingGuests テーブル
 | 項目 | 型 | 説明 |
 | :--- | :--- | :--- |
-| email | String (PK) | ログインキー |
+| guest_id | Number (PK) | ゲスト識別子 |
 | name | String | ゲスト名 |
+| kana | String | ふりがな |
+| roma | String | ローマ字表記 |
+| attendance | String | 出欠状況 |
+| email | String | メールアドレス（ログインキー） |
+| allergy | String | アレルギー情報 |
+| side | String | 新郎側 / 新婦側 |
+| relationship | String | 間柄（友人、親族等） |
+| honorific | String | 敬称 |
+| seat_id | Number | 席番号 (例: "1", "3") |
 | table_id | String | 所属テーブルID (例: "A", "B") |
-| seat_id | String | 席番号 (例: "A-1", "B-3") |
-| memo | String | 備考（例：アレルギー個別メニュー対象フラグなど） |
 
 ### Login API レスポンス例
 ```json
 {
-  "email": "guest@example.com",
+  "guest_id": 1,
   "name": "山田 太郎",
+  "kana": "やまだ たろう",
+  "roma": "Taro Yamada",
+  "attendance": "出席",
+  "email": "guest@example.com",
+  "allergy": "",
+  "side": "groom",
+  "relationship": "友人",
+  "honorific": "様",
   "table_id": "A",
-  "seat_id": "A-1",
-  "memo": ""
+  "seat_id": "1"
 }
 ```
 

@@ -42,7 +42,7 @@
 }
 
 .tableId {
-  font-size: 24px;
+  font-size: 20px;
   color: var(--color-gold);
   font-weight: bold;
 }
@@ -63,5 +63,54 @@
 .mapSvg {
   display: block;
   width: 100%;
+  height: auto;
+}
+
+.tapHint {
+  text-align: center;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  padding: 8px 0;
+}
+
+/* --- Seat Detail View --- */
+
+.detailArea {
+  margin-top: 4px;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  margin-bottom: 12px;
+  border: 1px solid var(--color-gold);
+  border-radius: 20px;
+  background: #fff;
+  color: var(--color-gold-dark);
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.backButton:active {
+  background: #F9F3E5;
+}
+
+.detailSvgWrap {
+  background: #fafafa;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.detailSvg {
+  display: block;
+  width: 100%;
+  max-width: 320px;
   height: auto;
 }

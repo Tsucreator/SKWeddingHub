@@ -59,7 +59,7 @@ layers/              # Lambda Layer (gspread 等)
 #### 当日ゲストサイト (`eventsite/`)
 - フロントエンドは **React + Vite** (`eventsite/guest-site/`)。
 - 機能仕様は `eventsite/specification.md` が正。
-- 認証: メールアドレスで DynamoDB (`WeddingGuests` テーブル) を参照する簡易ログイン。
+- 認証: メールアドレスで DynamoDB (`WeddingGuests` テーブル) を検索する簡易ログイン。PK は `guest_id` (Number) のため、`email` での検索には GSI または Scan を使用。
   - Lambda: `eventsite/api/login/index.js` (Node.js, `@aws-sdk/client-dynamodb`)
   - ログイン状態は `localStorage` に保持し、再入力を不要にする。
 - 必須ページ: 進行表 (SCHEDULE), メニュー (MENU & DRINK), 座席表 (SEAT MAP), 会場案内 (INFO)
@@ -75,11 +75,18 @@ layers/              # Lambda Layer (gspread 等)
 - DynamoDB テーブル `WeddingGuests` のスキーマ:
   | 項目 | 型 | 説明 |
   |---|---|---|
-  | email | String (PK) | ログインキー |
+  | guest_id | Number (PK) | ゲスト識別子 |
   | name | String | ゲスト名 |
-  | table_id | String | テーブルID |
+  | kana | String | ふりがな |
+  | roma | String | ローマ字表記 |
+  | attendance | String | 出欠状況 |
+  | email | String | メールアドレス（ログインキー） |
+  | allergy | String | アレルギー情報 |
+  | side | String | 新郎側 / 新婦側 |
+  | relationship | String | 間柄 |
+  | honorific | String | 敬称 |
   | seat_id | String | 席番号 |
-  | memo | String | 備考 |
+  | table_id | String | テーブルID |
 
 ---
 
