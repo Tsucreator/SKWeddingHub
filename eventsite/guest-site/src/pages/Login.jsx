@@ -17,7 +17,7 @@ const Login = () => {
       const response = await axios.post(API_ENDPOINT, { email });
       
       localStorage.setItem('guest', JSON.stringify(response.data));
-      window.location.href = '/';
+      window.location.href = '/eventsite/';
 
     } catch (error) {
       console.error(error);
@@ -237,7 +237,7 @@ const Login = () => {
               disabled={loading}
               className="login-button"
             >
-              {loading ? 'VERIFYING...' : 'LOGIN'}
+              {loading ? '確認中...' : 'ログイン'}
             </button>
           </form>
         </div>
