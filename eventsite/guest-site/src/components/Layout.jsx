@@ -1,6 +1,6 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { Home, Calendar, Utensils, MapPin, Camera, Info } from 'lucide-react';
-import PropTypes from 'prop-types';
+import PageTransition from './PageTransition';
 import styles from './Layout.module.css';
 
 const Layout = () => {
@@ -18,7 +18,12 @@ const Layout = () => {
   return (
     <div className={styles.shell}>
       <main>
-        <Outlet />
+        {/* key に location.key を渡すことで、
+            ルート変更のたびに PageTransition が再マウントされ、
+            フェードインアニメーションが毎回発火する */}
+        <PageTransition key={location.key}>
+          <Outlet />
+        </PageTransition>
       </main>
 
       <nav className={styles.nav}>
