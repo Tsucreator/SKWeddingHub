@@ -18,7 +18,7 @@ invitation/          # 招待状
   site/              # 静的フロントエンド (HTML/CSS/JS)
   api/lambda/        # RSVP Lambda (Node.js — SES 送信 + Google Sheets 更新)
 eventsite/           # 当日ゲストサイト
-  specification.md   # 機能仕様書 (v7.0)
+  specification.md   # 機能仕様書 (v8.0)
   guest-site/        # React + Vite SPA
   api/login/         # ログイン Lambda (Node.js — DynamoDB 認証)
   api/lambda/        # (将来拡張用)
@@ -62,10 +62,12 @@ layers/              # Lambda Layer (gspread 等)
 - 認証: メールアドレスで DynamoDB (`WeddingGuests` テーブル) を検索する簡易ログイン。PK は `guest_id` (Number) のため、`email` での検索には GSI または Scan を使用。
   - Lambda: `eventsite/api/login/index.js` (Node.js, `@aws-sdk/client-dynamodb`)
   - ログイン状態は `localStorage` に保持し、再入力を不要にする。
-- 必須ページ: 進行表 (SCHEDULE), メニュー (MENU & DRINK), 座席表 (SEAT MAP), 会場案内 (INFO)
+- 必須ページ: トップ (TOP), メニュー (MENU), 座席表 (SEAT MAP), 引出物 (GIFT)
 - 追加ページ: プロフィール (OUR STORY), ギャラリー (MEMORIES)
 - 座席表はログインユーザの `table_id` / `seat_id` に基づきハイライト。ピンチズーム対応必須。
 - 動画は YouTube 埋め込み、写真は Google Drive 連携。
+- 画面遷移は `React.lazy` + `Suspense` + `PageTransition` コンポーネントでフェードインさせる。
+- `.env` (Vite) で `VITE_API_ENDPOINT` と `VITE_SEATS_API_ENDPOINT` を設定し、API 呼び出し URL を外部化する。
 
 ---
 
@@ -85,7 +87,7 @@ layers/              # Lambda Layer (gspread 等)
   | side | String | 新郎側 / 新婦側 |
   | relationship | String | 間柄 |
   | honorific | String | 敬称 |
-  | seat_id | String | 席番号 |
+  | seat_id | Number | 席番号 |
   | table_id | String | テーブルID |
 
 ---
