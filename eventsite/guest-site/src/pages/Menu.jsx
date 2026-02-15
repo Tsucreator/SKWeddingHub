@@ -2,8 +2,14 @@ import { useState } from 'react';
 import { Utensils, Wine } from 'lucide-react';
 import styles from './Menu.module.css';
 
+const KIDS_GUEST_ID = 14;
+
 const Menu = () => {
   const [activeTab, setActiveTab] = useState('drink');
+
+  // localStorage からゲスト情報を取得し kids 判定
+  const guest = JSON.parse(localStorage.getItem('guest') || '{}');
+  const isKids = Number(guest.guest_id) === KIDS_GUEST_ID;
 
   const drinkMenu = [
     { category: 'ビール', items: ['アサヒ スーパードライ', 'ノンアルコールビール'] },
@@ -17,6 +23,10 @@ const Menu = () => {
     { category: 'ソフトドリンク', items: ['オレンジ', 'グレープフルーツ', 'ウーロン茶', 'コーラ', 'ジンジャーエール'] },
   ];
 
+  const kidsDrinkMenu = [
+    { category: 'ソフトドリンク', items: ['オレンジ', 'グレープフルーツ', 'ウーロン茶', 'コーラ', 'ジンジャーエール'] },
+  ];
+
   const foodMenu = [
     { category: 'Hors d\'oeuvres', title: '前菜', description: '国産アトランティックサーモン・ビーツ・海塩サブレのコンポジション\nキャビア添え3種のコンフィチュール' },
     { category: 'Hors d\'oeuvres', title: '', description: '千葉県産恋する豚のフリール\nエーグルドゥースソース マッシュルーの香り' },
@@ -27,10 +37,20 @@ const Menu = () => {
     { category: 'Pain / Café', title: 'パン・コーヒー', description: '焼き立てパンと食後の香ばしい珈琲' },
   ];
 
+  const kidsFoodMenu = [
+    { title: '冷製料理 3種盛り', description: '鮎のヴァプールと野菜のマリネ\n鴨のスモークとかぼちゃのサラダ\nライスヌードルのトマトソース添え' },
+    { title: '温製料理 3種盛り', description: '牛フィレ肉のステーキ\n白身魚と帆立貝の蒸し焼き 甘酢あんかけ\n鶏肉の米粉から揚げとソーセージ' },
+    { title: 'メインと小鉢料理', description: 'フライドポテト\n野菜のブイヨンスープ\n鮭チャーハン\n米粉パン' },
+    { title: 'デザート', description: 'フルーツゼリー' },
+  ];
+
+  const activeFoodMenu = isKids ? kidsFoodMenu : foodMenu;
+  const activeDrinkMenu = isKids ? kidsDrinkMenu : drinkMenu;
+
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-        <h2 className={styles.title}>MENU</h2>
+        <h2 className={styles.title}>{isKids ? 'KIDS MENU' : 'MENU'}</h2>
       </div>
 
       {/* タブ切り替え */}
@@ -53,7 +73,7 @@ const Menu = () => {
       <div className={styles.content}>
         {activeTab === 'food' ? (
           <div>
-            {foodMenu.map((item, index) => (
+            {activeFoodMenu.map((item, index) => (
               <div key={index} className={styles.foodItem}>
                 <h3 className={styles.foodTitle}>{item.title}</h3>
                 <p className={styles.foodDescription}>{item.description}</p>
@@ -62,7 +82,7 @@ const Menu = () => {
           </div>
         ) : (
           <div>
-            {drinkMenu.map((group, index) => (
+            {activeDrinkMenu.map((group, index) => (
               <div key={index} className={styles.drinkGroup}>
                 <h3 className={styles.drinkCategory}>{group.category}</h3>
                 <div className={styles.drinkGrid}>
