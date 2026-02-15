@@ -109,7 +109,7 @@ const OverviewMap = ({ userData, onSelectTable }) => {
                       fill="var(--color-gold-dark)"
                       fontSize="11" fontWeight="bold"
                     >
-                      Your Table ▶
+                      あなたのテーブルはこちら ▲
                     </text>
                   )}
                 </g>
@@ -214,8 +214,8 @@ const SeatDetailView = ({ tableId, userData, seatGuests, loadingSeats, onBack })
                 {/* 自分の席にハイライト背景（角丸矩形） */}
                 {mine && (
                   <rect
-                    x={s.x - 48} y={s.y - 16}
-                    width="96" height="32"
+                    x={s.x - 48} y={s.y - 12}
+                    width="96" height="24"
                     rx="6"
                     fill="rgba(201, 169, 110, 0.15)"
                     stroke="var(--color-gold)"
@@ -239,7 +239,7 @@ const SeatDetailView = ({ tableId, userData, seatGuests, loadingSeats, onBack })
                 {/* 間柄（名前の下） */}
                 {relation && (
                   <text
-                    x={s.x} y={s.y + 24}
+                    x={s.x} y={s.y + 28}
                     textAnchor="middle"
                     fill={mine ? "var(--color-gold)" : "#999"}
                     fontSize="12"
@@ -256,7 +256,7 @@ const SeatDetailView = ({ tableId, userData, seatGuests, loadingSeats, onBack })
                     fill="var(--color-gold-dark)"
                     fontSize="11" fontWeight="bold"
                   >
-                    ★ YOU
+                    こちら
                   </text>
                 )}
               </g>
@@ -282,7 +282,6 @@ const SeatDetailView = ({ tableId, userData, seatGuests, loadingSeats, onBack })
                     {g.name}{g.honorific ? ` ${g.honorific}` : ''}
                   </span>
                   <span className={styles.guestRelation}>{g.relationship}</span>
-                  {isMe && <span className={styles.youBadge}>YOU</span>}
                 </li>
               );
             })}
@@ -345,7 +344,7 @@ const SeatMap = () => {
             <span className={styles.userName}>{userData.name} 様</span>
             <br />
             <span className={styles.tableId}>
-              テーブル {userData.table_id} - 席番号 {userData.seat_id}
+              テーブル {userData.table_id}
             </span>
           </div>
         )}
