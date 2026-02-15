@@ -3,24 +3,28 @@ import { Utensils, Wine } from 'lucide-react';
 import styles from './Menu.module.css';
 
 const Menu = () => {
-  const [activeTab, setActiveTab] = useState('food');
-
-  const foodMenu = [
-    { category: 'Amuse', title: '始まりの一皿', description: '季節の厳選素材を使用したアミューズ' },
-    { category: 'Premier', title: '彩り豊かなオードブル', description: '真鯛のマリネと有機野菜のプレス 庭園仕立て' },
-    { category: 'Soupe', title: '季節のスープ', description: 'コンソメドゥーブル 芳醇な香りのパイ包み焼き' },
-    { category: 'Poisson', title: '海の幸', description: '真鯛のポワレ 焦がしバターとバルサミコのソース' },
-    { category: 'Viande', title: '肉料理', description: '特選牛フィレ肉のロースト 芳醇な赤ワインソース' },
-    { category: 'Dessert', title: 'デザート', description: 'パティシエ特製 ショコラとベリーのシンフォニー' },
-    { category: 'Pain / Café', title: 'パン・コーヒー', description: '焼き立てパンと、食後の香ばしい珈琲' },
-  ];
+  const [activeTab, setActiveTab] = useState('drink');
 
   const drinkMenu = [
-    { category: 'Beer', items: ['アサヒ スーパードライ', 'ノンアルコールビール'] },
-    { category: 'Wine', items: ['シャンパン', '赤ワイン（ボルドー）', '白ワイン（シャルドネ）'] },
-    { category: 'Whisky', items: ['ハイボール', 'ロック / 水割り'] },
-    { category: 'Cocktail', items: ['カシスオレンジ', 'ジンライム', 'カンパリソーダ'] },
-    { category: 'Soft Drink', items: ['オレンジジュース', 'ウーロン茶', 'ジンジャーエール', 'アップルジュース'] },
+    { category: 'ビール', items: ['アサヒ スーパードライ', 'ノンアルコールビール'] },
+    { category: 'ワイン', items: ['赤', '白'] },
+    { category: 'ウィスキー', items: ['ロック', '水割り', 'ソーダ割り'] },
+    { category: 'カクテル', items: ['ジン', 'カシス', 'カンパリ', 'ライチ', 'ノンアルコール'] },
+    { category: '日本酒', items: ['燗', '冷'] },
+    { category: '焼酎', items: ['麦', '芋'] },
+    { category: 'サワー', items: ['レモン', 'グレープフルーツ'] },
+    { category: '梅酒', items: ['ロック', '水割り', 'ソーダ割り'] },
+    { category: 'ソフトドリンク', items: ['オレンジ', 'グレープフルーツ', 'ウーロン茶', 'コーラ', 'ジンジャーエール'] },
+  ];
+
+  const foodMenu = [
+    { category: 'Hors d\'oeuvres', title: '前菜', description: '国産アトランティックサーモン・ビーツ・海塩サブレのコンポジション\nキャビア添え3種のコンフィチュール' },
+    { category: 'Hors d\'oeuvres', title: '', description: '千葉県産恋する豚のフリール\nエーグルドゥースソース マッシュルーの香り' },
+    { category: 'Soupe', title: 'スープ', description: '千葉県産しあわせ絆牛のポトフ\nレフォールクリーム' },
+    { category: 'Poisson', title: '魚料理', description: '蝮夷鮑のパイ包み焼き\n車海老のエッセンス ヴァンブランソース' },
+    { category: 'Viande', title: '肉料理', description: '国産牛フィレ肉 フォアグラ添え ロッシーニ風\nマデラ酒とトリュフのソース' },
+    { category: 'Dessert', title: 'デザート', description: 'フロマージュムース\nパッションフルーツジュレ レモンのメレンゲ 苺ソース' },
+    { category: 'Pain / Café', title: 'パン・コーヒー', description: '焼き立てパンと食後の香ばしい珈琲' },
   ];
 
   return (
@@ -32,16 +36,16 @@ const Menu = () => {
       {/* タブ切り替え */}
       <div className={styles.tabs}>
         <button
-          onClick={() => setActiveTab('food')}
-          className={activeTab === 'food' ? styles.tabActive : styles.tab}
-        >
-          <Utensils size={18} /> お料理
-        </button>
-        <button
           onClick={() => setActiveTab('drink')}
           className={activeTab === 'drink' ? styles.tabActive : styles.tab}
         >
           <Wine size={18} /> お飲み物
+        </button>
+        <button
+          onClick={() => setActiveTab('food')}
+          className={activeTab === 'food' ? styles.tabActive : styles.tab}
+        >
+          <Utensils size={18} /> お料理
         </button>
       </div>
 
@@ -51,7 +55,6 @@ const Menu = () => {
           <div>
             {foodMenu.map((item, index) => (
               <div key={index} className={styles.foodItem}>
-                <span className={styles.foodCategory}>— {item.category} —</span>
                 <h3 className={styles.foodTitle}>{item.title}</h3>
                 <p className={styles.foodDescription}>{item.description}</p>
               </div>

@@ -82,9 +82,10 @@
 }
 
 .foodDescription {
-  font-size: 12px;
+  font-size: 0.8rem;
   color: #777;
   line-height: 1.6;
+  white-space: pre-line;
 }
 
 /* --- Drink Menu --- */
@@ -94,7 +95,7 @@
 }
 
 .drinkCategory {
-  font-size: 14px;
+  font-size: 1rem;
   color: var(--color-gold-dark);
   border-bottom: 1px dotted var(--color-gold);
   padding-bottom: 5px;
