@@ -12,11 +12,10 @@ const SEATS_API_ENDPOINT = import.meta.env.VITE_SEATS_API_ENDPOINT
  */
 const calcSeatPositions = (cx, cy, radius, seats) => {
   const result = [];
-  // 奇数 → 頂点を真下 (π/2) に配置
-  // 偶数 → 辺が水平になるよう半頂点分ずらす (-π/2 + π/seats)
-  const startAngle = seats % 2 === 0
-    ? -Math.PI / 2 + Math.PI / seats
-    : Math.PI / 2;
+  // 左右対称かつ上辺がメインテーブルと水平になるよう配置。
+  // 真上 (-π/2) を対称軸とし、半頂点分 (π/seats) 右にずらして開始。
+  // seat 1 は右上に来て、時計回りに番号が増える。
+  const startAngle = -Math.PI / 2 + Math.PI / seats;
   for (let i = 0; i < seats; i++) {
     const angle = startAngle + (2 * Math.PI * i) / seats;
     result.push({
@@ -127,8 +126,8 @@ const OverviewMap = ({ userData, onSelectTable }) => {
    座席詳細ビュー（1テーブル拡大）
    ======================================== */
 const TABLE_DETAIL_R = 70;      // テーブル円の半径
-const SEAT_ORBIT = 130;         // テーブル中心→席名テキスト中心
-const SVG_W = 340;              // SVG 幅
+const SEAT_ORBIT = 140;         // テーブル中心→席名テキスト中心
+const SVG_W = 380;              // SVG 幅
 const TABLE_CX = SVG_W / 2;    // テーブル中心 X
 const HEAD_AREA = 40;           // メインテーブルインジケータ用の上部余白
 const TABLE_CY = HEAD_AREA + SEAT_ORBIT + 25; // テーブル中心 Y
@@ -168,6 +167,17 @@ const SeatDetailView = ({ tableId, userData, seatGuests, loadingSeats, onBack })
           </div>
         )}
         <svg viewBox={`0 0 ${SVG_W} ${SVG_H}`} className={styles.detailSvg}>
+          {/* グローフィルター */}
+          <defs>
+            <filter id="goldGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
           {/* メインテーブル方向インジケータ */}
           <line
             x1={TABLE_CX - 50} y1={20}
@@ -211,27 +221,15 @@ const SeatDetailView = ({ tableId, userData, seatGuests, loadingSeats, onBack })
 
             return (
               <g key={s.seatId}>
-                {/* 自分の席にハイライト背景（角丸矩形） */}
-                {mine && (
-                  <rect
-                    x={s.x - 48} y={s.y - 12}
-                    width="96" height="24"
-                    rx="6"
-                    fill="rgba(201, 169, 110, 0.15)"
-                    stroke="var(--color-gold)"
-                    strokeWidth="1.5"
-                    className={styles.pulseRing}
-                  />
-                )}
-
-                {/* ゲスト名（フルネーム） */}
+                {/* ゲスト名（フルネーム） — 自席はグローで光らせる */}
                 <text
                   x={s.x} y={s.y + 1}
                   textAnchor="middle"
                   dominantBaseline="central"
                   fill={mine ? "var(--color-gold-dark)" : "#333"}
-                  fontSize={guest ? "14" : "16"}
+                  fontSize={guest ? "16" : "18"}
                   fontWeight="bold"
+                  filter={mine ? "url(#goldGlow)" : undefined}
                 >
                   {displayName}
                 </text>
