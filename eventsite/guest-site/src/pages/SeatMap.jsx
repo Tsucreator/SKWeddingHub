@@ -29,16 +29,16 @@ const calcSeatPositions = (cx, cy, radius, seats) => {
 
 // --- テーブル定義（seats は全体マップ用のデフォルト値、詳細ビューでは API データで上書き） ---
 const guestTables = [
-  { id: 'A', x: 80,  y: 165, seats: 6 },
-  { id: 'B', x: 200, y: 165, seats: 6 },
+  { id: 'A', x: 80,  y: 165, seats: 4 },
+  { id: 'B', x: 200, y: 165, seats: 9 },
   { id: 'C', x: 320, y: 165, seats: 6 },
   { id: 'D', x: 440, y: 165, seats: 6 },
-  { id: 'E', x: 140, y: 305, seats: 8 },
-  { id: 'F', x: 260, y: 305, seats: 8 },
+  { id: 'E', x: 140, y: 305, seats: 6 },
+  { id: 'F', x: 260, y: 305, seats: 4 },
   { id: 'G', x: 380, y: 305, seats: 8 },
   { id: 'H', x: 140, y: 445, seats: 8 },
-  { id: 'I', x: 260, y: 445, seats: 8 },
-  { id: 'J', x: 380, y: 445, seats: 8 },
+  { id: 'I', x: 260, y: 445, seats: 5 },
+  { id: 'J', x: 380, y: 445, seats: 5 },
 ];
 
 /* ========================================
