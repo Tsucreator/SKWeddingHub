@@ -16,15 +16,19 @@
 │  invitation  │     │  eventsite   │
 │  (静的 HTML) │     │ (React SPA)  │
 └──────┬───────┘     └──────┬───────┘
-       │   S3 + CloudFront  │
-       └────────┬───────────┘
-                │
-         API Gateway
-        ┌───────┴────────┐
-        │                │
-   Lambda (Python)  Lambda (Node.js)
-   RSVP → Sheets    Login → DynamoDB
+  │   S3 + CloudFront  │
+  └────────┬───────────┘
+      │
+    API Gateway
+   ┌──────┴──────────────┐
+   │                     │
+  Lambda (Python)     Lambda (Node.js)
+  RSVP → Sheets   ┌──▶ Login → DynamoDB
+       └──▶ Seats → DynamoDB
 ```
+
+**API エンドポイント:** 招待状 (`/submit`), ログイン (`/prod/login`), 座席情報 (`/prod/seats`)。
+座席情報 Lambda はテーブル ID を受け取り、`WeddingGuests` テーブルから該当席一覧を返します。
 
 ---
 
@@ -89,6 +93,7 @@ npm run preview  # ビルド成果物をローカルプレビュー
     deploy-backend.yml       # 招待状 Lambda → AWS Lambda
     deploy-eventsite-frontend.yml  # ゲストサイト → S3
     deploy-eventsite-login.yml     # ログイン Lambda → AWS Lambda
+    deploy-eventsite-seats.yml     # 座席情報 Lambda → AWS Lambda
 
 invitation/                  # 招待状サイト
   specification.md           # 仕様書
@@ -108,6 +113,9 @@ eventsite/                   # 当日ゲストサイト
   specification.md           # 仕様書 (v8.0)
   api/login/
     index.js                 # ログイン Lambda (Node.js 24 — DynamoDB 認証)
+  api/lambda/
+    index.js                 # 座席情報 Lambda (Node.js 20 — DynamoDB Scan)
+    package.json             # Lambda 依存管理
   guest-site/
     src/
       App.jsx                # React Router ルーティング (lazy + Suspense)
@@ -120,6 +128,7 @@ eventsite/                   # 当日ゲストサイト
         SeatMap.jsx          # 座席表
         AboutUs.jsx          # プロフィール
         Gift.jsx             # 引出物案内
+        Schedule.jsx         # 旧進行表ページ（参考用、未使用）
 
 layers/
   gspread-layer/             # Lambda Layer (gspread + 依存)
@@ -139,6 +148,7 @@ infrastructure-notes.md      # インフラ設定メモ (Git管理外 ⚠️)
 | `deploy-backend.yml` | `invitation/api/lambda/**` | pip install → zip → Lambda デプロイ |
 | `deploy-eventsite-frontend.yml` | `eventsite/guest-site/**` | npm ci → vite build → S3 同期 → CloudFront 無効化 |
 | `deploy-eventsite-login.yml` | `eventsite/api/login/**` | npm ci → zip → Lambda デプロイ |
+| `deploy-eventsite-seats.yml` | `eventsite/api/lambda/**` | npm ci → zip → 座席情報 Lambda デプロイ |
 
 すべてのワークフローは `workflow_dispatch` にも対応しているため、GitHub UI から手動実行も可能です。
 
@@ -156,6 +166,7 @@ infrastructure-notes.md      # インフラ設定メモ (Git管理外 ⚠️)
 | `EVENTSITE_LOGIN_LAMBDA_NAME` | ログイン Lambda 関数名 |
 | `EVENTSITE_API_ENDPOINT` | ゲストサイト API Gateway URL |
 | `EVENTSITE_SEATS_API_ENDPOINT` | 座席表 API Gateway URL |
+| `EVENTSITE_SEATS_LAMBDA_NAME` | 座席情報 Lambda 関数名 |
 
 > 💡 各 Secret の実際の値は `infrastructure-notes.md` (Git 管理外) に記録しています。
 
@@ -167,8 +178,8 @@ infrastructure-notes.md      # インフラ設定メモ (Git管理外 ⚠️)
 |---|---|---|
 | **S3** | `/invitation/` | `/eventsite/` |
 | **CloudFront** | 共通ディストリビューション | 同左 |
-| **API Gateway** | POST `/submit` | POST `/prod/login` |
-| **Lambda** | `writeGoogleSpreadSheet` (Python 3.12) | `weddingGuestLogin` (Node.js 24), 座席情報 Lambda (TBD) |
+| **API Gateway** | POST `/submit` | POST `/prod/login`, GET `/prod/seats` |
+| **Lambda** | `writeGoogleSpreadSheet` (Python 3.12) | `weddingGuestLogin` (Node.js 24), 座席情報 Lambda (Node.js 20) |
 | **DynamoDB** | — | `WeddingGuests` テーブル |
 | **SES** | RSVP メール通知 (現在無効化中) | — |
 | **Secrets Manager** | Google Sheets 認証情報 | — |
