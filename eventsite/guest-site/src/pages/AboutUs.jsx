@@ -1,12 +1,11 @@
-import styles from './Schedule.module.css';
+import styles from './AboutUs.module.css';
 
 const AboutUs = () => {
   return (
     <div className={styles.page}>
       {/* ヘッダー */}
       <div className={styles.header}>
-        <h2 className={styles.title}>ABOUT US</h2>
-        <p className={styles.subtitle}>Our Story</p>
+        <h2 className={styles.title}>プロフィール</h2>
       </div>
 
       {/* 二人の紹介 */}
@@ -44,7 +43,7 @@ const AboutUs = () => {
       {/* ストーリー */}
       <div className={styles.story}>
         <div className={styles.storyDivider} />
-        <h3 className={styles.storyTitle}>How We Met</h3>
+        <h3 className={styles.storyTitle}>出会いのきっかけ</h3>
         <p className={styles.storyText}>
           2020年の春に出会い<br />
           共に過ごす日々の中で<br />

@@ -3,11 +3,13 @@ import styles from './Home.module.css';
 
 const Home = () => {
   const [guestName, setGuestName] = useState('');
+  const [guestNameRoma, setGuestNameRoma] = useState('');
 
   useEffect(() => {
     const guest = JSON.parse(localStorage.getItem('guest'));
     if (guest && guest.name) {
       setGuestName(guest.name);
+      setGuestNameRoma(guest.roma);
     }
   }, []);
 
@@ -15,7 +17,8 @@ const Home = () => {
     <div className={styles.page}>
       {/* ヒーローセクション */}
       <div className={styles.hero}>
-        <h1 className={styles.heroTitle}>Welcome</h1>
+        <h3 className={styles.heroSubtitle}>{guestNameRoma}</h3>
+        <h3 className={styles.heroTitle}>Welcome to Our Party</h3>
         <p className={styles.heroDate}>2026.03.20</p>
       </div>
 

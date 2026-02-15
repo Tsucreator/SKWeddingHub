@@ -1,0 +1,123 @@
+/* =============================================
+   About Us Page
+   ============================================= */
+
+.page {
+  padding: 40px 20px;
+  background-color: #fff;
+}
+
+/* --- Header --- */
+
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.title {
+  color: var(--color-gold-dark);
+  letter-spacing: 0.15em;
+  font-weight: 400;
+  font-size: 1.5rem;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-top: 8px;
+  font-style: italic;
+  letter-spacing: 0.1em;
+}
+
+/* --- Profiles --- */
+
+.profiles {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.profileCard {
+  text-align: center;
+  padding: 20px;
+  width: 100%;
+}
+
+.photoPlaceholder {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f5f0e8 0%, #e8dcc8 100%);
+  border: 2px solid var(--color-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  font-size: 1.8rem;
+  color: var(--color-gold-dark);
+  letter-spacing: 0.05em;
+}
+
+.name {
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--color-black);
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+}
+
+.role {
+  font-size: 11px;
+  color: var(--color-gold-dark);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.bio {
+  font-size: 14px;
+  color: var(--color-text-light);
+  line-height: 1.8;
+}
+
+.ampersand {
+  font-size: 1.5rem;
+  color: var(--color-gold);
+  font-style: italic;
+  padding: 4px 0;
+}
+
+/* --- Story --- */
+
+.story {
+  text-align: center;
+  margin-top: 20px;
+  padding: 0 10px;
+}
+
+.storyDivider {
+  width: 40px;
+  height: 1px;
+  background-color: var(--color-gold);
+  margin: 0 auto 30px;
+  opacity: 0.5;
+}
+
+.storyTitle {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--color-gold-dark);
+  letter-spacing: 0.1em;
+  margin-bottom: 20px;
+  font-style: italic;
+}
+
+.storyText {
+  font-size: 14px;
+  color: var(--color-text-light);
+  line-height: 2.2;
+  margin-bottom: 20px;
+}

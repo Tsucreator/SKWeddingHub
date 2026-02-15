@@ -6,9 +6,10 @@ import PageTransition from './components/PageTransition';
 // 各ページを lazy ロード — 初回表示時にチャンクを取得してからフェードインする
 const Login    = lazy(() => import('./pages/Login'));
 const Home     = lazy(() => import('./pages/Home'));
-const Schedule = lazy(() => import('./pages/Schedule'));
+const AboutUs  = lazy(() => import('./pages/AboutUs'));
 const Menu     = lazy(() => import('./pages/Menu'));
 const SeatMap  = lazy(() => import('./pages/SeatMap'));
+const Gift     = lazy(() => import('./pages/Gift'));
 
 function App() {
   const isAuthenticated = () => !!localStorage.getItem('guest');
@@ -33,9 +34,10 @@ function App() {
             element={isAuthenticated() ? <Layout /> : <Navigate to="/login" />}
           >
             <Route index element={<Home />} />
-            <Route path="schedule" element={<Schedule />} />
+            <Route path="about" element={<AboutUs />} />
             <Route path="menu" element={<Menu />} />
             <Route path="map" element={<SeatMap />} />
+            <Route path="gift" element={<Gift />} />
           </Route>
 
           {/* /index.html や未知のパスは全てトップへリダイレクト */}

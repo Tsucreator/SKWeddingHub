@@ -1,0 +1,89 @@
+/* =============================================
+   Gift Page — 引出物案内
+   ============================================= */
+
+.page {
+  padding: 40px 20px;
+  background-color: #fff;
+}
+
+/* --- Header --- */
+
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.title {
+  color: var(--color-gold-dark);
+  letter-spacing: 0.15em;
+  font-weight: 400;
+  font-size: 1.5rem;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-top: 8px;
+  letter-spacing: 0.1em;
+}
+
+/* --- Content --- */
+
+.content {
+  text-align: center;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.greeting {
+  font-size: 1.2rem;
+  color: var(--color-black);
+  margin-bottom: 24px;
+}
+
+.description {
+  font-size: 14px;
+  color: var(--color-text-light);
+  line-height: 2.2;
+  margin-bottom: 40px;
+}
+
+/* --- Link Card --- */
+
+.linkCard {
+  background: linear-gradient(135deg, #faf8f4 0%, #f5f0e8 100%);
+  border: 1px solid rgba(201, 169, 110, 0.3);
+  border-radius: 12px;
+  padding: 32px 24px;
+}
+
+.linkLabel {
+  font-size: 14px;
+  color: var(--color-text);
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+
+.giftLink {
+  display: inline-block;
+  padding: 14px 40px;
+  background-color: var(--color-gold-dark);
+  color: #fff;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  border-radius: 6px;
+  transition: background-color 0.2s, transform 0.2s;
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.giftLink:active {
+  transform: scale(0.97);
+}
+
+.linkNote {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin-top: 16px;
+}

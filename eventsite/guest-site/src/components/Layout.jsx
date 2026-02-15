@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Home, Calendar, Utensils, MapPin, Camera, Info } from 'lucide-react';
+import { Home, Heart, Utensils, MapPin, Camera, Gift } from 'lucide-react';
 import PageTransition from './PageTransition';
 import styles from './Layout.module.css';
 
@@ -8,11 +8,11 @@ const Layout = () => {
 
   const navItems = [
     { to: '/',         icon: Home,     label: 'Top' },
-    { to: '/map',      icon: MapPin,   label: 'お席' },
-    { to: '/schedule', icon: Calendar, label: '進行' },
-    { to: '/menu',     icon: Utensils, label: '料理' },
+    { to: '/map',      icon: MapPin,   label: '座席表' },
+    { to: '/menu',     icon: Utensils, label: 'お料理' },
+    { to: '/about',    icon: Heart,    label: 'プロフィール' },
     { to: '/gallery',  icon: Camera,   label: 'ギャラリー' },
-    { to: '/info',     icon: Info,     label: 'Info' },
+    { to: '/gift',     icon: Gift,     label: '引出物' },
   ];
 
   return (
