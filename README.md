@@ -5,7 +5,7 @@
 | サイト | ディレクトリ | 技術スタック | 概要 |
 |---|---|---|---|
 | **招待状** | `invitation/` | 静的 HTML/CSS/JS | Web 招待状 + RSVP フォーム |
-| **当日ゲストサイト** | `eventsite/` | React 19 + Vite 7 | 披露宴当日のゲスト専用 SPA |
+| **当日ゲストサイト** | `eventsite/` | React 19 + Vite 7 | 披露宴当日のゲスト専用 SPA (ログイン・座席表・引出物案内) |
 
 ---
 
@@ -63,7 +63,12 @@ npm run dev
 ```
 
 ログイン機能を使うには AWS 上の DynamoDB (`WeddingGuests` テーブル) と API Gateway が必要です。
-API エンドポイントは現在 `Login.jsx` にハードコード (→ `VITE_API_ENDPOINT` 環境変数へ移行予定)。
+`.env` に以下の環境変数を設定し、API 先を切り替えます。
+
+```
+VITE_API_ENDPOINT=https://qlydtknsq4.execute-api.ap-northeast-1.amazonaws.com/prod/login
+VITE_SEATS_API_ENDPOINT=https://qlydtknsq4.execute-api.ap-northeast-1.amazonaws.com/prod/seats
+```
 
 ```bash
 # 本番ビルド
@@ -100,19 +105,21 @@ invitation/                  # 招待状サイト
     requirements.txt         # Python 依存
 
 eventsite/                   # 当日ゲストサイト
-  specification.md           # 仕様書
+  specification.md           # 仕様書 (v8.0)
   api/login/
     index.js                 # ログイン Lambda (Node.js 24 — DynamoDB 認証)
   guest-site/
     src/
-      App.jsx                # React Router ルーティング
-      components/Layout.jsx  # 共通レイアウト + 下部固定ナビ
+      App.jsx                # React Router ルーティング (lazy + Suspense)
+      components/Layout.jsx  # 共通レイアウト + 下部固定ナビ (6タブ)
+      components/PageTransition.jsx  # 画面遷移フェードイン
       pages/
         Login.jsx            # ログイン画面
         Home.jsx             # トップページ
-        Schedule.jsx         # 進行表
         Menu.jsx             # お料理・お飲物
         SeatMap.jsx          # 座席表
+        AboutUs.jsx          # プロフィール
+        Gift.jsx             # 引出物案内
 
 layers/
   gspread-layer/             # Lambda Layer (gspread + 依存)
@@ -148,6 +155,7 @@ infrastructure-notes.md      # インフラ設定メモ (Git管理外 ⚠️)
 | `PROD_API_ENDPOINT` | 招待状 API Gateway URL |
 | `EVENTSITE_LOGIN_LAMBDA_NAME` | ログイン Lambda 関数名 |
 | `EVENTSITE_API_ENDPOINT` | ゲストサイト API Gateway URL |
+| `EVENTSITE_SEATS_API_ENDPOINT` | 座席表 API Gateway URL |
 
 > 💡 各 Secret の実際の値は `infrastructure-notes.md` (Git 管理外) に記録しています。
 
@@ -160,7 +168,7 @@ infrastructure-notes.md      # インフラ設定メモ (Git管理外 ⚠️)
 | **S3** | `/invitation/` | `/eventsite/` |
 | **CloudFront** | 共通ディストリビューション | 同左 |
 | **API Gateway** | POST `/submit` | POST `/prod/login` |
-| **Lambda** | `writeGoogleSpreadSheet` (Python 3.12) | `weddingGuestLogin` (Node.js 24) |
+| **Lambda** | `writeGoogleSpreadSheet` (Python 3.12) | `weddingGuestLogin` (Node.js 24), 座席情報 Lambda (TBD) |
 | **DynamoDB** | — | `WeddingGuests` テーブル |
 | **SES** | RSVP メール通知 (現在無効化中) | — |
 | **Secrets Manager** | Google Sheets 認証情報 | — |
@@ -208,10 +216,10 @@ infrastructure-notes.md      # インフラ設定メモ (Git管理外 ⚠️)
 
 | フェーズ | 期間 | 状況 |
 |---|---|---|
-| 第1週: 基盤構築 & 認証 | 〜2026-02-18 | ✅ 完了 |
-| 第2週: 必須コンテンツ実装 | 〜2026-02-25 | 🔄 進行中 |
-| 第3週: 座席表 & 演出 | 〜2026-03-04 | ⬜ 未着手 |
-| 第4週: データ投入 & 実機確認 | 〜2026-03-11 | ⬜ 未着手 |
+| 第1週: 基盤構築 & 認証 | 〜2026-02-11 | ✅ 完了 |
+| 第2週: コンテンツ実装 | 〜2026-02-18 | ✅ 完了 |
+| 第3週: ギャラリー & 仕上げ | 〜2026-02-25 | 🔄 進行中 |
+| 第4週: データ投入 & 実機確認 | 〜2026-03-04 | ⬜ 未着手 |
 | **挙式日** | **2026-03-20** | |
 | 全リソース削除 | 2026-05-31 | |
 
