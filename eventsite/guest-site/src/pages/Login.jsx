@@ -21,7 +21,7 @@ const Login = () => {
       const response = await axios.post(API_ENDPOINT, { email });
       
       localStorage.setItem('guest', JSON.stringify(response.data));
-      navigate('/');
+      navigate('/', { replace: true });
 
     } catch (err) {
       console.error(err);
