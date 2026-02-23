@@ -9,6 +9,7 @@ const Home     = lazy(() => import('./pages/Home'));
 const AboutUs  = lazy(() => import('./pages/AboutUs'));
 const Menu     = lazy(() => import('./pages/Menu'));
 const SeatMap  = lazy(() => import('./pages/SeatMap'));
+const Gallery  = lazy(() => import('./pages/Gallery'));
 const Gift     = lazy(() => import('./pages/Gift'));
 
 const GUEST_KEY = 'guest';
@@ -80,6 +81,7 @@ function App() {
             <Route path="about" element={<AboutUs />} />
             <Route path="menu" element={<Menu />} />
             <Route path="map" element={<SeatMap />} />
+            <Route path="gallery" element={<Gallery />} />
             <Route path="gift" element={<Gift />} />
           </Route>
 
