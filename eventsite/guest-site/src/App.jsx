@@ -11,9 +11,26 @@ const Menu     = lazy(() => import('./pages/Menu'));
 const SeatMap  = lazy(() => import('./pages/SeatMap'));
 const Gift     = lazy(() => import('./pages/Gift'));
 
-function App() {
-  const isAuthenticated = () => !!localStorage.getItem('guest');
+const hasValidGuest = () => {
+  try {
+    const raw = localStorage.getItem('guest');
+    if (!raw) return false;
+    const guest = JSON.parse(raw);
+    return !!guest?.email;
+  } catch {
+    return false;
+  }
+};
 
+const RequireAuth = ({ children }) => {
+  return hasValidGuest() ? children : <Navigate to="/login" replace />;
+};
+
+const GuestOnly = ({ children }) => {
+  return hasValidGuest() ? <Navigate to="/" replace /> : children;
+};
+
+function App() {
   return (
     <BrowserRouter basename="/eventsite">
       <Suspense fallback={null}>
@@ -22,16 +39,22 @@ function App() {
           <Route
             path="/login"
             element={
-              <PageTransition key="login">
-                <Login />
-              </PageTransition>
+              <GuestOnly>
+                <PageTransition key="login">
+                  <Login />
+                </PageTransition>
+              </GuestOnly>
             }
           />
 
           {/* 認証が必要なページ */}
           <Route
             path="/"
-            element={isAuthenticated() ? <Layout /> : <Navigate to="/login" />}
+            element={
+              <RequireAuth>
+                <Layout />
+              </RequireAuth>
+            }
           >
             <Route index element={<Home />} />
             <Route path="about" element={<AboutUs />} />

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './Login.module.css';
@@ -8,6 +8,19 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('guest');
+      if (!raw) return;
+      const guest = JSON.parse(raw);
+      if (guest?.email) {
+        navigate('/', { replace: true });
+      }
+    } catch {
+      localStorage.removeItem('guest');
+    }
+  }, [navigate]);
 
   const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT || 'https://qlydtknsq4.execute-api.ap-northeast-1.amazonaws.com/prod/login';
 
