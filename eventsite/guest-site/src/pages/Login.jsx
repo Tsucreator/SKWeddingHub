@@ -19,13 +19,23 @@ const Login = () => {
     setError('');
     try {
       const response = await axios.post(API_ENDPOINT, { email });
-      
-      localStorage.setItem('guest', JSON.stringify(response.data));
+
+      const guestData =
+        typeof response.data === 'string'
+          ? JSON.parse(response.data)
+          : response.data;
+
+      if (!guestData || !guestData.email) {
+        throw new Error('Invalid login response');
+      }
+
+      localStorage.setItem('guest', JSON.stringify(guestData));
       navigate('/', { replace: true });
 
     } catch (err) {
       console.error(err);
       setError('招待状にお送りしたメールアドレスをご確認ください。');
+    } finally {
       setLoading(false);
     }
   };
