@@ -74,11 +74,18 @@
 ### 4.1 ログイン (Login) — ✅ 実装済み
 - **パス:** `/login`
 - **ファイル:** `Login.jsx` / `Login.module.css`
-- 招待状送付先メールアドレスによる簡易認証。
-- **フロー:** メールアドレス入力 → API Gateway (POST) → Lambda (`weddingGuestLogin`) → DynamoDB `WeddingGuests` テーブルを `email` で検索 → ゲスト情報返却。
-- **DB 検索方式:** パーティションキーは `guest_id` (Number) のため、`email` での検索には GSI (Global Secondary Index) または Scan + FilterExpression を使用する。
-- **セッション保持:** `localStorage` にゲスト情報 (JSON) を保存。再アクセス時はログイン画面をスキップ。
-- **認証ガード:** 未ログイン時は全ページを `/login` にリダイレクト (React Router `<Navigate>`)。
+- **認証方式:** 2 つの導線を提供。
+  - メールアドレス認証（招待状送付先メール）
+  - 代替認証（メールを忘れた方向け）: `kanaSei + kanaMei + side`（新郎側/新婦側）
+- **フロー:** 入力 → API Gateway (POST) → Lambda (`weddingGuestLogin`) → DynamoDB `WeddingGuests` を検索 → ゲスト情報返却。
+- **リクエスト:** `loginType: "email"` または `loginType: "kana"` を送信。
+- **DB 検索方式:** パーティションキーは `guest_id` (Number) のため、`email` または `kanaSei+kanaMei+side` の照合には Scan + FilterExpression（または GSI）を使用する。
+- **代替認証の照合ルール:** 入力された `kanaSei` と `kanaMei` を結合して `kana` と照合。全角/半角スペース差異は吸収して判定する。
+- **セッション保持:** `localStorage` に `guest` (JSON) と `guest_expires_at` (UNIX ms) を保存。
+- **セッション期限:** ログインから 48 時間で失効。期限切れ時は `guest` / `guest_expires_at` を削除して再ログインを要求。
+- **認証ガード:**
+  - 未ログイン時は全ページを `/login` にリダイレクト (React Router `<Navigate>`)。
+  - ログイン済みで `/login` にアクセスした場合は `/` へリダイレクト。
 - **API エンドポイント:** 環境変数 `VITE_API_ENDPOINT` で管理（フォールバックとしてハードコード URL あり）。
 - **表示内容:** 「WELCOME」タイトル、日付 (2026.03.20)、「Shinnosuke & Kaho Wedding Reception」
 
@@ -92,8 +99,8 @@
 - **パス:** `/menu`
 - **ファイル:** `Menu.jsx` / `Menu.module.css`
 - **タブ切り替え:** 「お飲み物」/「お料理」の 2 タブ構成。
-- **お料理:** フレンチコースメニュー（前菜〜デザートの 7 品）を明朝体で表示。
-- **お飲み物:** カテゴリ別ドリンクリスト（ビール、ワイン、ウイスキー、カクテル等 9 カテゴリ）。
+- **お料理:** カテゴリ見出し（前菜/スープ等）は表示せず、料理名を中心に表示。
+- **お飲み物:** カテゴリ別ドリンクリスト（ビール、ワイン、ウィスキー、カクテル、日本酒、焼酎、サワー、梅酒、ノンアルコール、ソフトドリンク）。
 - **キッズメニュー対応:** `guest_id === 14` の場合、キッズ専用のお料理・ドリンクメニューを表示。
 
 ### 4.4 座席表 (SeatMap) — ✅ 実装済み
@@ -134,9 +141,9 @@
 | kana | String | ふりがな |
 | roma | String | ローマ字表記 |
 | attendance | String | 出欠状況 |
-| email | String | メールアドレス（ログインキー） |
+| email | String | メールアドレス（主ログインキー） |
 | allergy | String | アレルギー情報 |
-| side | String | 新郎側 / 新婦側 |
+| side | String | 新郎側 / 新婦側（代替ログイン照合にも利用） |
 | relationship | String | 間柄（友人、親族等） |
 | honorific | String | 敬称 |
 | seat_id | Number | 席番号 (例: 1, 3) |
@@ -164,7 +171,7 @@
 | ステータス | 内容 |
 | :--- | :--- |
 | 200 | ゲスト情報返却（ログイン成功） |
-| 400 | リクエスト不正（email 未送信等） |
+| 400 | リクエスト不正（`email` 未送信 / `kanaSei,kanaMei,side` 不足 / `loginType` 不正） |
 | 401 | ゲスト未登録 `{"message": "Guest not found"}` |
 | 500 | サーバーエラー |
 

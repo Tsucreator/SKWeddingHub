@@ -60,8 +60,44 @@
   width: 100%;
 }
 
+.loginTypeTabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.loginTypeTab {
+  min-height: 44px;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 13px;
+  font-family: var(--font-serif);
+  letter-spacing: 0.04em;
+}
+
+.loginTypeTabActive {
+  composes: loginTypeTab;
+  background: rgba(212, 175, 55, 0.15);
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+}
+
+.fallbackFields {
+  display: grid;
+  gap: 12px;
+}
+
+.kanaSplitFields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
 .inputField {
   width: 100%;
+  min-height: 44px;
   padding: 16px;
   font-size: 16px; /* iOS ズーム防止のため 16px 以上 */
   font-family: var(--font-serif);
