@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Camera, Upload, PlayCircle } from 'lucide-react';
 import styles from './Gallery.module.css';
 import heroImage from '../assets/hero.webp';
-import heroImageAlt from '../assets/hero2.webp';
+const heroImageAlt = heroImage;
 
 const DRIVE_UPLOAD_URL = import.meta.env.VITE_GALLERY_UPLOAD_URL || 'https://drive.google.com/';
 const DRIVE_VIEW_URL = import.meta.env.VITE_GALLERY_VIEW_URL || 'https://drive.google.com/';
