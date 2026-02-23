@@ -3,6 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './Login.module.css';
 
+const GUEST_KEY = 'guest';
+const GUEST_EXPIRES_AT_KEY = 'guest_expires_at';
+const SESSION_TTL_MS = 48 * 60 * 60 * 1000;
+
 const Login = () => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
@@ -11,14 +15,24 @@ const Login = () => {
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem('guest');
+      const raw = localStorage.getItem(GUEST_KEY);
+      const rawExpiresAt = localStorage.getItem(GUEST_EXPIRES_AT_KEY);
       if (!raw) return;
+
+      const expiresAt = Number(rawExpiresAt);
+      if (!Number.isFinite(expiresAt) || Date.now() > expiresAt) {
+        localStorage.removeItem(GUEST_KEY);
+        localStorage.removeItem(GUEST_EXPIRES_AT_KEY);
+        return;
+      }
+
       const guest = JSON.parse(raw);
       if (guest?.email) {
         navigate('/', { replace: true });
       }
     } catch {
-      localStorage.removeItem('guest');
+      localStorage.removeItem(GUEST_KEY);
+      localStorage.removeItem(GUEST_EXPIRES_AT_KEY);
     }
   }, [navigate]);
 
@@ -42,7 +56,8 @@ const Login = () => {
         throw new Error('Invalid login response');
       }
 
-      localStorage.setItem('guest', JSON.stringify(guestData));
+      localStorage.setItem(GUEST_KEY, JSON.stringify(guestData));
+      localStorage.setItem(GUEST_EXPIRES_AT_KEY, String(Date.now() + SESSION_TTL_MS));
       navigate('/', { replace: true });
 
     } catch (err) {

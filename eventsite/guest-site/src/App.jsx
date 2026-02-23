@@ -11,13 +11,33 @@ const Menu     = lazy(() => import('./pages/Menu'));
 const SeatMap  = lazy(() => import('./pages/SeatMap'));
 const Gift     = lazy(() => import('./pages/Gift'));
 
+const GUEST_KEY = 'guest';
+const GUEST_EXPIRES_AT_KEY = 'guest_expires_at';
+
 const hasValidGuest = () => {
   try {
-    const raw = localStorage.getItem('guest');
+    const raw = localStorage.getItem(GUEST_KEY);
+    const rawExpiresAt = localStorage.getItem(GUEST_EXPIRES_AT_KEY);
     if (!raw) return false;
+
+    const expiresAt = Number(rawExpiresAt);
+    if (!Number.isFinite(expiresAt) || Date.now() > expiresAt) {
+      localStorage.removeItem(GUEST_KEY);
+      localStorage.removeItem(GUEST_EXPIRES_AT_KEY);
+      return false;
+    }
+
     const guest = JSON.parse(raw);
-    return !!guest?.email;
+    if (!guest?.email) {
+      localStorage.removeItem(GUEST_KEY);
+      localStorage.removeItem(GUEST_EXPIRES_AT_KEY);
+      return false;
+    }
+
+    return true;
   } catch {
+    localStorage.removeItem(GUEST_KEY);
+    localStorage.removeItem(GUEST_EXPIRES_AT_KEY);
     return false;
   }
 };
