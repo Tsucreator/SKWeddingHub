@@ -15,8 +15,8 @@ const Layout = () => {
     { to: '/map',      icon: MapPin,   label: '座席表' },
     { to: '/menu',     icon: Utensils, label: 'お料理' },
     { to: '/gallery',  icon: Camera,   label: 'ギャラリー' },
-    { to: '/about',    icon: Heart,    label: 'おまけ' },
     { to: '/gift',     icon: Gift,     label: '引出物' },
+    { to: '/about',    icon: Heart,    label: 'おまけ' },
   ];
 
   const handleLogout = () => {

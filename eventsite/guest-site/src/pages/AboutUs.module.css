@@ -1,123 +1,138 @@
-/* =============================================
-   About Us Page
-   ============================================= */
-
 .page {
-  padding: 40px 20px;
-  background-color: #fff;
+  padding: 32px 16px 120px;
+  background-color: var(--color-bg-light);
+  color: var(--color-text);
 }
-
-/* --- Header --- */
 
 .header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 28px;
 }
 
 .title {
   color: var(--color-gold-dark);
   letter-spacing: 0.15em;
-  font-weight: 400;
   font-size: 1.5rem;
+  font-weight: 400;
 }
 
 .subtitle {
-  font-size: 12px;
-  color: var(--color-text-muted);
   margin-top: 8px;
-  font-style: italic;
-  letter-spacing: 0.1em;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
 }
 
-/* --- Profiles --- */
-
-.profiles {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  max-width: 400px;
-  margin: 0 auto;
+.section {
+  margin-bottom: 30px;
+  padding: 20px 16px;
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffffff 0%, #fcfaf7 100%);
 }
 
-.profileCard {
-  text-align: center;
-  padding: 20px;
-  width: 100%;
-}
-
-.photoPlaceholder {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #f5f0e8 0%, #e8dcc8 100%);
-  border: 2px solid var(--color-gold);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 16px;
-  font-size: 1.8rem;
-  color: var(--color-gold-dark);
-  letter-spacing: 0.05em;
-}
-
-.name {
-  font-size: 1.1rem;
-  font-weight: 400;
+.sectionTitle {
+  font-size: 1rem;
   color: var(--color-black);
-  letter-spacing: 0.1em;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
 }
 
-.role {
-  font-size: 11px;
+.sectionDescription {
+  font-size: 0.88rem;
+  line-height: 1.8;
+  color: var(--color-text-light);
+  margin-bottom: 14px;
+}
+
+.spotList {
+  display: grid;
+  gap: 12px;
+}
+
+.spotCard {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  background-color: var(--color-white);
+  padding: 12px;
+}
+
+.spotCategory {
+  display: inline-block;
   color: var(--color-gold-dark);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  margin-bottom: 12px;
+  border: 1px solid var(--color-gold);
+  border-radius: 999px;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  padding: 2px 10px;
 }
 
-.bio {
-  font-size: 14px;
+.spotName {
+  margin-top: 8px;
+  font-size: 1rem;
+  color: var(--color-text);
+}
+
+.spotDescription {
+  margin-top: 6px;
+  font-size: 0.84rem;
   color: var(--color-text-light);
   line-height: 1.8;
 }
 
-.ampersand {
-  font-size: 1.5rem;
-  color: var(--color-gold);
-  font-style: italic;
-  padding: 4px 0;
-}
-
-/* --- Story --- */
-
-.story {
-  text-align: center;
-  margin-top: 20px;
-  padding: 0 10px;
-}
-
-.storyDivider {
-  width: 40px;
-  height: 1px;
-  background-color: var(--color-gold);
-  margin: 0 auto 30px;
-  opacity: 0.5;
-}
-
-.storyTitle {
-  font-size: 1rem;
-  font-weight: 400;
+.linkButton,
+.primaryLink {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 12px;
+  min-height: 44px;
+  border-radius: 8px;
+  border: 1px solid var(--color-gold-dark);
   color: var(--color-gold-dark);
-  letter-spacing: 0.1em;
-  margin-bottom: 20px;
-  font-style: italic;
+  background-color: var(--color-white);
+  font-size: 0.84rem;
+  letter-spacing: 0.08em;
 }
 
-.storyText {
-  font-size: 14px;
-  color: var(--color-text-light);
-  line-height: 2.2;
-  margin-bottom: 20px;
+.movieList {
+  display: grid;
+  gap: 14px;
+}
+
+.movieCard {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  background-color: var(--color-white);
+  padding: 12px;
+}
+
+.movieTitle {
+  font-size: 0.88rem;
+  color: var(--color-text);
+  margin-bottom: 8px;
+}
+
+.movieFrameWrap {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--color-black);
+}
+
+.movieFrame {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+@media (min-width: 768px) {
+  .page {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .spotList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }

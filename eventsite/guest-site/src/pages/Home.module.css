@@ -118,3 +118,94 @@
   font-size: 0.8rem;
   color: var(--color-gold-dark);
 }
+
+.profileSection {
+  margin: 6px 16px 0;
+  padding: 26px 16px;
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #fff 0%, #fcfaf7 100%);
+}
+
+.profileTitle {
+  text-align: center;
+  color: var(--color-gold-dark);
+  letter-spacing: 0.12em;
+  font-size: 1.1rem;
+  font-weight: 400;
+}
+
+.profileLead {
+  margin-top: 6px;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+}
+
+.profiles {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profileCard {
+  text-align: center;
+  padding: 12px 8px;
+}
+
+.photoPlaceholder {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f5f0e8 0%, #e8dcc8 100%);
+  border: 2px solid var(--color-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  font-size: 1.55rem;
+  color: var(--color-gold-dark);
+  letter-spacing: 0.05em;
+}
+
+.name {
+  font-size: 1.1rem;
+  color: var(--color-black);
+  letter-spacing: 0.08em;
+  margin-bottom: 2px;
+}
+
+.role {
+  font-size: 0.72rem;
+  color: var(--color-gold-dark);
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.bio {
+  font-size: 0.88rem;
+  color: var(--color-text-light);
+  line-height: 1.9;
+}
+
+.ampersand {
+  text-align: center;
+  font-size: 1.4rem;
+  color: var(--color-gold);
+  font-style: italic;
+}
+
+@media (min-width: 768px) {
+  .profileSection {
+    margin-left: 24px;
+    margin-right: 24px;
+  }
+
+  .profiles {
+    max-width: 720px;
+    margin: 18px auto 0;
+  }
+}

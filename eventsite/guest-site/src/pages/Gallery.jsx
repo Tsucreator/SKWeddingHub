@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Camera, Upload, PlayCircle } from 'lucide-react';
+import { Camera, Upload } from 'lucide-react';
 import styles from './Gallery.module.css';
 import heroImage from '../assets/hero.webp';
 const heroImageAlt = heroImage;
@@ -12,19 +12,6 @@ const PHOTO_ITEMS = [
   { id: 2, title: 'Memory', image: heroImageAlt, alt: '思い出写真 1' },
   { id: 3, title: 'Pre Photo', image: heroImageAlt, alt: '前撮り写真 2' },
   { id: 4, title: 'Memory', image: heroImage, alt: '思い出写真 2' },
-];
-
-const MOVIE_ITEMS = [
-  {
-    id: 1,
-    title: 'Opening Movie',
-    youtubeId: 'dQw4w9WgXcQ',
-  },
-  {
-    id: 2,
-    title: 'Our Story Movie',
-    youtubeId: 'ScMzIvxBSi4',
-  },
 ];
 
 const Gallery = () => {
@@ -87,34 +74,6 @@ const Gallery = () => {
         <p className={styles.note}>
           通信量節約のため、Wi-Fi環境でのアップロードを推奨しています。
         </p>
-      </section>
-
-      <section className={styles.section}>
-        <h3 className={styles.sectionTitle}>
-          <PlayCircle size={18} /> Movie Archive
-        </h3>
-        <p className={styles.sectionDescription}>
-          当日のオープニング・生い立ちムービーをアーカイブでご覧いただけます。
-        </p>
-
-        <div className={styles.movieList}>
-          {MOVIE_ITEMS.map((movie) => (
-            <article key={movie.id} className={styles.movieCard}>
-              <h4 className={styles.movieTitle}>{movie.title}</h4>
-              <div className={styles.movieFrameWrap}>
-                <iframe
-                  className={styles.movieFrame}
-                  src={`https://www.youtube.com/embed/${movie.youtubeId}`}
-                  title={movie.title}
-                  loading="lazy"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  allowFullScreen
-                />
-              </div>
-            </article>
-          ))}
-        </div>
       </section>
 
       {selectedPhoto && (
