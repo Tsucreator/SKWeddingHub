@@ -8,6 +8,7 @@ const GUEST_EXPIRES_AT_KEY = 'guest_expires_at';
 const SESSION_TTL_MS = 48 * 60 * 60 * 1000;
 const LOGIN_TYPE_EMAIL = 'email';
 const LOGIN_TYPE_KANA = 'kana';
+const HOME_INTRO_PENDING_KEY = 'home_intro_pending';
 
 const Login = () => {
   const [loginType, setLoginType] = useState(LOGIN_TYPE_EMAIL);
@@ -82,6 +83,7 @@ const Login = () => {
 
       localStorage.setItem(GUEST_KEY, JSON.stringify(guestData));
       localStorage.setItem(GUEST_EXPIRES_AT_KEY, String(Date.now() + SESSION_TTL_MS));
+      sessionStorage.setItem(HOME_INTRO_PENDING_KEY, '1');
       navigate('/', { replace: true });
 
     } catch (err) {

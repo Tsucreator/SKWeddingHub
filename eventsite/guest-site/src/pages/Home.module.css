@@ -10,11 +10,12 @@
 /* --- Hero Section --- */
 
 .hero {
-  height: 100vh;
-  background-color: #E5E5E5;
-  background-image: url('../assets/hero.webp');
+  height: 95vh;
+  background-color: #1a1a1a;
   background-size: cover;
   background-position: center;
+  position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -22,6 +23,52 @@
   align-items: center;
   color: #fff;
   text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+  transition: background-image 0.5s ease;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #1a1a1a;
+  z-index: 0;
+  transition: opacity 5s ease;
+}
+
+.hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.heroTextGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: opacity 5s ease;
+}
+
+.heroTextPending {
+  opacity: 0;
+}
+
+.heroTextReady {
+  opacity: 1;
+}
+
+.heroPending {
+  background-image: none;
+}
+
+.heroPending::before {
+  opacity: 1;
+}
+
+.heroReady {
+  background-image: none;
+}
+
+.heroReady::before {
+  opacity: 0;
 }
 
 .heroTitle {

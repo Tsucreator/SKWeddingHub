@@ -76,11 +76,12 @@
 - **ファイル:** `Login.jsx` / `Login.module.css`
 - **認証方式:** 2 つの導線を提供。
   - メールアドレス認証（招待状送付先メール）
-  - 代替認証（メールを忘れた方向け）: `kanaSei + kanaMei + side`（新郎側/新婦側）
+  - 代替認証（メールを忘れた方向け）: `kanaSei + kanaMei + side`（新郎/新婦）
 - **フロー:** 入力 → API Gateway (POST) → Lambda (`weddingGuestLogin`) → DynamoDB `WeddingGuests` を検索 → ゲスト情報返却。
 - **リクエスト:** `loginType: "email"` または `loginType: "kana"` を送信。
 - **DB 検索方式:** パーティションキーは `guest_id` (Number) のため、`email` または `kanaSei+kanaMei+side` の照合には Scan + FilterExpression（または GSI）を使用する。
 - **代替認証の照合ルール:** 入力された `kanaSei` と `kanaMei` を結合して `kana` と照合。全角/半角スペース差異は吸収して判定する。
+- **入力 UI:** 認証方式の切り替えはボックス型ではなく、下線バー型タブ（選択中のみゴールド下線）を使用。
 - **セッション保持:** `localStorage` に `guest` (JSON) と `guest_expires_at` (UNIX ms) を保存。
 - **セッション期限:** ログインから 48 時間で失効。期限切れ時は `guest` / `guest_expires_at` を削除して再ログインを要求。
 - **認証ガード:**
@@ -88,11 +89,18 @@
   - ログイン済みで `/login` にアクセスした場合は `/` へリダイレクト。
 - **API エンドポイント:** 環境変数 `VITE_API_ENDPOINT` で管理（フォールバックとしてハードコード URL あり）。
 - **表示内容:** 「WELCOME」タイトル、日付 (2026.03.20)、「Shinnosuke & Kaho Wedding Reception」
+- **演出連携:** ログイン成功時は `sessionStorage` フラグで Home のイントロ演出を 1 回だけ有効化。
 
 ### 4.2 トップページ (Home) — ✅ 実装済み
 - **パス:** `/` (index)
 - **ファイル:** `Home.jsx` / `Home.module.css`
 - **ヒーローセクション:** ゲストのローマ字名 (`roma`)、「Welcome to Our Party」タイトル、日付 (2026.03.20)。背景画像 (`hero.webp`)。
+- **イントロ演出（ログイン直後のみ）:**
+  - イントロオーバーレイは使用せず、ヒーロー画像の表示タイミングそのものを遅延させて「タメ」を作る。
+  - 最低表示待機時間は 0.5 秒を確保。
+  - ヒーロー画像のプリロード完了後にフェードイン表示。
+  - ヒーロー内テキスト（ローマ字名 / Welcome to Our Party / 日付）も画像と同時にフェードイン表示。
+  - 回線遅延時は最大 2.2 秒で待機を打ち切り表示を継続（無限待ち防止）。
 - **メッセージセクション:** ゲスト名 + 「様」、挨拶文、ナビへの誘導ヒント。
 
 ### 4.3 お料理・お飲物 (Menu) — ✅ 実装済み
@@ -143,7 +151,7 @@
 | attendance | String | 出欠状況 |
 | email | String | メールアドレス（主ログインキー） |
 | allergy | String | アレルギー情報 |
-| side | String | 新郎側 / 新婦側（代替ログイン照合にも利用） |
+| side | String | 新郎 / 新婦（代替ログイン照合にも利用） |
 | relationship | String | 間柄（友人、親族等） |
 | honorific | String | 敬称 |
 | seat_id | Number | 席番号 (例: 1, 3) |
@@ -171,7 +179,7 @@
 | ステータス | 内容 |
 | :--- | :--- |
 | 200 | ゲスト情報返却（ログイン成功） |
-| 400 | リクエスト不正（`email` 未送信 / `kanaSei,kanaMei,side` 不足 / `loginType` 不正） |
+| 400 | リクエスト不正（`email` 未送信 / `kanaSei,kanaMei,side` 不足 / `side` が新郎/新婦以外 / `loginType` 不正） |
 | 401 | ゲスト未登録 `{"message": "Guest not found"}` |
 | 500 | サーバーエラー |
 
