@@ -1,4 +1,4 @@
-import styles from './AboutUs.module.css';
+import styles from './Extras.module.css';
 
 const FAVORITE_SPOTS = [
   {
@@ -30,9 +30,9 @@ const MOVIE_ARCHIVE = [
   },
 ];
 
-const GITHUB_REPOSITORY_URL = 'https://github.com/';
+const GITHUB_REPOSITORY_URL = 'https://github.com/Tsucreator/wedding-invitation-landing-page';
 
-const AboutUs = () => {
+const Extras = () => {
   return (
     <div className={styles.page}>
       <header className={styles.header}>
@@ -87,7 +87,9 @@ const AboutUs = () => {
       <section className={styles.section}>
         <h3 className={styles.sectionTitle}>GitHub</h3>
         <p className={styles.sectionDescription}>
-          このサイトのソースコードを公開しているリポジトリです。
+          本webサイト/招待状のソースコードを公開しているリポジトリです< br />
+          ご興味がある方はぜひご覧ください< br />
+          実装のご相談も歓迎します
         </p>
         <a
           href={GITHUB_REPOSITORY_URL}
@@ -102,4 +104,4 @@ const AboutUs = () => {
   );
 };
 
-export default AboutUs;
+export default Extras;

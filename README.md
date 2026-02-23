@@ -1,11 +1,13 @@
 # Wedding Hub — 結婚式 Web サイト モノレポ
 
+GitHub リポジトリ: https://github.com/Tsucreator/wedding-invitation-landing-page
+
 結婚式に関する 2 つの Web サイトを管理するモノレポです。
 
 | サイト | ディレクトリ | 技術スタック | 概要 |
 |---|---|---|---|
 | **招待状** | `invitation/` | 静的 HTML/CSS/JS | Web 招待状 + RSVP フォーム |
-| **当日ゲストサイト** | `eventsite/` | React 19 + Vite 7 | 披露宴当日のゲスト専用 SPA (ログイン・座席表・引出物案内) |
+| **当日ゲストサイト** | `eventsite/` | React 19 + Vite 7 | 披露宴当日のゲスト専用 SPA (ログイン・メニュー・座席表・ギャラリー・引出物・おまけ) |
 
 ---
 
@@ -86,7 +88,6 @@ npm run preview  # ビルド成果物をローカルプレビュー
 
 ```
 .github/
-  README.md                  # ← 本ドキュメント
   copilot-instructions.md    # AI エージェント向け指示書
   workflows/
     deploy-frontend.yml      # 招待状フロントエンド → S3
@@ -110,7 +111,7 @@ invitation/                  # 招待状サイト
     requirements.txt         # Python 依存
 
 eventsite/                   # 当日ゲストサイト
-  specification.md           # 仕様書 (v8.0)
+  specification.md           # 仕様書 (v8.1)
   api/login/
     index.js                 # ログイン Lambda (Node.js 24 — DynamoDB 認証)
   api/lambda/
@@ -126,8 +127,9 @@ eventsite/                   # 当日ゲストサイト
         Home.jsx             # トップページ
         Menu.jsx             # お料理・お飲物
         SeatMap.jsx          # 座席表
-        AboutUs.jsx          # プロフィール
+        Extras.jsx           # おまけ（参考情報・動画アーカイブ・GitHub）
         Gift.jsx             # 引出物案内
+        Gallery.jsx          # ギャラリー（写真 + Drive導線）
         Schedule.jsx         # 旧進行表ページ（参考用、未使用）
 
 layers/
@@ -208,8 +210,8 @@ infrastructure-notes.md      # インフラ設定メモ (Git管理外 ⚠️)
 
 各サブプロジェクトの詳細仕様は以下を参照してください。
 
-- **招待状:** [`invitation/specification.md`](../invitation/specification.md)
-- **ゲストサイト:** [`eventsite/specification.md`](../eventsite/specification.md)
+- **招待状:** [`invitation/specification.md`](invitation/specification.md)
+- **ゲストサイト:** [`eventsite/specification.md`](eventsite/specification.md)
 
 ---
 

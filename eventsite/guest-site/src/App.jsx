@@ -6,7 +6,7 @@ import PageTransition from './components/PageTransition';
 // 各ページを lazy ロード — 初回表示時にチャンクを取得してからフェードインする
 const Login    = lazy(() => import('./pages/Login'));
 const Home     = lazy(() => import('./pages/Home'));
-const AboutUs  = lazy(() => import('./pages/AboutUs'));
+const Extras   = lazy(() => import('./pages/Extras'));
 const Menu     = lazy(() => import('./pages/Menu'));
 const SeatMap  = lazy(() => import('./pages/SeatMap'));
 const Gallery  = lazy(() => import('./pages/Gallery'));
@@ -78,7 +78,8 @@ function App() {
             }
           >
             <Route index element={<Home />} />
-            <Route path="about" element={<AboutUs />} />
+            <Route path="extras" element={<Extras />} />
+            <Route path="about" element={<Navigate to="/extras" replace />} />
             <Route path="menu" element={<Menu />} />
             <Route path="map" element={<SeatMap />} />
             <Route path="gallery" element={<Gallery />} />
