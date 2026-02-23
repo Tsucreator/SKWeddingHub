@@ -14,7 +14,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [kanaSei, setKanaSei] = useState('');
   const [kanaMei, setKanaMei] = useState('');
-  const [side, setSide] = useState('新郎側');
+  const [side, setSide] = useState('新郎');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -89,7 +89,7 @@ const Login = () => {
       setError(
         loginType === LOGIN_TYPE_EMAIL
           ? '招待状にお送りしたメールアドレスをご確認ください。'
-          : 'ふりがな（せい・めい）と新郎側/新婦側をご確認ください。'
+          : 'ふりがな（せい・めい）と新郎/新婦をご確認ください。'
       );
     } finally {
       setLoading(false);
@@ -170,8 +170,8 @@ const Login = () => {
                 onChange={(e) => setSide(e.target.value)}
                 className={styles.inputField}
               >
-                <option value="新郎側">新郎</option>
-                <option value="新婦側">新婦</option>
+                <option value="新郎">新郎</option>
+                <option value="新婦">新婦</option>
               </select>
             </div>
           )}

@@ -24,16 +24,7 @@ const normalizeKanaForMatch = (value) =>
         .replace(/[\s　]+/g, '')
         .trim();
 
-const resolveSideCandidates = (side) => {
-    const normalized = normalizeText(side);
-    if (normalized === '新郎側' || normalized.toLowerCase() === 'groom') {
-        return ['新郎側', 'groom'];
-    }
-    if (normalized === '新婦側' || normalized.toLowerCase() === 'bride') {
-        return ['新婦側', 'bride'];
-    }
-    return [normalized, normalized];
-};
+const normalizeSide = (side) => normalizeText(side);
 
 exports.handler = async (event) => {
     console.log("Event received:", JSON.stringify(event));
@@ -78,9 +69,9 @@ exports.handler = async (event) => {
         const kanaSei = normalizeKanaForMatch(body.kanaSei);
         const kanaMei = normalizeKanaForMatch(body.kanaMei);
         const inputKana = `${kanaSei}${kanaMei}`;
-        const [sidePrimary, sideAlt] = resolveSideCandidates(body.side);
+        const side = normalizeSide(body.side);
 
-        if (!kanaSei || !kanaMei || !sidePrimary) {
+        if (!kanaSei || !kanaMei || !side) {
             return {
                 statusCode: 400,
                 headers: CORS_HEADERS,
@@ -88,15 +79,22 @@ exports.handler = async (event) => {
             };
         }
 
+        if (side !== '新郎' && side !== '新婦') {
+            return {
+                statusCode: 400,
+                headers: CORS_HEADERS,
+                body: JSON.stringify({ message: "side must be 新郎 or 新婦" })
+            };
+        }
+
         params = {
             TableName: TABLE_NAME,
-            FilterExpression: '#s = :sidePrimary OR #s = :sideAlt',
+            FilterExpression: '#s = :side',
             ExpressionAttributeNames: {
                 '#s': 'side'
             },
             ExpressionAttributeValues: {
-                ':sidePrimary': sidePrimary,
-                ':sideAlt': sideAlt
+                ':side': side
             }
         };
 
