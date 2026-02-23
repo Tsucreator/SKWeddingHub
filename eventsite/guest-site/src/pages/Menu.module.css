@@ -62,7 +62,7 @@
 
 .foodItem {
   text-align: center;
-  margin-bottom: 35px;
+  margin-bottom: 48px;
 }
 
 .foodCategory {
@@ -82,7 +82,7 @@
 }
 
 .foodDescription {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: #777;
   line-height: 1.6;
   white-space: pre-line;

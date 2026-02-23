@@ -12,14 +12,15 @@ const Menu = () => {
   const isKids = Number(guest.guest_id) === KIDS_GUEST_ID;
 
   const drinkMenu = [
-    { category: 'ビール', items: ['アサヒ スーパードライ', 'ノンアルコールビール'] },
+    { category: 'ビール', items: ['アサヒ スーパードライ'] },
     { category: 'ワイン', items: ['赤', '白'] },
     { category: 'ウィスキー', items: ['ロック', '水割り', 'ソーダ割り'] },
-    { category: 'カクテル', items: ['ジン', 'カシス', 'カンパリ', 'ライチ', 'ノンアルコール'] },
+    { category: 'カクテル', items: ['ジン', 'カシス', 'カンパリ', 'ライチ'] },
     { category: '日本酒', items: ['燗', '冷'] },
     { category: '焼酎', items: ['麦', '芋'] },
     { category: 'サワー', items: ['レモン', 'グレープフルーツ'] },
     { category: '梅酒', items: ['ロック', '水割り', 'ソーダ割り'] },
+    { category: 'ノンアルコール', items: ['ノンアルコールビール', 'ノンアルコールカクテル'] },
     { category: 'ソフトドリンク', items: ['オレンジ', 'グレープフルーツ', 'ウーロン茶', 'コーラ', 'ジンジャーエール'] },
   ];
 
@@ -28,13 +29,13 @@ const Menu = () => {
   ];
 
   const foodMenu = [
-    { category: 'Hors d\'oeuvres', title: '前菜', description: '国産アトランティックサーモン・ビーツ・海塩サブレのコンポジション\nキャビア添え3種のコンフィチュール' },
-    { category: 'Hors d\'oeuvres', title: '', description: '千葉県産恋する豚のフリール\nエーグルドゥースソース マッシュルーの香り' },
-    { category: 'Soupe', title: 'スープ', description: '千葉県産しあわせ絆牛のポトフ\nレフォールクリーム' },
-    { category: 'Poisson', title: '魚料理', description: '蝮夷鮑のパイ包み焼き\n車海老のエッセンス ヴァンブランソース' },
-    { category: 'Viande', title: '肉料理', description: '国産牛フィレ肉 フォアグラ添え ロッシーニ風\nマデラ酒とトリュフのソース' },
-    { category: 'Dessert', title: 'デザート', description: 'フロマージュムース\nパッションフルーツジュレ レモンのメレンゲ 苺ソース' },
-    { category: 'Pain / Café', title: 'パン・コーヒー', description: '焼き立てパンと食後の香ばしい珈琲' },
+    { title: '', description: '国産アトランティックサーモン・ビーツ・海塩サブレのコンポジション\nキャビア添え3種のコンフィチュール' },
+    { title: '', description: '千葉県産恋する豚のフリール\nエーグルドゥースソース マッシュルーの香り' },
+    { title: '', description: '千葉県産しあわせ絆牛のポトフ\nレフォールクリーム' },
+    { title: '', description: '蝮夷鮑のパイ包み焼き\n車海老のエッセンス ヴァンブランソース' },
+    { title: '', description: '国産牛フィレ肉 フォアグラ添え ロッシーニ風\nマデラ酒とトリュフのソース' },
+    { title: '', description: 'フロマージュムース\nパッションフルーツジュレ レモンのメレンゲ 苺ソース' },
+    { title: '', description: '焼き立てパンと食後の香ばしい珈琲' },
   ];
 
   const kidsFoodMenu = [
@@ -50,7 +51,7 @@ const Menu = () => {
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-        <h2 className={styles.title}>{isKids ? 'KIDS MENU' : 'MENU'}</h2>
+        <h2 className={styles.title}>{isKids ? 'お子様 お料理' : 'お料理'}</h2>
       </div>
 
       {/* タブ切り替え */}
@@ -93,7 +94,7 @@ const Menu = () => {
               </div>
             ))}
             <p className={styles.drinkFooter}>
-              ※リストにないお飲み物はスタッフまでお申し付けください
+              ※お飲み物はスタッフまでお申し付けください
             </p>
           </div>
         )}
