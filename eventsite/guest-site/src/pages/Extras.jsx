@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import styles from './Extras.module.css';
 
 const FAVORITE_SPOTS = [
@@ -32,15 +32,16 @@ const MOVIE_ARCHIVE = [
 ];
 
 const SONG_PLAYLIST = [
-  { id: 1, title: '115万キロのフィルム', artist: 'Official髭男dism' },
-  { id: 2, title: 'Beautiful', artist: 'Superfly' },
-  { id: 3, title: 'Marry You', artist: 'Bruno Mars' },
-  { id: 4, title: 'Can\'t Help Falling in Love', artist: 'Elvis Presley' },
-  { id: 5, title: '恋', artist: '星野 源' },
-  { id: 6, title: 'Stand by Me', artist: 'Ben E. King' },
+  { id: 1, scene: '歓談', name: '115万キロのフィルム', artists: 'Official髭男dism', spotifyLink: '' },
+  { id: 2, scene: '歓談', name: 'Beautiful', artists: 'Superfly', spotifyLink: '' },
+  { id: 3, scene: '入場', name: 'Marry You', artists: 'Bruno Mars', spotifyLink: '' },
+  { id: 4, scene: '歓談', name: 'Can\'t Help Falling in Love', artists: 'Elvis Presley', spotifyLink: '' },
+  { id: 5, scene: '歓談', name: '恋', artists: '星野 源', spotifyLink: '' },
+  { id: 6, scene: '歓談', name: 'Stand by Me', artists: 'Ben E. King', spotifyLink: '' },
 ];
 
 const GITHUB_REPOSITORY_URL = 'https://github.com/Tsucreator/wedding-invitation-landing-page';
+const MUSICLIST_URL = import.meta.env.VITE_MUSICLIST_URL || 'musiclist.csv';
 
 const TABS = [
   { id: 'spots', label: 'お店MAP' },
@@ -49,8 +50,109 @@ const TABS = [
   { id: 'github', label: 'GitHub' },
 ];
 
+const parseCsvLine = (line) => {
+  const values = [];
+  let current = '';
+  let inQuotes = false;
+
+  for (let index = 0; index < line.length; index += 1) {
+    const char = line[index];
+    const next = line[index + 1];
+
+    if (char === '"' && inQuotes && next === '"') {
+      current += '"';
+      index += 1;
+      continue;
+    }
+
+    if (char === '"') {
+      inQuotes = !inQuotes;
+      continue;
+    }
+
+    if (char === ',' && !inQuotes) {
+      values.push(current.trim());
+      current = '';
+      continue;
+    }
+
+    current += char;
+  }
+
+  values.push(current.trim());
+  return values;
+};
+
+const parseMusicCsv = (csvText) => {
+  const lines = csvText
+    .replace(/^\uFEFF/, '')
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  if (lines.length <= 1) {
+    return [];
+  }
+
+  const headers = parseCsvLine(lines[0]);
+
+  return lines
+    .slice(1)
+    .map((line) => {
+      const cols = parseCsvLine(line);
+      const row = Object.fromEntries(headers.map((header, idx) => [header, cols[idx] ?? '']));
+
+      return {
+        id: row['#']?.trim() || `${row['Scene']}-${row['Name']}-${row['Artists']}`,
+        scene: row['Scene']?.trim() || '',
+        name: row['Name']?.trim() || '',
+        artists: row['Artists']?.trim() || '',
+        spotifyLink: row['Link(Spotify)']?.trim() || '',
+      };
+    })
+    .filter((song) => song.name);
+};
+
 const Extras = () => {
   const [activeTab, setActiveTab] = useState('spots');
+  const [songs, setSongs] = useState(SONG_PLAYLIST);
+  const [isSongsLoading, setIsSongsLoading] = useState(true);
+  const [songsError, setSongsError] = useState('');
+
+  useEffect(() => {
+    const loadMusicList = async () => {
+      try {
+        const response = await fetch(MUSICLIST_URL, {
+          headers: {
+            Accept: 'text/csv',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch music list: ${response.status}`);
+        }
+
+        const csvText = await response.text();
+        const parsedSongs = parseMusicCsv(csvText);
+
+        if (parsedSongs.length > 0) {
+          setSongs(parsedSongs);
+          setSongsError('');
+        } else {
+          setSongsError('BGMリストの読み込みに失敗したため、初期リストを表示しています。');
+        }
+      } catch (error) {
+        console.error('musiclist.csv load error', error);
+        setSongsError('BGMリストの読み込みに失敗したため、初期リストを表示しています。');
+      } finally {
+        setIsSongsLoading(false);
+      }
+    };
+
+    loadMusicList();
+  }, []);
+
+  const songCountLabel = useMemo(() => `全 ${songs.length} 曲`, [songs.length]);
 
   const renderTabContent = () => {
     if (activeTab === 'spots') {
@@ -81,11 +183,27 @@ const Extras = () => {
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>当日上映した曲リスト</h3>
           <p className={styles.sectionDescription}>当日の映像演出で使用した楽曲をまとめています。</p>
+
+          {isSongsLoading && <p className={styles.songStatus}>BGMリストを読み込み中です...</p>}
+          {!isSongsLoading && songsError && <p className={styles.songStatus}>{songsError}</p>}
+          {!isSongsLoading && <p className={styles.songCount}>{songCountLabel}</p>}
+
           <ul className={styles.songList}>
-            {SONG_PLAYLIST.map((song) => (
+            {songs.map((song) => (
               <li key={song.id} className={styles.songItem}>
-                <p className={styles.songTitle}>{song.title}</p>
-                <p className={styles.songArtist}>{song.artist}</p>
+                <p className={styles.songTitle}>{song.name}</p>
+                <p className={styles.songArtist}>{song.artists}</p>
+                {song.scene && <p className={styles.songScene}>Scene: {song.scene}</p>}
+                {song.spotifyLink && (
+                  <a
+                    href={song.spotifyLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.songLink}
+                  >
+                    Spotifyで開く
+                  </a>
+                )}
               </li>
             ))}
           </ul>

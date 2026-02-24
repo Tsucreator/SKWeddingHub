@@ -37,6 +37,7 @@ jobs:
         working-directory: eventsite/guest-site
         env:
           VITE_API_ENDPOINT: ${{ secrets.EVENTSITE_API_ENDPOINT }}
+          VITE_MUSICLIST_URL: ${{ secrets.EVENTSITE_MUSICLIST_URL }}
         run: npm run build
 
       - name: Configure AWS Credentials

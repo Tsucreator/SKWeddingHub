@@ -184,6 +184,34 @@
   color: var(--color-text-light);
 }
 
+.songScene {
+  margin-top: 6px;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+.songLink {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 8px;
+  font-size: 0.78rem;
+  color: var(--color-gold-dark);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.songStatus {
+  margin-bottom: 10px;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+}
+
+.songCount {
+  margin-bottom: 10px;
+  font-size: 0.78rem;
+  color: var(--color-text-light);
+}
+
 @media (min-width: 768px) {
   .page {
     padding-left: 24px;

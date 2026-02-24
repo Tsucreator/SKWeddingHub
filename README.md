@@ -74,6 +74,7 @@ npm run dev
 ```
 VITE_API_ENDPOINT=https://qlydtknsq4.execute-api.ap-northeast-1.amazonaws.com/prod/login
 VITE_SEATS_API_ENDPOINT=https://qlydtknsq4.execute-api.ap-northeast-1.amazonaws.com/prod/seats
+VITE_MUSICLIST_URL=https://<cloudfront-domain>/eventsite/musiclist.csv
 ```
 
 ```bash
