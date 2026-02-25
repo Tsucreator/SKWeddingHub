@@ -153,6 +153,16 @@ const Extras = () => {
   }, []);
 
   const songCountLabel = useMemo(() => `全 ${songs.length} 曲`, [songs.length]);
+  const songsByScene = useMemo(() => {
+    return songs.reduce((groups, song) => {
+      const sceneKey = song.scene || 'その他';
+      if (!groups[sceneKey]) {
+        groups[sceneKey] = [];
+      }
+      groups[sceneKey].push(song);
+      return groups;
+    }, {});
+  }, [songs]);
 
   const renderTabContent = () => {
     if (activeTab === 'spots') {
@@ -188,25 +198,34 @@ const Extras = () => {
           {!isSongsLoading && songsError && <p className={styles.songStatus}>{songsError}</p>}
           {!isSongsLoading && <p className={styles.songCount}>{songCountLabel}</p>}
 
-          <ul className={styles.songList}>
-            {songs.map((song) => (
-              <li key={song.id} className={styles.songItem}>
-                <p className={styles.songTitle}>{song.name}</p>
-                <p className={styles.songArtist}>{song.artists}</p>
-                {song.scene && <p className={styles.songScene}>Scene: {song.scene}</p>}
-                {song.spotifyLink && (
-                  <a
-                    href={song.spotifyLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.songLink}
-                  >
-                    Spotifyで開く
-                  </a>
-                )}
-              </li>
+          <div className={styles.songSceneList}>
+            {Object.entries(songsByScene).map(([scene, sceneSongs]) => (
+              <section key={scene} className={styles.songGroup}>
+                <h4 className={styles.songCategory}>{scene}</h4>
+                <ul className={styles.songList}>
+                  {sceneSongs.map((song) => (
+                    <li key={song.id} className={styles.songItem}>
+                      <div className={styles.songMain}>
+                        <p className={styles.songTitle}>{song.name}</p>
+                        <p className={styles.songMeta}>{song.artists}</p>
+                      </div>
+
+                      {song.spotifyLink && (
+                        <a
+                          href={song.spotifyLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={styles.songLink}
+                        >
+                          Spotify
+                        </a>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </section>
             ))}
-          </ul>
+          </div>
         </section>
       );
     }

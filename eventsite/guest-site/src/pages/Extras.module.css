@@ -160,40 +160,63 @@
   border: 0;
 }
 
+.songSceneList {
+  display: grid;
+  gap: 14px;
+}
+
+.songGroup {
+  display: grid;
+  gap: 8px;
+}
+
+.songCategory {
+  font-size: 0.95rem;
+  color: var(--color-gold-dark);
+  border-bottom: 1px dotted var(--color-gold);
+  padding-bottom: 5px;
+}
+
 .songList {
   display: grid;
-  gap: 10px;
+  gap: 8px;
   list-style: none;
 }
 
 .songItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
   border: 1px solid var(--color-border);
   border-radius: 10px;
   background-color: var(--color-white);
-  padding: 12px;
+  padding: 10px 12px;
+}
+
+.songMain {
+  min-width: 0;
 }
 
 .songTitle {
   font-size: 0.9rem;
   color: var(--color-text);
+  line-height: 1.5;
 }
 
-.songArtist {
+.songMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   margin-top: 4px;
   font-size: 0.82rem;
   color: var(--color-text-light);
 }
 
-.songScene {
-  margin-top: 6px;
-  font-size: 0.78rem;
-  color: var(--color-text-muted);
-}
-
 .songLink {
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
-  margin-top: 8px;
   font-size: 0.78rem;
   color: var(--color-gold-dark);
   text-decoration: underline;
