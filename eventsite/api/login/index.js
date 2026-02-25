@@ -1,5 +1,5 @@
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-const { DynamoDBDocumentClient, ScanCommand } = require("@aws-sdk/lib-dynamodb");
+const { DynamoDBDocumentClient, ScanCommand, GetCommand } = require("@aws-sdk/lib-dynamodb");
 
 const client = new DynamoDBClient({});
 const dynamo = DynamoDBDocumentClient.from(client);
@@ -26,6 +26,12 @@ const normalizeKanaForMatch = (value) =>
 
 const normalizeSide = (side) => normalizeText(side);
 
+const createResponse = (statusCode, body) => ({
+    statusCode,
+    headers: CORS_HEADERS,
+    body: JSON.stringify(body)
+});
+
 exports.handler = async (event) => {
     console.log("Event received:", JSON.stringify(event));
 
@@ -34,11 +40,45 @@ exports.handler = async (event) => {
         body = JSON.parse(event.body || '{}');
     } catch (e) {
         console.error("Body parse error:", e);
-        return {
-            statusCode: 400,
-            headers: CORS_HEADERS,
-            body: JSON.stringify({ message: "Invalid request" })
-        };
+        return createResponse(400, { message: "Invalid request" });
+    }
+
+    if (body.action === 'verifyGiftAccess') {
+        const guestId = Number(body.guestId);
+        const email = normalizeEmail(body.email);
+
+        if (!Number.isInteger(guestId) || !email) {
+            return createResponse(400, { ok: false, message: "guestId and email are required" });
+        }
+
+        try {
+            const result = await dynamo.send(new GetCommand({
+                TableName: TABLE_NAME,
+                Key: {
+                    guest_id: guestId
+                }
+            }));
+
+            const guest = result.Item;
+
+            if (!guest) {
+                return createResponse(401, { ok: false, message: "Guest not found" });
+            }
+
+            const registeredEmail = normalizeEmail(guest.email);
+            if (registeredEmail !== email) {
+                return createResponse(401, { ok: false, message: "Guest not found" });
+            }
+
+            return createResponse(200, {
+                ok: true,
+                guest_id: guest.guest_id,
+                gift_url: guest.gift_url || null
+            });
+        } catch (err) {
+            console.error("DynamoDB error:", JSON.stringify(err, Object.getOwnPropertyNames(err)));
+            return createResponse(500, { ok: false, message: err.message || "Internal server error" });
+        }
     }
 
     const loginType = body.loginType || LOGIN_TYPE_EMAIL;
@@ -48,11 +88,7 @@ exports.handler = async (event) => {
     if (loginType === LOGIN_TYPE_EMAIL) {
         const email = normalizeEmail(body.email);
         if (!email) {
-            return {
-                statusCode: 400,
-                headers: CORS_HEADERS,
-                body: JSON.stringify({ message: "Email is required" })
-            };
+            return createResponse(400, { message: "Email is required" });
         }
 
         params = {
@@ -72,19 +108,11 @@ exports.handler = async (event) => {
         const side = normalizeSide(body.side);
 
         if (!kanaSei || !kanaMei || !side) {
-            return {
-                statusCode: 400,
-                headers: CORS_HEADERS,
-                body: JSON.stringify({ message: "kanaSei, kanaMei, side are required" })
-            };
+            return createResponse(400, { message: "kanaSei, kanaMei, side are required" });
         }
 
         if (side !== '新郎' && side !== '新婦') {
-            return {
-                statusCode: 400,
-                headers: CORS_HEADERS,
-                body: JSON.stringify({ message: "side must be 新郎 or 新婦" })
-            };
+            return createResponse(400, { message: "side must be 新郎 or 新婦" });
         }
 
         params = {
@@ -110,32 +138,16 @@ exports.handler = async (event) => {
             });
 
             if (matchedGuest) {
-                return {
-                    statusCode: 200,
-                    headers: CORS_HEADERS,
-                    body: JSON.stringify(matchedGuest)
-                };
+                return createResponse(200, matchedGuest);
             }
 
-            return {
-                statusCode: 401,
-                headers: CORS_HEADERS,
-                body: JSON.stringify({ message: "Guest not found" })
-            };
+            return createResponse(401, { message: "Guest not found" });
         } catch (err) {
             console.error("DynamoDB error:", JSON.stringify(err, Object.getOwnPropertyNames(err)));
-            return {
-                statusCode: 500,
-                headers: CORS_HEADERS,
-                body: JSON.stringify({ message: err.message || "Internal server error" })
-            };
+            return createResponse(500, { message: err.message || "Internal server error" });
         }
     } else {
-        return {
-            statusCode: 400,
-            headers: CORS_HEADERS,
-            body: JSON.stringify({ message: "Unsupported loginType" })
-        };
+        return createResponse(400, { message: "Unsupported loginType" });
     }
 
     console.log("Scan params:", JSON.stringify(params));
@@ -145,24 +157,12 @@ exports.handler = async (event) => {
         console.log("Scan result:", JSON.stringify(result));
 
         if (result.Items && result.Items.length > 0) {
-            return {
-                statusCode: 200,
-                headers: CORS_HEADERS,
-                body: JSON.stringify(result.Items[0])
-            };
+            return createResponse(200, result.Items[0]);
         } else {
-            return {
-                statusCode: 401,
-                headers: CORS_HEADERS,
-                body: JSON.stringify({ message: "Guest not found" })
-            };
+            return createResponse(401, { message: "Guest not found" });
         }
     } catch (err) {
         console.error("DynamoDB error:", JSON.stringify(err, Object.getOwnPropertyNames(err)));
-        return {
-            statusCode: 500,
-            headers: CORS_HEADERS,
-            body: JSON.stringify({ message: err.message || "Internal server error" })
-        };
+        return createResponse(500, { message: err.message || "Internal server error" });
     }
 };

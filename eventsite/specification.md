@@ -128,12 +128,15 @@
 - **GitHub リポジトリURL:** `https://github.com/Tsucreator/wedding-invitation-landing-page`
 - **TODO:** お店リンク・動画IDなど未確定の参照情報を本番値へ差し替え。
 
-### 4.6 引出物 (Gift) — ✅ 実装済み (仮ページ)
+### 4.6 引出物 (Gift) — ✅ 実装済み
 - **パス:** `/gift`
 - **ファイル:** `Gift.jsx` / `Gift.module.css`
-- **内容:** ログインユーザー名を表示し、引出物カタログサービスへの外部リンクを案内するページ。
-- **UX:** ゲストごとに個別のギフト選択用リンクを発行予定。リンクカードUIで案内。
-- **TODO:** ゲストごとのギフトURL（DynamoDB に `gift_url` フィールドを追加するか、別テーブルで管理）。リンクの有効期限表示。
+- **内容:** ログインユーザー名を表示し、メールアドレス再認証を通過した場合のみ引出物リンクを表示するページ。
+- **アクセス制御:** 当日 UX のためログインは「メール」または「ふりがな + 新郎/新婦」を許可するが、ギフト選択導線はメール再認証必須。
+- **再認証 API:** `POST VITE_API_ENDPOINT` に `{"action":"verifyGiftAccess","guestId": number, "email": string}` を送信。
+- **サーバー判定:** Lambda で `guest_id` の一致レコードを取得し、登録メールアドレスと入力メールを比較。一致時のみ `ok: true` を返却。
+- **レスポンス:** 成功時 `{"ok": true, "guest_id": number, "gift_url": string|null}` / 失敗時 `401`。
+- **備考:** `gift_url` は DynamoDB `WeddingGuests` の追加フィールドで管理可能（未設定の場合は `null`）。
 
 ### 4.7 ギャラリー (Gallery) — ✅ 実装済み
 - **パス:** `/gallery`
@@ -182,8 +185,8 @@
 | ステータス | 内容 |
 | :--- | :--- |
 | 200 | ゲスト情報返却（ログイン成功） |
-| 400 | リクエスト不正（`email` 未送信 / `kanaSei,kanaMei,side` 不足 / `side` が新郎/新婦以外 / `loginType` 不正） |
-| 401 | ゲスト未登録 `{"message": "Guest not found"}` |
+| 400 | リクエスト不正（`email` 未送信 / `kanaSei,kanaMei,side` 不足 / `side` が新郎/新婦以外 / `loginType` 不正 / `verifyGiftAccess` の `guestId,email` 不足） |
+| 401 | ゲスト未登録、または `verifyGiftAccess` のメール照合不一致 `{"message": "Guest not found"}` |
 | 500 | サーバーエラー |
 
 ---

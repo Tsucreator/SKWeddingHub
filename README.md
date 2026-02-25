@@ -31,6 +31,7 @@ GitHub リポジトリ: https://github.com/Tsucreator/wedding-invitation-landing
 
 **API エンドポイント:** 招待状 (`/submit`), ログイン (`/prod/login`), 座席情報 (`/prod/seats`)。
 座席情報 Lambda はテーブル ID を受け取り、`WeddingGuests` テーブルから該当席一覧を返します。
+引出物ページは UX 優先で名前ログインを残しつつ、`/prod/login` の `action: "verifyGiftAccess"` により `guest_id + email` の再照合が通過した場合のみ「ギフトを選ぶ」導線を有効化します。
 
 ---
 
@@ -81,6 +82,18 @@ VITE_MUSICLIST_URL=https://<cloudfront-domain>/eventsite/musiclist.csv
 # 本番ビルド
 npm run build    # → dist/ に出力
 npm run preview  # ビルド成果物をローカルプレビュー
+```
+
+#### 引出物ページの再認証フロー（2026-02 追加）
+- `/gift` で「メール認証してギフトを選ぶ」を押すと、ログイン中ユーザーの `guest_id` と入力メールアドレスを API で照合。
+- 一致した場合のみ「ギフトを選ぶ」リンクを表示（不一致時はエラー表示）。
+- ログインが「ふりがな + 新郎/新婦」導線でも、引出物選択時はメールアドレス再認証が必要。
+
+```bash
+# verifyGiftAccess の疎通確認例
+curl -X POST "$VITE_API_ENDPOINT" \
+  -H "Content-Type: application/json" \
+  -d '{"action":"verifyGiftAccess","guestId":1,"email":"guest@example.com"}'
 ```
 
 ---

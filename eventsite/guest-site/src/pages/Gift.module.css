@@ -65,6 +65,43 @@
   margin-bottom: 20px;
 }
 
+.emailInput {
+  width: 100%;
+  min-height: 44px;
+  padding: 12px 14px;
+  border: 1px solid rgba(201, 169, 110, 0.45);
+  border-radius: 8px;
+  font-size: 16px;
+  color: var(--color-text);
+  background-color: var(--color-white);
+  margin-bottom: 12px;
+}
+
+.verifyButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 44px;
+  padding: 12px 16px;
+  background-color: var(--color-black);
+  color: var(--color-white);
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+}
+
+.verifyButton:disabled {
+  opacity: 0.7;
+}
+
+.errorMessage {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--color-text-light);
+}
+
 .giftLink {
   display: inline-block;
   padding: 14px 40px;

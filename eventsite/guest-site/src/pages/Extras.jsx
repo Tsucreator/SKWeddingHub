@@ -6,14 +6,14 @@ const FAVORITE_SPOTS = [
     id: 1,
     category: '焼肉',
     name: '叙々苑',
-    description: '特別な日に行きたくなる、二人のお気に入りの焼肉店です。',
+    description: '特別な日に行きたくなる 二人のお気に入りの焼肉店です',
     url: 'https://www.jojoen.co.jp/',
   },
   {
     id: 2,
     category: 'ピザ',
     name: 'PIZZA SLICE',
-    description: 'カジュアルに立ち寄れる、ボリューム感あるピザが好みです。',
+    description: 'カジュアルに立ち寄れる ボリューム感あるピザが好みです',
     url: 'https://pizzaslice.jp/',
   },
 ];
@@ -139,11 +139,11 @@ const Extras = () => {
           setSongs(parsedSongs);
           setSongsError('');
         } else {
-          setSongsError('BGMリストの読み込みに失敗したため、初期リストを表示しています。');
+          setSongsError('BGMリストの読み込みに失敗したため 初期リストを表示しています');
         }
       } catch (error) {
         console.error('musiclist.csv load error', error);
-        setSongsError('BGMリストの読み込みに失敗したため、初期リストを表示しています。');
+        setSongsError('BGMリストの読み込みに失敗したため 初期リストを表示しています');
       } finally {
         setIsSongsLoading(false);
       }
@@ -170,7 +170,7 @@ const Extras = () => {
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>好きなお店のリスト</h3>
           <p className={styles.sectionDescription}>
-            二人がよく話題にしているお店です。気になる方はぜひご覧ください。
+            二人がの好きなお店をランキングにしました！ぜひご覧ください
           </p>
           <div className={styles.spotList}>
             {FAVORITE_SPOTS.map((spot) => (
@@ -192,7 +192,7 @@ const Extras = () => {
       return (
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>当日上映した曲リスト</h3>
-          <p className={styles.sectionDescription}>当日の映像演出で使用した楽曲をまとめています。</p>
+          <p className={styles.sectionDescription}>当日の映像演出で使用した楽曲をまとめています</p>
 
           {isSongsLoading && <p className={styles.songStatus}>BGMリストを読み込み中です...</p>}
           {!isSongsLoading && songsError && <p className={styles.songStatus}>{songsError}</p>}
@@ -235,7 +235,7 @@ const Extras = () => {
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>上映した動画のアーカイブ</h3>
           <p className={styles.sectionDescription}>
-            当日上映したムービーを、アーカイブとしてこちらにまとめています。
+            当日上映した動画をこちらにまとめています
           </p>
           <div className={styles.movieList}>
             {MOVIE_ARCHIVE.map((movie) => (
@@ -263,11 +263,9 @@ const Extras = () => {
       <section className={styles.section}>
         <h3 className={styles.sectionTitle}>githubのソース</h3>
         <p className={styles.sectionDescription}>
-          本webサイト/招待状のソースコードを公開しているリポジトリです。
+          本webサイト/招待状のソースコードを公開しているリポジトリです
           <br />
-          ご興味がある方はぜひご覧ください。
-          <br />
-          実装のご相談も歓迎します。
+          ご興味がある方はぜひご覧ください
         </p>
         <a
           href={GITHUB_REPOSITORY_URL}
