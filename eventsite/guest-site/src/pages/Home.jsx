@@ -113,12 +113,9 @@ const Home = () => {
             </div>
             <h4 className={styles.name}>Shinnosuke</h4>
             <p className={styles.role}>Groom</p>
-            <p className={styles.bio}>
-              本日はご参列くださりありがとうございます <br /> 
-              皆さまと楽しい時間を過ごせることを楽しみにしています
-            </p>
           </article>
 
+          <div className={styles.ampersand}>&</div>
 
           <article className={styles.profileCard}>
             <div className={styles.photoPlaceholder}>
@@ -126,12 +123,6 @@ const Home = () => {
             </div>
             <h4 className={styles.name}>Kaho</h4>
             <p className={styles.role}>Bride</p>
-            <p className={styles.bio}>
-              皆さんに楽しんでいただけるように<br />
-              たくさん準備をしてきました<br />
-              たくさん食べて飲んで楽しんでくださいね
-
-            </p>
           </article>
         </div>
       </section>
