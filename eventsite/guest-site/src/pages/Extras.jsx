@@ -261,9 +261,9 @@ const Extras = () => {
 
     return (
       <section className={styles.section}>
-        <h3 className={styles.sectionTitle}>githubのソース</h3>
+        <h3 className={styles.sectionTitle}>GitHubリポジトリ</h3>
         <p className={styles.sectionDescription}>
-          本webサイト/招待状のソースコードを公開しているリポジトリです
+          本webサイト 招待状のソースコードを公開しているリポジトリです
           <br />
           ご興味がある方はぜひご覧ください
         </p>
@@ -283,7 +283,6 @@ const Extras = () => {
     <div className={styles.page}>
       <header className={styles.header}>
         <h2 className={styles.title}>おまけ</h2>
-        <p className={styles.subtitle}>参考リンクとアーカイブ</p>
       </header>
 
       <div className={styles.tabs} role="tablist" aria-label="おまけコンテンツの切り替えタブ">
