@@ -133,6 +133,13 @@ const HEAD_AREA = 40;           // メインテーブルインジケータ用の
 const TABLE_CY = HEAD_AREA + SEAT_ORBIT + 25; // テーブル中心 Y
 const SVG_H = TABLE_CY + SEAT_ORBIT + 40;     // SVG 高さ
 
+const formatSide = (side) => {
+  if (side === '新郎側' || side === '新婦側') return side;
+  if (side === 'groom') return '新郎側';
+  if (side === 'bride') return '新婦側';
+  return side || '';
+};
+
 const SeatDetailView = ({ tableId, userData, seatGuests, loadingSeats, onBack }) => {
   const table = guestTables.find((t) => t.id === tableId);
   if (!table) return null;
@@ -218,6 +225,8 @@ const SeatDetailView = ({ tableId, userData, seatGuests, loadingSeats, onBack })
               ? `${guest.name}${guest.honorific ? ` ${guest.honorific}` : ''}`
               : String(s.seatId);
             const relation = guest?.relationship || '';
+            const sideLabel = formatSide(guest?.side);
+            const metaLabel = [sideLabel, relation].filter(Boolean).join(' / ');
 
             return (
               <g key={s.seatId}>
@@ -235,14 +244,14 @@ const SeatDetailView = ({ tableId, userData, seatGuests, loadingSeats, onBack })
                 </text>
 
                 {/* 間柄（名前の下） */}
-                {relation && (
+                {metaLabel && (
                   <text
                     x={s.x} y={s.y + 28}
                     textAnchor="middle"
                     fill={mine ? "var(--color-gold)" : "#999"}
                     fontSize="12"
                   >
-                    {relation}
+                    {metaLabel}
                   </text>
                 )}
 
@@ -279,7 +288,9 @@ const SeatDetailView = ({ tableId, userData, seatGuests, loadingSeats, onBack })
                   <span className={styles.guestName}>
                     {g.name}{g.honorific ? ` ${g.honorific}` : ''}
                   </span>
-                  <span className={styles.guestRelation}>{g.relationship}</span>
+                  <span className={styles.guestRelation}>
+                    {[formatSide(g.side), g.relationship].filter(Boolean).join(' / ')}
+                  </span>
                 </li>
               );
             })}

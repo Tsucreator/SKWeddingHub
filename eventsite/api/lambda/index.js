@@ -35,12 +35,13 @@ exports.handler = async (event) => {
     ExpressionAttributeNames: {
       "#t": "table_id",
       "#n": "name",
+      "#s": "side",
     },
     ExpressionAttributeValues: {
       ":tableId": tableId,
     },
     // 必要最小限の属性のみ取得（スループット節約）
-    ProjectionExpression: "seat_id, #n, relationship, honorific",
+    ProjectionExpression: "seat_id, #n, relationship, honorific, #s",
   };
 
   try {
@@ -54,6 +55,7 @@ exports.handler = async (event) => {
         name: item.name,
         relationship: item.relationship || "",
         honorific: item.honorific || "",
+        side: item.side || "",
       }))
       .sort((a, b) => Number(a.seat_id) - Number(b.seat_id));
 
