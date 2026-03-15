@@ -131,12 +131,13 @@
 ### 4.6 引出物 (Gift) — ✅ 実装済み
 - **パス:** `/gift`
 - **ファイル:** `Gift.jsx` / `Gift.module.css`
-- **内容:** ログインユーザー名を表示し、メールアドレス再認証を通過した場合のみ引出物リンクを表示するページ。
+- **内容:** ログインユーザー名を表示し、メールアドレス再認証後に `gift_delivery_type` に応じて「外部カタログへ自動遷移」または「当日手渡し案内」を表示するページ。
 - **アクセス制御:** 当日 UX のためログインは「メール」または「ふりがな + 新郎/新婦」を許可するが、ギフト選択導線はメール再認証必須。
 - **再認証 API:** `POST VITE_API_ENDPOINT` に `{"action":"verifyGiftAccess","guestId": number, "email": string}` を送信。
 - **サーバー判定:** Lambda で `guest_id` の一致レコードを取得し、登録メールアドレスと入力メールを比較。一致時のみ `ok: true` を返却。
-- **レスポンス:** 成功時 `{"ok": true, "guest_id": number, "gift_url": string|null}` / 失敗時 `401`。
-- **備考:** `gift_url` は DynamoDB `WeddingGuests` の追加フィールドで管理可能（未設定の場合は `null`）。
+- **レスポンス:** 成功時 `{"ok": true, "guest_id": number, "gift_delivery_type": "catalog"|"direct_hand", "gift_url": string|null, "gift_message": string|null}` / 失敗時 `401`。
+- **画面挙動:** `gift_delivery_type = "catalog"` かつ `gift_url` がある場合は再認証後に外部のギフト選択ページへ自動遷移し、手動遷移ボタンも表示する。`gift_delivery_type = "direct_hand"` の場合はページを残したまま案内文を表示する。
+- **備考:** 通常ログイン API レスポンスでは `gift_url` を返さず、ギフト導線は再認証 API でのみ返却する。
 
 ### 4.7 ギャラリー (Gallery) — ✅ 実装済み
 - **パス:** `/gallery`
@@ -162,6 +163,9 @@
 | honorific | String | 敬称 |
 | seat_id | Number | 席番号 (例: 1, 3) |
 | table_id | String | 所属テーブルID (例: "A", "B") |
+| gift_delivery_type | String | 引出物受け取り方式 (`catalog` / `direct_hand`) |
+| gift_url | String | カタログギフト遷移先 URL (`catalog` の場合のみ使用) |
+| gift_message | String | `direct_hand` 時に表示する任意メッセージ |
 
 ### Login API レスポンス例
 ```json
@@ -178,6 +182,17 @@
   "honorific": "様",
   "table_id": "A",
   "seat_id": "1"
+}
+```
+
+### Gift 再認証 API レスポンス例
+```json
+{
+  "ok": true,
+  "guest_id": 1,
+  "gift_delivery_type": "catalog",
+  "gift_url": "https://example.com/gift/abc123",
+  "gift_message": null
 }
 ```
 

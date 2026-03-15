@@ -102,6 +102,26 @@
   color: var(--color-text-light);
 }
 
+.verifiedMessage {
+  margin-bottom: 16px;
+  font-size: 13px;
+  line-height: 1.9;
+  color: var(--color-text);
+}
+
+.statusPanel {
+  padding: 18px 16px;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(201, 169, 110, 0.2);
+}
+
+.directMessage {
+  font-size: 14px;
+  line-height: 2;
+  color: var(--color-text);
+}
+
 .giftLink {
   display: inline-block;
   padding: 14px 40px;

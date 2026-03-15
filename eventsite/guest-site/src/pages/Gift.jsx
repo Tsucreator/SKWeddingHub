@@ -2,15 +2,22 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import styles from './Gift.module.css';
 
+const GIFT_DELIVERY_TYPE_CATALOG = 'catalog';
+const GIFT_DELIVERY_TYPE_DIRECT_HAND = 'direct_hand';
+const AUTO_REDIRECT_DELAY_MS = 1800;
+
 const Gift = () => {
   const [guest, setGuest] = useState(null);
   const [authEmail, setAuthEmail] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [giftAccess, setGiftAccess] = useState(null);
 
   const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT || 'https://qlydtknsq4.execute-api.ap-northeast-1.amazonaws.com/prod/login';
-  const giftLink = guest?.gift_url || '#';
+  const guestName = guest?.name || '';
+  const shouldAutoRedirect = isVerified && giftAccess?.deliveryType === GIFT_DELIVERY_TYPE_CATALOG && Boolean(giftAccess?.giftUrl);
+  const directHandMessage = giftAccess?.message || `${guestName}様の引出物は別途ご用意しております。当日、ホストの2人より直接お渡しいたします。`;
 
   useEffect(() => {
     try {
@@ -22,6 +29,20 @@ const Gift = () => {
       setGuest(null);
     }
   }, []);
+
+  useEffect(() => {
+    if (!shouldAutoRedirect) {
+      return undefined;
+    }
+
+    const redirectTimer = window.setTimeout(() => {
+      window.location.assign(giftAccess.giftUrl);
+    }, AUTO_REDIRECT_DELAY_MS);
+
+    return () => {
+      window.clearTimeout(redirectTimer);
+    };
+  }, [giftAccess, shouldAutoRedirect]);
 
   const handleVerifyEmail = async () => {
     const trimmedEmail = authEmail.trim();
@@ -37,6 +58,7 @@ const Gift = () => {
 
     setIsVerifying(true);
     setErrorMessage('');
+    setGiftAccess(null);
 
     try {
       const response = await axios.post(API_ENDPOINT, {
@@ -51,6 +73,16 @@ const Gift = () => {
           : response.data;
 
       if (result?.ok) {
+        const resolvedGiftUrl = typeof result.gift_url === 'string' ? result.gift_url.trim() : '';
+        const deliveryType =
+          result.gift_delivery_type ||
+          (resolvedGiftUrl ? GIFT_DELIVERY_TYPE_CATALOG : GIFT_DELIVERY_TYPE_DIRECT_HAND);
+
+        setGiftAccess({
+          deliveryType,
+          giftUrl: resolvedGiftUrl,
+          message: result.gift_message || '',
+        });
         setIsVerified(true);
       } else {
         setErrorMessage('メールアドレスをご確認ください');
@@ -84,7 +116,9 @@ const Gift = () => {
 
         <div className={styles.linkCard}>
           <p className={styles.linkLabel}>
-            下記よりお好みのギフトを<br />お選びいただけます
+            {isVerified && giftAccess?.deliveryType === GIFT_DELIVERY_TYPE_DIRECT_HAND
+              ? 'ご案内をご確認ください'
+              : '下記よりお好みのギフトをお選びいただけます'}
           </p>
           {!isVerified && (
             <>
@@ -109,18 +143,32 @@ const Gift = () => {
             </>
           )}
 
-          {isVerified && (
-            <a
-              href={giftLink}
-              className={styles.giftLink}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              ギフトを選ぶ
-            </a>
+          {isVerified && giftAccess?.deliveryType === GIFT_DELIVERY_TYPE_CATALOG && giftAccess?.giftUrl && (
+            <>
+              <p className={styles.verifiedMessage}>
+                認証が完了しました。まもなくギフト選択ページへ移動します。
+              </p>
+              <a
+                href={giftAccess.giftUrl}
+                className={styles.giftLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                ギフトを選ぶ
+              </a>
+            </>
           )}
+
+          {isVerified && giftAccess?.deliveryType === GIFT_DELIVERY_TYPE_DIRECT_HAND && (
+            <div className={styles.statusPanel}>
+              <p className={styles.directMessage}>{directHandMessage}</p>
+            </div>
+          )}
+
           <p className={styles.linkNote}>
-            ※リンクの有効期限がございます
+            {giftAccess?.deliveryType === GIFT_DELIVERY_TYPE_DIRECT_HAND
+              ? '※ご不明点がございましたら当日お近くのスタッフへお声がけください'
+              : '※リンクの有効期限がございます'}
           </p>
         </div>
       </div>

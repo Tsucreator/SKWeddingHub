@@ -37,16 +37,20 @@ const Layout = () => {
       </main>
 
       <nav className={styles.nav}>
-        {navItems.map(({ to, icon: Icon, label }) => (
-          <Link
-            key={to}
-            to={to}
-            className={`${styles.navItem} ${location.pathname === to ? styles.active : ''}`}
-          >
-            <Icon size={20} />
-            <span className={styles.navLabel}>{label}</span>
-          </Link>
-        ))}
+        {navItems.map((item) => {
+          const IconComponent = item.icon;
+
+          return (
+            <Link
+              key={item.to}
+              to={item.to}
+              className={`${styles.navItem} ${location.pathname === item.to ? styles.active : ''}`}
+            >
+              <IconComponent size={20} />
+              <span className={styles.navLabel}>{item.label}</span>
+            </Link>
+          );
+        })}
 
         <button
           type="button"

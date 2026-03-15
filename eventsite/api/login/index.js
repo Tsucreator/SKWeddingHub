@@ -7,6 +7,8 @@ const dynamo = DynamoDBDocumentClient.from(client);
 const TABLE_NAME = 'WeddingGuests';
 const LOGIN_TYPE_EMAIL = 'email';
 const LOGIN_TYPE_KANA = 'kana';
+const GIFT_DELIVERY_TYPE_CATALOG = 'catalog';
+const GIFT_DELIVERY_TYPE_DIRECT_HAND = 'direct_hand';
 
 const CORS_HEADERS = {
     "Access-Control-Allow-Origin": "*",
@@ -18,6 +20,20 @@ const normalizeText = (value) => String(value || '').trim().replace(/\s+/g, ' ')
 
 const normalizeEmail = (value) => normalizeText(value).toLowerCase();
 
+const normalizeGiftDeliveryType = (value) => {
+    const normalized = normalizeText(value).toLowerCase();
+
+    if (normalized === GIFT_DELIVERY_TYPE_CATALOG) {
+        return GIFT_DELIVERY_TYPE_CATALOG;
+    }
+
+    if (normalized === GIFT_DELIVERY_TYPE_DIRECT_HAND) {
+        return GIFT_DELIVERY_TYPE_DIRECT_HAND;
+    }
+
+    return '';
+};
+
 const normalizeKanaForMatch = (value) =>
     String(value || '')
         .normalize('NFKC')
@@ -25,6 +41,33 @@ const normalizeKanaForMatch = (value) =>
         .trim();
 
 const normalizeSide = (side) => normalizeText(side);
+
+const buildGiftAccess = (guest) => {
+    const giftUrl = normalizeText(guest.gift_url);
+    const giftDeliveryType =
+        normalizeGiftDeliveryType(guest.gift_delivery_type) ||
+        (giftUrl ? GIFT_DELIVERY_TYPE_CATALOG : GIFT_DELIVERY_TYPE_DIRECT_HAND);
+
+    return {
+        gift_delivery_type: giftDeliveryType,
+        gift_url: giftDeliveryType === GIFT_DELIVERY_TYPE_CATALOG && giftUrl ? giftUrl : null,
+        gift_message:
+            giftDeliveryType === GIFT_DELIVERY_TYPE_DIRECT_HAND
+                ? normalizeText(guest.gift_message) || null
+                : null
+    };
+};
+
+const sanitizeGuestForLogin = (guest) => {
+    const {
+        gift_url: _giftUrl,
+        gift_delivery_type: _giftDeliveryType,
+        gift_message: _giftMessage,
+        ...safeGuest
+    } = guest;
+
+    return safeGuest;
+};
 
 const createResponse = (statusCode, body) => ({
     statusCode,
@@ -70,10 +113,12 @@ exports.handler = async (event) => {
                 return createResponse(401, { ok: false, message: "Guest not found" });
             }
 
+            const giftAccess = buildGiftAccess(guest);
+
             return createResponse(200, {
                 ok: true,
                 guest_id: guest.guest_id,
-                gift_url: guest.gift_url || null
+                ...giftAccess
             });
         } catch (err) {
             console.error("DynamoDB error:", JSON.stringify(err, Object.getOwnPropertyNames(err)));
@@ -138,7 +183,7 @@ exports.handler = async (event) => {
             });
 
             if (matchedGuest) {
-                return createResponse(200, matchedGuest);
+                return createResponse(200, sanitizeGuestForLogin(matchedGuest));
             }
 
             return createResponse(401, { message: "Guest not found" });
@@ -157,7 +202,7 @@ exports.handler = async (event) => {
         console.log("Scan result:", JSON.stringify(result));
 
         if (result.Items && result.Items.length > 0) {
-            return createResponse(200, result.Items[0]);
+            return createResponse(200, sanitizeGuestForLogin(result.Items[0]));
         } else {
             return createResponse(401, { message: "Guest not found" });
         }
