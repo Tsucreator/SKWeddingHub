@@ -59,14 +59,17 @@ const buildGiftAccess = (guest) => {
 };
 
 const sanitizeGuestForLogin = (guest) => {
+    const giftAccess = buildGiftAccess(guest);
     const {
         gift_url: _giftUrl,
-        gift_delivery_type: _giftDeliveryType,
-        gift_message: _giftMessage,
         ...safeGuest
     } = guest;
 
-    return safeGuest;
+    return {
+        ...safeGuest,
+        gift_delivery_type: giftAccess.gift_delivery_type,
+        gift_message: giftAccess.gift_message
+    };
 };
 
 const createResponse = (statusCode, body) => ({

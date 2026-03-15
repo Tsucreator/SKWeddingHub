@@ -6,6 +6,23 @@ const GIFT_DELIVERY_TYPE_CATALOG = 'catalog';
 const GIFT_DELIVERY_TYPE_DIRECT_HAND = 'direct_hand';
 const AUTO_REDIRECT_DELAY_MS = 1800;
 
+const resolveGiftAccess = (source) => {
+  if (!source) {
+    return null;
+  }
+
+  const resolvedGiftUrl = typeof source.gift_url === 'string' ? source.gift_url.trim() : '';
+  const deliveryType =
+    source.gift_delivery_type ||
+    (resolvedGiftUrl ? GIFT_DELIVERY_TYPE_CATALOG : GIFT_DELIVERY_TYPE_DIRECT_HAND);
+
+  return {
+    deliveryType,
+    giftUrl: resolvedGiftUrl,
+    message: source.gift_message || '',
+  };
+};
+
 const Gift = () => {
   const [guest, setGuest] = useState(null);
   const [authEmail, setAuthEmail] = useState('');
@@ -24,6 +41,12 @@ const Gift = () => {
       const savedGuest = JSON.parse(localStorage.getItem('guest') || 'null');
       if (savedGuest) {
         setGuest(savedGuest);
+        const savedGiftAccess = resolveGiftAccess(savedGuest);
+
+        if (savedGiftAccess?.deliveryType === GIFT_DELIVERY_TYPE_DIRECT_HAND) {
+          setGiftAccess(savedGiftAccess);
+          setIsVerified(true);
+        }
       }
     } catch {
       setGuest(null);
@@ -73,16 +96,7 @@ const Gift = () => {
           : response.data;
 
       if (result?.ok) {
-        const resolvedGiftUrl = typeof result.gift_url === 'string' ? result.gift_url.trim() : '';
-        const deliveryType =
-          result.gift_delivery_type ||
-          (resolvedGiftUrl ? GIFT_DELIVERY_TYPE_CATALOG : GIFT_DELIVERY_TYPE_DIRECT_HAND);
-
-        setGiftAccess({
-          deliveryType,
-          giftUrl: resolvedGiftUrl,
-          message: result.gift_message || '',
-        });
+        setGiftAccess(resolveGiftAccess(result));
         setIsVerified(true);
       } else {
         setErrorMessage('メールアドレスをご確認ください');

@@ -131,13 +131,13 @@
 ### 4.6 引出物 (Gift) — ✅ 実装済み
 - **パス:** `/gift`
 - **ファイル:** `Gift.jsx` / `Gift.module.css`
-- **内容:** ログインユーザー名を表示し、メールアドレス再認証後に `gift_delivery_type` に応じて「外部カタログへ自動遷移」または「当日手渡し案内」を表示するページ。
+- **内容:** ログインユーザー名を表示し、`gift_delivery_type` に応じて「外部カタログへ自動遷移」または「当日手渡し案内」を表示するページ。
 - **アクセス制御:** 当日 UX のためログインは「メール」または「ふりがな + 新郎/新婦」を許可するが、ギフト選択導線はメール再認証必須。
 - **再認証 API:** `POST VITE_API_ENDPOINT` に `{"action":"verifyGiftAccess","guestId": number, "email": string}` を送信。
 - **サーバー判定:** Lambda で `guest_id` の一致レコードを取得し、登録メールアドレスと入力メールを比較。一致時のみ `ok: true` を返却。
 - **レスポンス:** 成功時 `{"ok": true, "guest_id": number, "gift_delivery_type": "catalog"|"direct_hand", "gift_url": string|null, "gift_message": string|null}` / 失敗時 `401`。
-- **画面挙動:** `gift_delivery_type = "catalog"` かつ `gift_url` がある場合は再認証後に外部のギフト選択ページへ自動遷移し、手動遷移ボタンも表示する。`gift_delivery_type = "direct_hand"` の場合はページを残したまま案内文を表示する。
-- **備考:** 通常ログイン API レスポンスでは `gift_url` を返さず、ギフト導線は再認証 API でのみ返却する。
+- **画面挙動:** `gift_delivery_type = "catalog"` かつ `gift_url` がある場合のみメール再認証を要求し、成功後に外部のギフト選択ページへ自動遷移し、手動遷移ボタンも表示する。`gift_delivery_type = "direct_hand"` の場合は Gift 画面表示時点で案内文を表示する。
+- **備考:** 通常ログイン API レスポンスでは `gift_url` は返さないが、`gift_delivery_type` と `gift_message` は返却して画面初期表示に利用する。
 
 ### 4.7 ギャラリー (Gallery) — ✅ 実装済み
 - **パス:** `/gallery`
@@ -181,7 +181,9 @@
   "relationship": "友人",
   "honorific": "様",
   "table_id": "A",
-  "seat_id": "1"
+  "seat_id": "1",
+  "gift_delivery_type": "direct_hand",
+  "gift_message": "山田太郎様の引出物は別途ご用意しております。当日、ホストの2人より直接お渡しいたします。"
 }
 ```
 
