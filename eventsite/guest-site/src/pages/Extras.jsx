@@ -202,7 +202,7 @@ const Extras = () => {
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>かほログ</h3>
           <p className={styles.sectionDescription}>
-            かほのお気に入りのお店 5選です
+            お気に入りのお店 5選です
           </p>
           <div className={styles.spotList}>
             {FAVORITE_SPOTS.map((spot) => (
@@ -214,7 +214,7 @@ const Extras = () => {
                 <h4 className={styles.spotName}>{spot.name}</h4>
                 <p className={styles.spotDescription}>{`${spot.prefecture} ${spot.city} ${spot.area}`}</p>
                 <a href={spot.url} target="_blank" rel="noopener noreferrer" className={styles.linkButton}>
-                  食べログを見る
+                  Webサイトを見る
                 </a>
               </article>
             ))}

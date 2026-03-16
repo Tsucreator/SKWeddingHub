@@ -132,7 +132,7 @@ const Gift = () => {
           <p className={styles.linkLabel}>
             {isVerified && giftAccess?.deliveryType === GIFT_DELIVERY_TYPE_DIRECT_HAND
               ? 'ご案内をご確認ください'
-              : '下記よりお好みのギフトをお選びいただけます'}
+              : 'メール認証をしてギフトを選ぶ'}
           </p>
           {!isVerified && (
             <>
@@ -151,7 +151,7 @@ const Gift = () => {
                 onClick={handleVerifyEmail}
                 disabled={isVerifying}
               >
-                {isVerifying ? '確認中...' : 'メール認証してギフトを選ぶ'}
+                {isVerifying ? '確認中...' : '認証する'}
               </button>
               {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
             </>
