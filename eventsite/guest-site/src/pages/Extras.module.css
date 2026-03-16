@@ -248,6 +248,18 @@
   color: var(--color-text-light);
 }
 
+.lockedNotice,
+.releaseNotice {
+  margin-top: 14px;
+  border: 1px dashed rgba(201, 169, 110, 0.7);
+  border-radius: 10px;
+  background: rgba(201, 169, 110, 0.08);
+  padding: 12px;
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: var(--color-text-light);
+}
+
 @media (min-width: 768px) {
   .page {
     padding-left: 24px;

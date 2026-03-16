@@ -1,0 +1,32 @@
+{
+  "songs": {
+    "defaultVisibleScenes": [],
+    "schedule": [
+      {
+        "at": "2026-03-17T11:30:00+09:00",
+        "visibleScenes": ["歓談"]
+      },
+      {
+        "at": "2026-03-17T12:00:00+09:00",
+        "visibleScenes": ["歓談", "入場"]
+      },
+      {
+        "at": "2026-03-17T13:00:00+09:00",
+        "visibleScenes": ["歓談", "入場", "その他"]
+      }
+    ]
+  },
+  "movies": {
+    "defaultVisibleCount": 0,
+    "schedule": [
+      {
+        "at": "2026-03-17T12:30:00+09:00",
+        "visibleCount": 1
+      },
+      {
+        "at": "2026-03-17T13:30:00+09:00",
+        "visibleCount": 999
+      }
+    ]
+  }
+}

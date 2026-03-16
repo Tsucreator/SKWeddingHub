@@ -74,6 +74,7 @@ const SONG_PLAYLIST = [
 
 const GITHUB_REPOSITORY_URL = 'https://github.com/Tsucreator/wedding-invitation-landing-page';
 const MUSICLIST_URL = import.meta.env.VITE_MUSICLIST_URL || 'musiclist.csv';
+const EXTRAS_RELEASE_SCHEDULE_URL = import.meta.env.VITE_EXTRAS_RELEASE_SCHEDULE_URL || 'extras-release-schedule.json';
 
 const TABS = [
   { id: 'spots', label: 'かほログ' },
@@ -81,6 +82,19 @@ const TABS = [
   { id: 'movies', label: '今日の動画' },
   { id: 'github', label: 'GitHub' },
 ];
+
+const DEFAULT_RELEASE_SCHEDULE = {
+  songs: {
+    defaultVisibleCount: 0,
+    defaultVisibleScenes: [],
+    schedule: [],
+  },
+  movies: {
+    defaultVisibleCount: 0,
+    defaultVisibleScenes: [],
+    schedule: [],
+  },
+};
 
 const parseCsvLine = (line) => {
   const values = [];
@@ -145,11 +159,158 @@ const parseMusicCsv = (csvText) => {
     .filter((song) => song.name);
 };
 
+const normalizeReleaseConfig = (rawConfig) => {
+  if (!rawConfig || typeof rawConfig !== 'object') {
+    return { defaultVisibleCount: 0, defaultVisibleScenes: [], schedule: [] };
+  }
+
+  const defaultVisibleCount = Number.isFinite(Number(rawConfig.defaultVisibleCount))
+    ? Number(rawConfig.defaultVisibleCount)
+    : 0;
+  const defaultVisibleScenes = Array.isArray(rawConfig.defaultVisibleScenes)
+    ? rawConfig.defaultVisibleScenes
+      .filter((scene) => typeof scene === 'string')
+      .map((scene) => scene.trim())
+      .filter(Boolean)
+    : [];
+
+  const schedule = Array.isArray(rawConfig.schedule)
+    ? rawConfig.schedule
+      .map((step) => {
+        const visibleCount = Number(step?.visibleCount);
+        const at = typeof step?.at === 'string' ? step.at : '';
+        const hasVisibleCount = Number.isFinite(visibleCount);
+        const hasVisibleScenes = Array.isArray(step?.visibleScenes);
+        const visibleScenes = hasVisibleScenes
+          ? step.visibleScenes
+            .filter((scene) => typeof scene === 'string')
+            .map((scene) => scene.trim())
+            .filter(Boolean)
+          : undefined;
+
+        if ((!hasVisibleCount && !hasVisibleScenes) || !Number.isFinite(Date.parse(at))) {
+          return null;
+        }
+
+        const normalizedStep = { at };
+
+        if (hasVisibleCount) {
+          normalizedStep.visibleCount = visibleCount;
+        }
+
+        if (hasVisibleScenes) {
+          normalizedStep.visibleScenes = visibleScenes;
+        }
+
+        return normalizedStep;
+      })
+      .filter(Boolean)
+      .sort((left, right) => Date.parse(left.at) - Date.parse(right.at))
+    : [];
+
+  return {
+    defaultVisibleCount,
+    defaultVisibleScenes,
+    schedule,
+  };
+};
+
+const getVisibleCount = (config, totalCount, currentTime) => {
+  const safeTotal = Math.max(totalCount, 0);
+  let visibleCount = config.defaultVisibleCount;
+
+  config.schedule.forEach((step) => {
+    if (currentTime >= Date.parse(step.at)) {
+      visibleCount = step.visibleCount;
+    }
+  });
+
+  return Math.min(Math.max(visibleCount, 0), safeTotal);
+};
+
+const getNextReleaseAt = (config, currentTime, visibleCount, totalCount) => {
+  const nextStep = config.schedule.find((step) => {
+    const stepTime = Date.parse(step.at);
+    const clampedVisibleCount = Math.min(Math.max(step.visibleCount ?? 0, 0), totalCount);
+    return stepTime > currentTime && clampedVisibleCount > visibleCount;
+  });
+
+  return nextStep?.at || '';
+};
+
+const formatReleaseTime = (value) => {
+  if (!value) {
+    return '';
+  }
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return '';
+  }
+
+  return new Intl.DateTimeFormat('ja-JP', {
+    month: 'numeric',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'Asia/Tokyo',
+  }).format(date);
+};
+
+const hasVisibleSceneRules = (config) => {
+  return config.defaultVisibleScenes.length > 0 || config.schedule.some((step) => 'visibleScenes' in step);
+};
+
+const normalizeSceneNames = (sceneNames, allSceneNames) => {
+  const availableScenes = new Set(allSceneNames);
+  const uniqueScenes = [];
+
+  sceneNames.forEach((sceneName) => {
+    if (!availableScenes.has(sceneName) || uniqueScenes.includes(sceneName)) {
+      return;
+    }
+
+    uniqueScenes.push(sceneName);
+  });
+
+  return uniqueScenes;
+};
+
+const getVisibleSceneNames = (config, allSceneNames, currentTime) => {
+  let visibleScenes = normalizeSceneNames(config.defaultVisibleScenes, allSceneNames);
+
+  config.schedule.forEach((step) => {
+    if (currentTime >= Date.parse(step.at) && 'visibleScenes' in step) {
+      visibleScenes = normalizeSceneNames(step.visibleScenes, allSceneNames);
+    }
+  });
+
+  return visibleScenes;
+};
+
+const getNextSceneReleaseAt = (config, currentTime, visibleScenes, allSceneNames) => {
+  const currentKey = visibleScenes.join('\u0000');
+  const nextStep = config.schedule.find((step) => {
+    if (Date.parse(step.at) <= currentTime || !('visibleScenes' in step)) {
+      return false;
+    }
+
+    const nextScenes = normalizeSceneNames(step.visibleScenes, allSceneNames);
+    return nextScenes.join('\u0000') !== currentKey;
+  });
+
+  return nextStep?.at || '';
+};
+
 const Extras = () => {
   const [activeTab, setActiveTab] = useState('spots');
   const [songs, setSongs] = useState(SONG_PLAYLIST);
   const [isSongsLoading, setIsSongsLoading] = useState(true);
   const [songsError, setSongsError] = useState('');
+  const [releaseSchedule, setReleaseSchedule] = useState(DEFAULT_RELEASE_SCHEDULE);
+  const [isReleaseScheduleLoading, setIsReleaseScheduleLoading] = useState(true);
+  const [releaseScheduleError, setReleaseScheduleError] = useState('');
+  const [currentTime, setCurrentTime] = useState(() => Date.now());
 
   useEffect(() => {
     const loadMusicList = async () => {
@@ -184,9 +345,98 @@ const Extras = () => {
     loadMusicList();
   }, []);
 
-  const songCountLabel = useMemo(() => `全 ${songs.length} 曲`, [songs.length]);
+  useEffect(() => {
+    const loadReleaseSchedule = async () => {
+      try {
+        const response = await fetch(EXTRAS_RELEASE_SCHEDULE_URL, {
+          headers: {
+            Accept: 'application/json',
+          },
+          cache: 'no-store',
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch extras release schedule: ${response.status}`);
+        }
+
+        const rawSchedule = await response.json();
+        setReleaseSchedule({
+          songs: normalizeReleaseConfig(rawSchedule.songs),
+          movies: normalizeReleaseConfig(rawSchedule.movies),
+        });
+        setReleaseScheduleError('');
+      } catch (error) {
+        console.error('extras-release-schedule load error', error);
+        setReleaseSchedule(DEFAULT_RELEASE_SCHEDULE);
+        setReleaseScheduleError('公開設定の読み込みに失敗したため、一部コンテンツを非表示にしています');
+      } finally {
+        setIsReleaseScheduleLoading(false);
+      }
+    };
+
+    loadReleaseSchedule();
+  }, []);
+
+  useEffect(() => {
+    const timerId = window.setInterval(() => {
+      setCurrentTime(Date.now());
+    }, 30000);
+
+    return () => {
+      window.clearInterval(timerId);
+    };
+  }, []);
+
+  const visibleSongCount = useMemo(() => {
+    return getVisibleCount(releaseSchedule.songs, songs.length, currentTime);
+  }, [releaseSchedule.songs, songs.length, currentTime]);
+  const orderedSceneNames = useMemo(() => {
+    return songs.reduce((sceneNames, song) => {
+      const sceneName = song.scene || 'その他';
+      if (!sceneNames.includes(sceneName)) {
+        sceneNames.push(sceneName);
+      }
+      return sceneNames;
+    }, []);
+  }, [songs]);
+  const visibleSceneNames = useMemo(() => {
+    if (!hasVisibleSceneRules(releaseSchedule.songs)) {
+      return [];
+    }
+
+    return getVisibleSceneNames(releaseSchedule.songs, orderedSceneNames, currentTime);
+  }, [releaseSchedule.songs, orderedSceneNames, currentTime]);
+  const visibleSongs = useMemo(() => {
+    if (!hasVisibleSceneRules(releaseSchedule.songs)) {
+      return songs.slice(0, visibleSongCount);
+    }
+
+    const visibleSceneSet = new Set(visibleSceneNames);
+    return songs.filter((song) => visibleSceneSet.has(song.scene || 'その他'));
+  }, [songs, visibleSongCount, visibleSceneNames, releaseSchedule.songs]);
+  const hiddenSongCount = songs.length - visibleSongs.length;
+  const hiddenSceneCount = orderedSceneNames.length - visibleSceneNames.length;
+  const nextSongReleaseLabel = useMemo(() => {
+    if (hasVisibleSceneRules(releaseSchedule.songs)) {
+      return formatReleaseTime(
+        getNextSceneReleaseAt(releaseSchedule.songs, currentTime, visibleSceneNames, orderedSceneNames),
+      );
+    }
+
+    return formatReleaseTime(
+      getNextReleaseAt(releaseSchedule.songs, currentTime, visibleSongCount, songs.length),
+    );
+  }, [releaseSchedule.songs, currentTime, visibleSceneNames, orderedSceneNames, visibleSongCount, songs.length]);
+  const visibleSongCountLabel = useMemo(() => {
+    if (hasVisibleSceneRules(releaseSchedule.songs)) {
+      return `現在公開中 ${visibleSceneNames.length} シーン / ${visibleSongs.length} 曲`;
+    }
+
+    return `現在公開中 ${visibleSongs.length} 曲`;
+  }, [releaseSchedule.songs, visibleSceneNames.length, visibleSongs.length]);
+
   const songsByScene = useMemo(() => {
-    return songs.reduce((groups, song) => {
+    return visibleSongs.reduce((groups, song) => {
       const sceneKey = song.scene || 'その他';
       if (!groups[sceneKey]) {
         groups[sceneKey] = [];
@@ -194,7 +444,18 @@ const Extras = () => {
       groups[sceneKey].push(song);
       return groups;
     }, {});
-  }, [songs]);
+  }, [visibleSongs]);
+
+  const visibleMovieCount = useMemo(() => {
+    return getVisibleCount(releaseSchedule.movies, MOVIE_ARCHIVE.length, currentTime);
+  }, [releaseSchedule.movies, currentTime]);
+  const visibleMovies = useMemo(() => MOVIE_ARCHIVE.slice(0, visibleMovieCount), [visibleMovieCount]);
+  const hiddenMovieCount = MOVIE_ARCHIVE.length - visibleMovies.length;
+  const nextMovieReleaseLabel = useMemo(() => {
+    return formatReleaseTime(
+      getNextReleaseAt(releaseSchedule.movies, currentTime, visibleMovieCount, MOVIE_ARCHIVE.length),
+    );
+  }, [releaseSchedule.movies, currentTime, visibleMovieCount]);
 
   const renderTabContent = () => {
     if (activeTab === 'spots') {
@@ -227,40 +488,66 @@ const Extras = () => {
       return (
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>当日上映した曲リスト</h3>
-          <p className={styles.sectionDescription}>当日の映像演出で使用した楽曲をまとめています</p>
+          <p className={styles.sectionDescription}>当日の映像演出で使用した楽曲を、進行に合わせて順次公開しています</p>
 
           {isSongsLoading && <p className={styles.songStatus}>BGMリストを読み込み中です...</p>}
+          {isReleaseScheduleLoading && <p className={styles.songStatus}>公開設定を確認中です...</p>}
           {!isSongsLoading && songsError && <p className={styles.songStatus}>{songsError}</p>}
-          {!isSongsLoading && <p className={styles.songCount}>{songCountLabel}</p>}
+          {!isReleaseScheduleLoading && releaseScheduleError && (
+            <p className={styles.songStatus}>{releaseScheduleError}</p>
+          )}
+          {!isSongsLoading && !isReleaseScheduleLoading && visibleSongs.length > 0 && (
+            <p className={styles.songCount}>{visibleSongCountLabel}</p>
+          )}
 
-          <div className={styles.songSceneList}>
-            {Object.entries(songsByScene).map(([scene, sceneSongs]) => (
-              <section key={scene} className={styles.songGroup}>
-                <h4 className={styles.songCategory}>{scene}</h4>
-                <ul className={styles.songList}>
-                  {sceneSongs.map((song) => (
-                    <li key={song.id} className={styles.songItem}>
-                      <div className={styles.songMain}>
-                        <p className={styles.songTitle}>{song.name}</p>
-                        <p className={styles.songMeta}>{song.artists}</p>
-                      </div>
+          {!isSongsLoading && !isReleaseScheduleLoading && visibleSongs.length === 0 && (
+            <div className={styles.lockedNotice}>
+              <p>このリストは披露宴の進行に合わせて公開されます</p>
+              {nextSongReleaseLabel && <p>次回公開予定: {nextSongReleaseLabel}</p>}
+            </div>
+          )}
 
-                      {song.spotifyLink && (
-                        <a
-                          href={song.spotifyLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={styles.songLink}
-                        >
-                          Spotify
-                        </a>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            ))}
-          </div>
+          {visibleSongs.length > 0 && (
+            <div className={styles.songSceneList}>
+              {Object.entries(songsByScene).map(([scene, sceneSongs]) => (
+                <section key={scene} className={styles.songGroup}>
+                  <h4 className={styles.songCategory}>{scene}</h4>
+                  <ul className={styles.songList}>
+                    {sceneSongs.map((song) => (
+                      <li key={song.id} className={styles.songItem}>
+                        <div className={styles.songMain}>
+                          <p className={styles.songTitle}>{song.name}</p>
+                          <p className={styles.songMeta}>{song.artists}</p>
+                        </div>
+
+                        {song.spotifyLink && (
+                          <a
+                            href={song.spotifyLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.songLink}
+                          >
+                            Spotify
+                          </a>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              ))}
+            </div>
+          )}
+
+          {!isSongsLoading && !isReleaseScheduleLoading && hiddenSongCount > 0 && (
+            <div className={styles.releaseNotice}>
+              <p>
+                {hasVisibleSceneRules(releaseSchedule.songs)
+                  ? `残り ${hiddenSceneCount} シーンのBGMは進行に合わせて順次表示されます`
+                  : '残りのBGMは進行に合わせて順次表示されます'}
+              </p>
+              {nextSongReleaseLabel && <p>次回公開予定: {nextSongReleaseLabel}</p>}
+            </div>
+          )}
         </section>
       );
     }
@@ -270,26 +557,48 @@ const Extras = () => {
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>上映した動画のアーカイブ</h3>
           <p className={styles.sectionDescription}>
-            当日上映した動画をこちらにまとめています
+            当日上映した動画を、進行に合わせて順次公開しています
           </p>
-          <div className={styles.movieList}>
-            {MOVIE_ARCHIVE.map((movie) => (
-              <article key={movie.id} className={styles.movieCard}>
-                <h4 className={styles.movieTitle}>{movie.title}</h4>
-                <div className={styles.movieFrameWrap}>
-                  <iframe
-                    className={styles.movieFrame}
-                    src={`https://www.youtube.com/embed/${movie.youtubeId}`}
-                    title={movie.title}
-                    loading="lazy"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerPolicy="strict-origin-when-cross-origin"
-                    allowFullScreen
-                  />
-                </div>
-              </article>
-            ))}
-          </div>
+
+          {isReleaseScheduleLoading && <p className={styles.songStatus}>公開設定を確認中です...</p>}
+          {!isReleaseScheduleLoading && releaseScheduleError && (
+            <p className={styles.songStatus}>{releaseScheduleError}</p>
+          )}
+
+          {!isReleaseScheduleLoading && visibleMovies.length === 0 && (
+            <div className={styles.lockedNotice}>
+              <p>この動画は披露宴の進行に合わせて公開されます</p>
+              {nextMovieReleaseLabel && <p>次回公開予定: {nextMovieReleaseLabel}</p>}
+            </div>
+          )}
+
+          {visibleMovies.length > 0 && (
+            <div className={styles.movieList}>
+              {visibleMovies.map((movie) => (
+                <article key={movie.id} className={styles.movieCard}>
+                  <h4 className={styles.movieTitle}>{movie.title}</h4>
+                  <div className={styles.movieFrameWrap}>
+                    <iframe
+                      className={styles.movieFrame}
+                      src={`https://www.youtube.com/embed/${movie.youtubeId}`}
+                      title={movie.title}
+                      loading="lazy"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      allowFullScreen
+                    />
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
+
+          {!isReleaseScheduleLoading && hiddenMovieCount > 0 && (
+            <div className={styles.releaseNotice}>
+              <p>残りの動画は進行に合わせて順次表示されます</p>
+              {nextMovieReleaseLabel && <p>次回公開予定: {nextMovieReleaseLabel}</p>}
+            </div>
+          )}
         </section>
       );
     }
