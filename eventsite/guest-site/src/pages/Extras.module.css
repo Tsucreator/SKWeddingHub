@@ -90,6 +90,13 @@
   padding: 12px;
 }
 
+.spotMetaRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
 .spotCategory {
   display: inline-block;
   color: var(--color-gold-dark);
@@ -98,6 +105,12 @@
   font-size: 0.7rem;
   letter-spacing: 0.08em;
   padding: 2px 10px;
+}
+
+.spotFeatured {
+  font-size: 0.72rem;
+  color: var(--color-text-light);
+  letter-spacing: 0.08em;
 }
 
 .spotName {

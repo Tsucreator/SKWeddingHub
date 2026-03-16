@@ -34,7 +34,7 @@ const Gift = () => {
   const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT || 'https://qlydtknsq4.execute-api.ap-northeast-1.amazonaws.com/prod/login';
   const guestName = guest?.name || '';
   const shouldAutoRedirect = isVerified && giftAccess?.deliveryType === GIFT_DELIVERY_TYPE_CATALOG && Boolean(giftAccess?.giftUrl);
-  const directHandMessage = giftAccess?.message || `${guestName}様の引出物は別途ご用意しております。当日、ホストの2人より直接お渡しいたします。`;
+  const directHandMessage = giftAccess?.message || `${guestName}様の引出物は別途ご用意しております\n当日 ホストの2人より直接お渡しいたします。`;
 
   useEffect(() => {
     try {
@@ -160,7 +160,7 @@ const Gift = () => {
           {isVerified && giftAccess?.deliveryType === GIFT_DELIVERY_TYPE_CATALOG && giftAccess?.giftUrl && (
             <>
               <p className={styles.verifiedMessage}>
-                認証が完了しました。まもなくギフト選択ページへ移動します。
+                認証が完了しました まもなくギフト選択ページへ移動します
               </p>
               <a
                 href={giftAccess.giftUrl}

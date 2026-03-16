@@ -5,16 +5,48 @@ const FAVORITE_SPOTS = [
   {
     id: 1,
     category: '焼肉',
-    name: '叙々苑',
-    description: '特別な日に行きたくなる 二人のお気に入りの焼肉店です',
-    url: 'https://www.jojoen.co.jp/',
+    prefecture: '東京都',
+    city: '台東区',
+    area: '湯島',
+    name: 'たん清',
+    url: 'https://tabelog.com/tokyo/A1311/A131101/13282209/',
   },
   {
     id: 2,
-    category: 'ピザ',
-    name: 'PIZZA SLICE',
-    description: 'カジュアルに立ち寄れる ボリューム感あるピザが好みです',
-    url: 'https://pizzaslice.jp/',
+    category: '焼肉',
+    prefecture: '東京都',
+    city: '台東区',
+    area: '上野',
+    name: 'TOKYO焼肉ごぉ 3号店',
+    url: 'https://tabelog.com/tokyo/A1311/A131101/13265088/',
+  },
+  {
+    id: 3,
+    category: '焼肉',
+    prefecture: '東京都',
+    city: '港区',
+    area: '虎ノ門',
+    name: '焼肉ホルモン 山水縁 虎ノ門本店',
+    url: 'https://tabelog.com/tokyo/A1308/A130802/13225975/',
+  },
+  {
+    id: 4,
+    category: '焼肉',
+    prefecture: '千葉県',
+    city: '柏市',
+    area: '柏',
+    name: 'ホルモン焼肉 肉の大山',
+    url: 'https://tabelog.com/chiba/A1203/A120301/12025599/',
+  },
+  {
+    id: 5,
+    category: '焼肉',
+    prefecture: '岐阜県',
+    city: '岐阜市',
+    area: '岐阜',
+    name: '飛騨牛一頭家 馬喰一代 岐阜神田',
+    url: 'https://tabelog.com/gifu/A2101/A210101/21000284/',
+    featured: true,
   },
 ];
 
@@ -44,7 +76,7 @@ const GITHUB_REPOSITORY_URL = 'https://github.com/Tsucreator/wedding-invitation-
 const MUSICLIST_URL = import.meta.env.VITE_MUSICLIST_URL || 'musiclist.csv';
 
 const TABS = [
-  { id: 'spots', label: 'お店MAP' },
+  { id: 'spots', label: 'かほログ' },
   { id: 'songs', label: 'BGMリスト' },
   { id: 'movies', label: '今日の動画' },
   { id: 'github', label: 'GitHub' },
@@ -168,18 +200,21 @@ const Extras = () => {
     if (activeTab === 'spots') {
       return (
         <section className={styles.section}>
-          <h3 className={styles.sectionTitle}>好きなお店のリスト</h3>
+          <h3 className={styles.sectionTitle}>かほログ</h3>
           <p className={styles.sectionDescription}>
-            二人がの好きなお店をランキングにしました！ぜひご覧ください
+            かほのお気に入りのお店 5選です
           </p>
           <div className={styles.spotList}>
             {FAVORITE_SPOTS.map((spot) => (
               <article key={spot.id} className={styles.spotCard}>
-                <p className={styles.spotCategory}>{spot.category}</p>
+                <div className={styles.spotMetaRow}>
+                  <p className={styles.spotCategory}>{spot.category}</p>
+                  {spot.featured && <p className={styles.spotFeatured}>おすすめ</p>}
+                </div>
                 <h4 className={styles.spotName}>{spot.name}</h4>
-                <p className={styles.spotDescription}>{spot.description}</p>
+                <p className={styles.spotDescription}>{`${spot.prefecture} ${spot.city} ${spot.area}`}</p>
                 <a href={spot.url} target="_blank" rel="noopener noreferrer" className={styles.linkButton}>
-                  公式サイトを見る
+                  食べログを見る
                 </a>
               </article>
             ))}
