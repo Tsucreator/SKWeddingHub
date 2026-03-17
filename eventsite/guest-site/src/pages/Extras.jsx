@@ -54,7 +54,7 @@ const MOVIE_ARCHIVE = [
   {
     id: 1,
     title: 'Opening Movie',
-    youtubeId: 'dQw4w9WgXcQ',
+    youtubeId: '37sIaffRwfs',
   },
   {
     id: 2,
@@ -64,12 +64,33 @@ const MOVIE_ARCHIVE = [
 ];
 
 const SONG_PLAYLIST = [
-  { id: 1, scene: '歓談', name: '115万キロのフィルム', artists: 'Official髭男dism', spotifyLink: '' },
-  { id: 2, scene: '歓談', name: 'Beautiful', artists: 'Superfly', spotifyLink: '' },
-  { id: 3, scene: '入場', name: 'Marry You', artists: 'Bruno Mars', spotifyLink: '' },
-  { id: 4, scene: '歓談', name: 'Can\'t Help Falling in Love', artists: 'Elvis Presley', spotifyLink: '' },
-  { id: 5, scene: '歓談', name: '恋', artists: '星野 源', spotifyLink: '' },
-  { id: 6, scene: '歓談', name: 'Stand by Me', artists: 'Ben E. King', spotifyLink: '' },
+  { id: 1, scene: 'ゲスト入場', name: '115万キロのフィルム', artists: 'Official髭男dism', spotifyLink: '' },
+  { id: 2, scene: 'オープニングムービー', name: 'Beautiful', artists: 'Superfly', spotifyLink: '' },
+  { id: 3, scene: '新郎新婦入場', name: 'Marry You', artists: 'Bruno Mars', spotifyLink: '' },
+  { id: 4, scene: '前半歓談', name: 'Can\'t Help Falling in Love', artists: 'Elvis Presley', spotifyLink: '' },
+  { id: 5, scene: 'お色直し中座', name: '恋', artists: '星野 源', spotifyLink: '' },
+  { id: 6, scene: '送賓', name: 'Stand by Me', artists: 'Ben E. King', spotifyLink: '' },
+];
+
+const SONG_SCENE_ORDER = [
+  'ゲスト入場',
+  'オープニングムービー',
+  '新郎新婦入場',
+  '新郎新婦紹介',
+  '乾杯',
+  '前半歓談',
+  'お色直し中座',
+  'プロフィールムービー',
+  '中座中の歓談',
+  'お色直し入場',
+  'テーブルラウンド',
+  'テーブルインタビュー',
+  '後半歓談',
+  'お手紙・メッセージ',
+  '贈呈',
+  '退場',
+  'エンドロールムービー',
+  '送賓',
 ];
 
 const GITHUB_REPOSITORY_URL = 'https://github.com/Tsucreator/wedding-invitation-landing-page';
@@ -288,20 +309,6 @@ const getVisibleSceneNames = (config, allSceneNames, currentTime) => {
   return visibleScenes;
 };
 
-const getNextSceneReleaseAt = (config, currentTime, visibleScenes, allSceneNames) => {
-  const currentKey = visibleScenes.join('\u0000');
-  const nextStep = config.schedule.find((step) => {
-    if (Date.parse(step.at) <= currentTime || !('visibleScenes' in step)) {
-      return false;
-    }
-
-    const nextScenes = normalizeSceneNames(step.visibleScenes, allSceneNames);
-    return nextScenes.join('\u0000') !== currentKey;
-  });
-
-  return nextStep?.at || '';
-};
-
 const Extras = () => {
   const [activeTab, setActiveTab] = useState('spots');
   const [songs, setSongs] = useState(SONG_PLAYLIST);
@@ -391,13 +398,18 @@ const Extras = () => {
     return getVisibleCount(releaseSchedule.songs, songs.length, currentTime);
   }, [releaseSchedule.songs, songs.length, currentTime]);
   const orderedSceneNames = useMemo(() => {
-    return songs.reduce((sceneNames, song) => {
+    const availableSceneNames = songs.reduce((sceneNames, song) => {
       const sceneName = song.scene || 'その他';
       if (!sceneNames.includes(sceneName)) {
         sceneNames.push(sceneName);
       }
       return sceneNames;
     }, []);
+
+    const prioritizedScenes = SONG_SCENE_ORDER.filter((sceneName) => availableSceneNames.includes(sceneName));
+    const otherScenes = availableSceneNames.filter((sceneName) => !SONG_SCENE_ORDER.includes(sceneName));
+
+    return [...prioritizedScenes, ...otherScenes];
   }, [songs]);
   const visibleSceneNames = useMemo(() => {
     if (!hasVisibleSceneRules(releaseSchedule.songs)) {
@@ -415,19 +427,7 @@ const Extras = () => {
     return songs.filter((song) => visibleSceneSet.has(song.scene || 'その他'));
   }, [songs, visibleSongCount, visibleSceneNames, releaseSchedule.songs]);
   const hiddenSongCount = songs.length - visibleSongs.length;
-  const hiddenSceneCount = orderedSceneNames.length - visibleSceneNames.length;
-  const nextSongReleaseLabel = useMemo(() => {
-    if (hasVisibleSceneRules(releaseSchedule.songs)) {
-      return formatReleaseTime(
-        getNextSceneReleaseAt(releaseSchedule.songs, currentTime, visibleSceneNames, orderedSceneNames),
-      );
-    }
 
-    return formatReleaseTime(
-      getNextReleaseAt(releaseSchedule.songs, currentTime, visibleSongCount, songs.length),
-    );
-  }, [releaseSchedule.songs, currentTime, visibleSceneNames, orderedSceneNames, visibleSongCount, songs.length]);
-  
   const songsByScene = useMemo(() => {
     return visibleSongs.reduce((groups, song) => {
       const sceneKey = song.scene || 'その他';
@@ -438,6 +438,16 @@ const Extras = () => {
       return groups;
     }, {});
   }, [visibleSongs]);
+  const orderedSongGroups = useMemo(() => {
+    const prioritizedGroups = orderedSceneNames
+      .filter((sceneName) => songsByScene[sceneName])
+      .map((sceneName) => [sceneName, songsByScene[sceneName]]);
+
+    const otherGroups = Object.entries(songsByScene)
+      .filter(([sceneName]) => !orderedSceneNames.includes(sceneName));
+
+    return [...prioritizedGroups, ...otherGroups];
+  }, [orderedSceneNames, songsByScene]);
 
   const visibleMovieCount = useMemo(() => {
     return getVisibleCount(releaseSchedule.movies, MOVIE_ARCHIVE.length, currentTime);
@@ -490,15 +500,9 @@ const Extras = () => {
             <p className={styles.songStatus}>{releaseScheduleError}</p>
           )}
 
-          {!isSongsLoading && !isReleaseScheduleLoading && visibleSongs.length === 0 && (
-            <div className={styles.lockedNotice}>
-              <p>このリストは披露宴の進行に合わせて公開されます</p>
-            </div>
-          )}
-
           {visibleSongs.length > 0 && (
             <div className={styles.songSceneList}>
-              {Object.entries(songsByScene).map(([scene, sceneSongs]) => (
+              {orderedSongGroups.map(([scene, sceneSongs]) => (
                 <section key={scene} className={styles.songGroup}>
                   <h4 className={styles.songCategory}>{scene}</h4>
                   <ul className={styles.songList}>
@@ -529,12 +533,7 @@ const Extras = () => {
 
           {!isSongsLoading && !isReleaseScheduleLoading && hiddenSongCount > 0 && (
             <div className={styles.releaseNotice}>
-              <p>
-                {hasVisibleSceneRules(releaseSchedule.songs)
-                  ? `残り ${hiddenSceneCount} シーンのBGMは進行に合わせて順次表示されます`
-                  : '残りのBGMは進行に合わせて順次表示されます'}
-              </p>
-              {nextSongReleaseLabel && <p>次回公開予定: {nextSongReleaseLabel}</p>}
+              <p>BGMは進行に合わせて順次公開していきます</p>
             </div>
           )}
         </section>
