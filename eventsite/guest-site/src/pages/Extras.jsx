@@ -54,7 +54,7 @@ const MOVIE_ARCHIVE = [
   {
     id: 1,
     title: 'Opening Movie',
-    youtubeId: '37sIaffRwfs',
+    youtubeId: 'dQw4w9WgXcQ',
   },
   {
     id: 2,
@@ -64,15 +64,26 @@ const MOVIE_ARCHIVE = [
 ];
 
 const SONG_PLAYLIST = [
-  { id: 1, scene: 'ゲスト入場', name: '115万キロのフィルム', artists: 'Official髭男dism', spotifyLink: '' },
-  { id: 2, scene: 'オープニングムービー', name: 'Beautiful', artists: 'Superfly', spotifyLink: '' },
-  { id: 3, scene: '新郎新婦入場', name: 'Marry You', artists: 'Bruno Mars', spotifyLink: '' },
-  { id: 4, scene: '前半歓談', name: 'Can\'t Help Falling in Love', artists: 'Elvis Presley', spotifyLink: '' },
-  { id: 5, scene: 'お色直し中座', name: '恋', artists: '星野 源', spotifyLink: '' },
-  { id: 6, scene: '送賓', name: 'Stand by Me', artists: 'Ben E. King', spotifyLink: '' },
+  { id: 1, scene: '歓談', name: '115万キロのフィルム', artists: 'Official髭男dism', spotifyLink: '' },
+  { id: 2, scene: '歓談', name: 'Beautiful', artists: 'Superfly', spotifyLink: '' },
+  { id: 3, scene: '入場', name: 'Marry You', artists: 'Bruno Mars', spotifyLink: '' },
+  { id: 4, scene: '歓談', name: 'Can\'t Help Falling in Love', artists: 'Elvis Presley', spotifyLink: '' },
+  { id: 5, scene: '歓談', name: '恋', artists: '星野 源', spotifyLink: '' },
+  { id: 6, scene: '歓談', name: 'Stand by Me', artists: 'Ben E. King', spotifyLink: '' },
 ];
 
-const SONG_SCENE_ORDER = [
+const GITHUB_REPOSITORY_URL = 'https://github.com/Tsucreator/wedding-invitation-landing-page';
+const MUSICLIST_URL = import.meta.env.VITE_MUSICLIST_URL || 'musiclist.csv';
+const EXTRAS_RELEASE_SCHEDULE_URL = import.meta.env.VITE_EXTRAS_RELEASE_SCHEDULE_URL || 'extras-release-schedule.json';
+
+const TABS = [
+  { id: 'spots', label: 'かほログ' },
+  { id: 'songs', label: 'BGMリスト' },
+  { id: 'movies', label: '今日の動画' },
+  { id: 'github', label: 'GitHub' },
+];
+
+const SONG_SCENE_DISPLAY_ORDER = [
   'ゲスト入場',
   'オープニングムービー',
   '新郎新婦入場',
@@ -91,17 +102,6 @@ const SONG_SCENE_ORDER = [
   '退場',
   'エンドロールムービー',
   '送賓',
-];
-
-const GITHUB_REPOSITORY_URL = 'https://github.com/Tsucreator/wedding-invitation-landing-page';
-const MUSICLIST_URL = import.meta.env.VITE_MUSICLIST_URL || 'musiclist.csv';
-const EXTRAS_RELEASE_SCHEDULE_URL = import.meta.env.VITE_EXTRAS_RELEASE_SCHEDULE_URL || 'extras-release-schedule.json';
-
-const TABS = [
-  { id: 'spots', label: 'かほログ' },
-  { id: 'songs', label: 'BGMリスト' },
-  { id: 'movies', label: '今日の動画' },
-  { id: 'github', label: 'GitHub' },
 ];
 
 const DEFAULT_RELEASE_SCHEDULE = {
@@ -399,17 +399,15 @@ const Extras = () => {
   }, [releaseSchedule.songs, songs.length, currentTime]);
   const orderedSceneNames = useMemo(() => {
     const availableSceneNames = songs.reduce((sceneNames, song) => {
-      const sceneName = song.scene || 'その他';
-      if (!sceneNames.includes(sceneName)) {
-        sceneNames.push(sceneName);
-      }
+      sceneNames.add(song.scene || 'その他');
       return sceneNames;
-    }, []);
+    }, new Set());
+    const orderedScenes = SONG_SCENE_DISPLAY_ORDER.filter((sceneName) => availableSceneNames.has(sceneName));
+    const remainingScenes = Array.from(availableSceneNames).filter(
+      (sceneName) => !SONG_SCENE_DISPLAY_ORDER.includes(sceneName),
+    );
 
-    const prioritizedScenes = SONG_SCENE_ORDER.filter((sceneName) => availableSceneNames.includes(sceneName));
-    const otherScenes = availableSceneNames.filter((sceneName) => !SONG_SCENE_ORDER.includes(sceneName));
-
-    return [...prioritizedScenes, ...otherScenes];
+    return [...orderedScenes, ...remainingScenes];
   }, [songs]);
   const visibleSceneNames = useMemo(() => {
     if (!hasVisibleSceneRules(releaseSchedule.songs)) {
@@ -427,7 +425,6 @@ const Extras = () => {
     return songs.filter((song) => visibleSceneSet.has(song.scene || 'その他'));
   }, [songs, visibleSongCount, visibleSceneNames, releaseSchedule.songs]);
   const hiddenSongCount = songs.length - visibleSongs.length;
-
   const songsByScene = useMemo(() => {
     return visibleSongs.reduce((groups, song) => {
       const sceneKey = song.scene || 'その他';
@@ -438,16 +435,6 @@ const Extras = () => {
       return groups;
     }, {});
   }, [visibleSongs]);
-  const orderedSongGroups = useMemo(() => {
-    const prioritizedGroups = orderedSceneNames
-      .filter((sceneName) => songsByScene[sceneName])
-      .map((sceneName) => [sceneName, songsByScene[sceneName]]);
-
-    const otherGroups = Object.entries(songsByScene)
-      .filter(([sceneName]) => !orderedSceneNames.includes(sceneName));
-
-    return [...prioritizedGroups, ...otherGroups];
-  }, [orderedSceneNames, songsByScene]);
 
   const visibleMovieCount = useMemo(() => {
     return getVisibleCount(releaseSchedule.movies, MOVIE_ARCHIVE.length, currentTime);
@@ -500,13 +487,19 @@ const Extras = () => {
             <p className={styles.songStatus}>{releaseScheduleError}</p>
           )}
 
+          {!isSongsLoading && !isReleaseScheduleLoading && visibleSongs.length === 0 && (
+            <div className={styles.lockedNotice}>
+              <p>BGMは進行に合わせて順次公開していきます</p>
+            </div>
+          )}
+
           {visibleSongs.length > 0 && (
             <div className={styles.songSceneList}>
-              {orderedSongGroups.map(([scene, sceneSongs]) => (
+              {orderedSceneNames.filter((scene) => songsByScene[scene]).map((scene) => (
                 <section key={scene} className={styles.songGroup}>
                   <h4 className={styles.songCategory}>{scene}</h4>
                   <ul className={styles.songList}>
-                    {sceneSongs.map((song) => (
+                    {songsByScene[scene].map((song) => (
                       <li key={song.id} className={styles.songItem}>
                         <div className={styles.songMain}>
                           <p className={styles.songTitle}>{song.name}</p>
