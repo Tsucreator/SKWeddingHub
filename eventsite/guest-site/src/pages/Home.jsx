@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import styles from './Home.module.css';
 import heroImage from '../assets/hero.webp';
+import shinnosukePortrait from '../assets/profiles/shinnosuke-sample.png';
+import kahoPortrait from '../assets/profiles/kaho-sample.png';
 
 const HOME_INTRO_PENDING_KEY = 'home_intro_pending';
 const INTRO_MIN_DELAY_MS = 500;
@@ -108,9 +110,7 @@ const Home = () => {
 
         <div className={styles.profiles}>
           <article className={styles.profileCard}>
-            <div className={styles.photoPlaceholder}>
-              <span>S</span>
-            </div>
+            <img className={styles.profilePhoto} src={shinnosukePortrait} alt="新郎 Shinnosuke のサンプル写真" />
             <h4 className={styles.name}>Shinnosuke</h4>
             <p className={styles.role}>Groom</p>
           </article>
@@ -118,9 +118,7 @@ const Home = () => {
           <div className={styles.ampersand}>&</div>
 
           <article className={styles.profileCard}>
-            <div className={styles.photoPlaceholder}>
-              <span>K</span>
-            </div>
+            <img className={styles.profilePhoto} src={kahoPortrait} alt="新婦 Kaho のサンプル写真" />
             <h4 className={styles.name}>Kaho</h4>
             <p className={styles.role}>Bride</p>
           </article>

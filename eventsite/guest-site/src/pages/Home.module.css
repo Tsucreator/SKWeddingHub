@@ -155,19 +155,16 @@
   padding: 12px 8px;
 }
 
-.photoPlaceholder {
-  width: 120px;
-  height: 120px;
+.profilePhoto {
+  width: 140px;
+  height: 140px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #f5f0e8 0%, #e8dcc8 100%);
   border: 2px solid var(--color-gold);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
   margin: 0 auto 12px;
-  font-size: 1.55rem;
-  color: var(--color-gold-dark);
-  letter-spacing: 0.05em;
+  object-fit: cover;
+  background: linear-gradient(135deg, #f5f0e8 0%, #e8dcc8 100%);
+  box-shadow: 0 12px 28px rgba(26, 26, 26, 0.12);
 }
 
 .name {
