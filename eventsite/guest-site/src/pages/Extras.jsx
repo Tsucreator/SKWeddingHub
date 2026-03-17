@@ -444,7 +444,7 @@ const Extras = () => {
       return (
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>当日上映した曲リスト</h3>
-          <p className={styles.sectionDescription}>当日の映像演出で使用した楽曲を、進行に合わせて順次公開しています</p>
+          <p className={styles.sectionDescription}>当日の映像演出で使用した楽曲を 進行に合わせて順次公開しています</p>
 
           {isSongsLoading && <p className={styles.songStatus}>BGMリストを読み込み中です...</p>}
           {isReleaseScheduleLoading && <p className={styles.songStatus}>公開設定を確認中です...</p>}
@@ -504,7 +504,7 @@ const Extras = () => {
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>上映した動画のアーカイブ</h3>
           <p className={styles.sectionDescription}>
-            当日上映した動画を、進行に合わせて順次公開しています
+            当日上映した動画を 進行に合わせて順次公開しています
           </p>
 
           {isReleaseScheduleLoading && <p className={styles.songStatus}>公開設定を確認中です...</p>}
