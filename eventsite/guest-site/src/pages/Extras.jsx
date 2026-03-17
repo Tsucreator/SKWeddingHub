@@ -249,35 +249,6 @@ const getVisibleCount = (config, totalCount, currentTime) => {
   return Math.min(Math.max(visibleCount, 0), safeTotal);
 };
 
-const getNextReleaseAt = (config, currentTime, visibleCount, totalCount) => {
-  const nextStep = config.schedule.find((step) => {
-    const stepTime = Date.parse(step.at);
-    const clampedVisibleCount = Math.min(Math.max(step.visibleCount ?? 0, 0), totalCount);
-    return stepTime > currentTime && clampedVisibleCount > visibleCount;
-  });
-
-  return nextStep?.at || '';
-};
-
-const formatReleaseTime = (value) => {
-  if (!value) {
-    return '';
-  }
-
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    return '';
-  }
-
-  return new Intl.DateTimeFormat('ja-JP', {
-    month: 'numeric',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    timeZone: 'Asia/Tokyo',
-  }).format(date);
-};
-
 const hasVisibleSceneRules = (config) => {
   return config.defaultVisibleScenes.length > 0 || config.schedule.some((step) => 'visibleScenes' in step);
 };
@@ -441,11 +412,6 @@ const Extras = () => {
   }, [releaseSchedule.movies, currentTime]);
   const visibleMovies = useMemo(() => MOVIE_ARCHIVE.slice(0, visibleMovieCount), [visibleMovieCount]);
   const hiddenMovieCount = MOVIE_ARCHIVE.length - visibleMovies.length;
-  const nextMovieReleaseLabel = useMemo(() => {
-    return formatReleaseTime(
-      getNextReleaseAt(releaseSchedule.movies, currentTime, visibleMovieCount, MOVIE_ARCHIVE.length),
-    );
-  }, [releaseSchedule.movies, currentTime, visibleMovieCount]);
 
   const renderTabContent = () => {
     if (activeTab === 'spots') {
@@ -548,8 +514,7 @@ const Extras = () => {
 
           {!isReleaseScheduleLoading && visibleMovies.length === 0 && (
             <div className={styles.lockedNotice}>
-              <p>この動画は披露宴の進行に合わせて公開されます</p>
-              {nextMovieReleaseLabel && <p>次回公開予定: {nextMovieReleaseLabel}</p>}
+              <p>動画は進行に合わせて順次公開していきます</p>
             </div>
           )}
 
@@ -576,8 +541,7 @@ const Extras = () => {
 
           {!isReleaseScheduleLoading && hiddenMovieCount > 0 && (
             <div className={styles.releaseNotice}>
-              <p>残りの動画は進行に合わせて順次表示されます</p>
-              {nextMovieReleaseLabel && <p>次回公開予定: {nextMovieReleaseLabel}</p>}
+              <p>動画は進行に合わせて順次公開していきます</p>
             </div>
           )}
         </section>
