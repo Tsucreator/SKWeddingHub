@@ -490,7 +490,7 @@ const Extras = () => {
             </div>
           )}
 
-          {!isSongsLoading && !isReleaseScheduleLoading && hiddenSongCount > 0 && (
+          {!isSongsLoading && !isReleaseScheduleLoading && visibleSongs.length > 0 && hiddenSongCount > 0 && (
             <div className={styles.releaseNotice}>
               <p>BGMは進行に合わせて順次公開していきます</p>
             </div>
@@ -539,7 +539,7 @@ const Extras = () => {
             </div>
           )}
 
-          {!isReleaseScheduleLoading && hiddenMovieCount > 0 && (
+          {!isReleaseScheduleLoading && visibleMovies.length > 0 && hiddenMovieCount > 0 && (
             <div className={styles.releaseNotice}>
               <p>動画は進行に合わせて順次公開していきます</p>
             </div>
