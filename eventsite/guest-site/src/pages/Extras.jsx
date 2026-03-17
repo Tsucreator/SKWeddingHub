@@ -427,14 +427,7 @@ const Extras = () => {
       getNextReleaseAt(releaseSchedule.songs, currentTime, visibleSongCount, songs.length),
     );
   }, [releaseSchedule.songs, currentTime, visibleSceneNames, orderedSceneNames, visibleSongCount, songs.length]);
-  const visibleSongCountLabel = useMemo(() => {
-    if (hasVisibleSceneRules(releaseSchedule.songs)) {
-      return `現在公開中 ${visibleSceneNames.length} シーン / ${visibleSongs.length} 曲`;
-    }
-
-    return `現在公開中 ${visibleSongs.length} 曲`;
-  }, [releaseSchedule.songs, visibleSceneNames.length, visibleSongs.length]);
-
+  
   const songsByScene = useMemo(() => {
     return visibleSongs.reduce((groups, song) => {
       const sceneKey = song.scene || 'その他';
@@ -496,14 +489,10 @@ const Extras = () => {
           {!isReleaseScheduleLoading && releaseScheduleError && (
             <p className={styles.songStatus}>{releaseScheduleError}</p>
           )}
-          {!isSongsLoading && !isReleaseScheduleLoading && visibleSongs.length > 0 && (
-            <p className={styles.songCount}>{visibleSongCountLabel}</p>
-          )}
 
           {!isSongsLoading && !isReleaseScheduleLoading && visibleSongs.length === 0 && (
             <div className={styles.lockedNotice}>
               <p>このリストは披露宴の進行に合わせて公開されます</p>
-              {nextSongReleaseLabel && <p>次回公開予定: {nextSongReleaseLabel}</p>}
             </div>
           )}
 
