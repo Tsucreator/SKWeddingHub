@@ -3,7 +3,7 @@
     "defaultVisibleScenes": ["ゲスト入場"],
     "schedule": [
       {
-        "at": "2026-03-18T11:50:00+09:00",
+        "at": "2026-03-17T12:00:00+09:00",
         "visibleScenes": [
           "ゲスト入場",
           "オープニングムービー",
@@ -43,7 +43,7 @@
     "defaultVisibleCount": 0,
     "schedule": [
       {
-        "at": "2026-03-18T12:30:00+09:00",
+        "at": "2026-03-17T12:00:00+09:00",
         "visibleCount": 1
       },
       {
