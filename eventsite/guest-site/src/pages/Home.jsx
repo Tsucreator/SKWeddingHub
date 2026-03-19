@@ -136,7 +136,6 @@ const Home = () => {
       <section className={styles.gallerySection}>
         <div className={styles.galleryHeader}>
           <h3 className={styles.galleryTitle}>PHOTO GALLERY</h3>
-          <p className={styles.galleryLead}>おふたりの写真を横にスワイプしてご覧いただけます</p>
         </div>
 
         <div className={styles.photoRail}>

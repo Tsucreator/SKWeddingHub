@@ -238,7 +238,7 @@ const Gallery = () => {
   return (
     <div className={styles.page}>
       <header className={styles.header}>
-        <h2 className={styles.title}>UPLOAD</h2>
+        <h2 className={styles.title}>アップロード</h2>
         <p className={styles.subtitle}>写真と動画の投稿</p>
       </header>
 
