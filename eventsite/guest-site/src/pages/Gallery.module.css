@@ -47,33 +47,6 @@
   margin-bottom: 16px;
 }
 
-.photoGrid {
-  display: grid;
-  gap: 12px;
-}
-
-.photoCard {
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 12px;
-  padding: 10px;
-  background: var(--color-white);
-}
-
-.photoImage {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  border-radius: 10px;
-  display: block;
-}
-
-.photoTitle {
-  margin: 10px 0 0;
-  font-size: 0.8rem;
-  letter-spacing: 0.06em;
-  color: var(--color-text);
-}
-
 .actionRow {
   display: grid;
   gap: 10px;
@@ -300,10 +273,6 @@
   .page {
     padding-left: 24px;
     padding-right: 24px;
-  }
-
-  .photoGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .uploadGrid {

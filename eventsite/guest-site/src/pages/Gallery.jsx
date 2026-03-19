@@ -1,24 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import { Camera, Film, LoaderCircle, Upload } from 'lucide-react';
+import { Film, LoaderCircle, Upload } from 'lucide-react';
 import styles from './Gallery.module.css';
-import gallery1Image from '../assets/gallery1.webp';
-import gallery2Image from '../assets/gallery2.webp';
-import gallery3Image from '../assets/gallery3.webp';
-import gallery4Image from '../assets/gallery4.webp';
 
 const GALLERY_API_ENDPOINT = import.meta.env.VITE_GALLERY_API_ENDPOINT || '';
 const GALLERY_VIEW_URL = import.meta.env.VITE_GALLERY_VIEW_URL || '';
 const MAX_IMAGE_MB = Number(import.meta.env.VITE_GALLERY_MAX_IMAGE_MB || 20);
 const MAX_VIDEO_MB = Number(import.meta.env.VITE_GALLERY_MAX_VIDEO_MB || 300);
 const MAX_VIDEO_DURATION_SECONDS = Number(import.meta.env.VITE_GALLERY_MAX_VIDEO_DURATION_SECONDS || 120);
-
-const PHOTO_ITEMS = [
-  { id: 1, title: 'gallery1', image: gallery1Image, alt: 'ギャラリーサンプル 1' },
-  { id: 2, title: 'gallery2', image: gallery2Image, alt: 'ギャラリーサンプル 2' },
-  { id: 3, title: 'gallery3', image: gallery3Image, alt: 'ギャラリーサンプル 3' },
-  { id: 4, title: 'gallery4', image: gallery4Image, alt: 'ギャラリーサンプル 4' },
-];
 
 const formatBytes = (bytes) => {
   if (!Number.isFinite(bytes) || bytes <= 0) {
@@ -252,29 +241,6 @@ const Gallery = () => {
         <h2 className={styles.title}>アップロード</h2>
         <p className={styles.subtitle}>写真と動画の投稿</p>
       </header>
-
-      <section className={styles.section}>
-        <h3 className={styles.sectionTitle}>
-          <Camera size={18} /> サンプルギャラリー
-        </h3>
-        <p className={styles.sectionDescription}>
-          `gallery1.webp` から `gallery4.webp` のサンプル画像を掲載しています。
-        </p>
-
-        <div className={styles.photoGrid}>
-          {PHOTO_ITEMS.map((item) => (
-            <article key={item.id} className={styles.photoCard}>
-              <img
-                src={item.image}
-                alt={item.alt}
-                className={styles.photoImage}
-                loading="lazy"
-              />
-              <p className={styles.photoTitle}>{item.title}.webp</p>
-            </article>
-          ))}
-        </div>
-      </section>
 
       <section className={styles.section}>
         <h3 className={styles.sectionTitle}>

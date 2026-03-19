@@ -1,14 +1,18 @@
 import { useState, useEffect } from 'react';
 import styles from './Home.module.css';
 import heroImage from '../assets/hero.webp';
+import gallery1Image from '../assets/gallery1.webp';
+import gallery2Image from '../assets/gallery2.webp';
+import gallery3Image from '../assets/gallery3.webp';
+import gallery4Image from '../assets/gallery4.webp';
 import shinnosukePortrait from '../assets/profiles/shinnosuke.webp';
 import kahoPortrait from '../assets/profiles/kaho.webp';
 
 const PHOTO_ITEMS = [
-  { id: 1, title: 'Pre Photo', image: heroImage, alt: '前撮り写真 1' },
-  { id: 2, title: 'Memory', image: heroImage, alt: '思い出写真 1' },
-  { id: 3, title: 'Pre Photo', image: heroImage, alt: '前撮り写真 2' },
-  { id: 4, title: 'Memory', image: heroImage, alt: '思い出写真 2' },
+  { id: 1, title: 'gallery1.webp', image: gallery1Image, alt: 'ギャラリーサンプル 1' },
+  { id: 2, title: 'gallery2.webp', image: gallery2Image, alt: 'ギャラリーサンプル 2' },
+  { id: 3, title: 'gallery3.webp', image: gallery3Image, alt: 'ギャラリーサンプル 3' },
+  { id: 4, title: 'gallery4.webp', image: gallery4Image, alt: 'ギャラリーサンプル 4' },
 ];
 
 const HOME_INTRO_PENDING_KEY = 'home_intro_pending';
