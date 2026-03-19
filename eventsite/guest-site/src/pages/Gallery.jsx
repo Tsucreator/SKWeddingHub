@@ -73,6 +73,7 @@ const Gallery = () => {
   const [currentUploadName, setCurrentUploadName] = useState('');
   const [statusMessage, setStatusMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [uploadsErrorMessage, setUploadsErrorMessage] = useState('');
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -86,6 +87,7 @@ const Gallery = () => {
       }
 
       setIsLoadingUploads(true);
+      setUploadsErrorMessage('');
       try {
         const response = await axios.post(GALLERY_API_ENDPOINT, {
           action: 'listUploads',
@@ -101,7 +103,7 @@ const Gallery = () => {
         setUploads(Array.isArray(result?.uploads) ? result.uploads : []);
       } catch (error) {
         console.error('Failed to fetch uploads:', error);
-        setErrorMessage('アップロード履歴の取得に失敗しました');
+        setUploadsErrorMessage('アップロード履歴の取得に失敗しました');
       } finally {
         setIsLoadingUploads(false);
       }
@@ -346,6 +348,8 @@ const Gallery = () => {
 
         {isLoadingUploads ? (
           <p className={styles.note}>アップロード履歴を読み込んでいます...</p>
+        ) : uploadsErrorMessage ? (
+          <p className={styles.errorMessage}>{uploadsErrorMessage}</p>
         ) : uploads.length === 0 ? (
           <p className={styles.note}>まだアップロードはありません。</p>
         ) : (
