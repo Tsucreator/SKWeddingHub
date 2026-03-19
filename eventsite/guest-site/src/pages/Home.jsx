@@ -158,7 +158,6 @@ const Home = () => {
                 loading="lazy"
                 className={styles.photoImage}
               />
-              <span className={styles.photoLabel}>{photo.title}</span>
             </button>
           ))}
         </div>
