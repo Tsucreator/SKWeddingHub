@@ -346,7 +346,7 @@ const Extras = () => {
       } catch (error) {
         console.error('extras-release-schedule load error', error);
         setReleaseSchedule(DEFAULT_RELEASE_SCHEDULE);
-        setReleaseScheduleError('公開設定の読み込みに失敗したため、一部コンテンツを非表示にしています');
+        setReleaseScheduleError('公開設定の読み込みに失敗したため 一部コンテンツを非表示にしています');
       } finally {
         setIsReleaseScheduleLoading(false);
       }

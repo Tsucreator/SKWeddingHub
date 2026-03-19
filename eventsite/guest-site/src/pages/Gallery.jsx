@@ -4,7 +4,8 @@ import styles from './Gallery.module.css';
 import heroImage from '../assets/hero.webp';
 const heroImageAlt = heroImage;
 
-const DRIVE_UPLOAD_URL = import.meta.env.VITE_GALLERY_UPLOAD_URL || 'https://drive.google.com/';
+const DRIVE_UPLOAD_URL =
+  import.meta.env.VITE_GALLERY_UPLOAD_URL || 'https://www.dropbox.com/request/gGQyAJneSVFgS3QHc8QR';
 const DRIVE_VIEW_URL = import.meta.env.VITE_GALLERY_VIEW_URL || 'https://drive.google.com/';
 
 const PHOTO_ITEMS = [
@@ -59,7 +60,7 @@ const Gallery = () => {
           <Upload size={18} /> Guest Upload
         </h3>
         <p className={styles.sectionDescription}>
-          ゲストの皆さまの写真投稿用リンクです。1枚あたり10MB以内を目安にご投稿ください。
+          ゲストの皆さまの写真投稿用リンクです ぜひ当日の写真を共有してください！
         </p>
 
         <div className={styles.actionRow}>
@@ -70,10 +71,6 @@ const Gallery = () => {
             投稿写真を見る
           </a>
         </div>
-
-        <p className={styles.note}>
-          通信量節約のため、Wi-Fi環境でのアップロードを推奨しています。
-        </p>
       </section>
 
       {selectedPhoto && (
