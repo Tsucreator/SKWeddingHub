@@ -16,8 +16,8 @@ const FAVORITE_SPOTS = [
     id: 2,
     category: '焼肉',
     prefecture: '東京都',
-    city: '',
-    area: '',
+    city: '台東区',
+    area: '浅草',
     name: '焼肉木村',
     url: 'https://www.instagram.com/yakiniku.kimura?igsh=ZGtuMW1seGMzNXYy',
     recommendations: ['ブルスケッタ', '黒タン', 'レバー', 'キムチ'],
@@ -36,8 +36,8 @@ const FAVORITE_SPOTS = [
     id: 4,
     category: '焼肉',
     prefecture: '東京都',
-    city: '',
-    area: '',
+    city: '新宿区',
+    area: '歌舞伎町',
     name: 'NO MEAT, NO LIFE.1st',
     url: 'https://www.instagram.com/nomeatnolife?igsh=MTJybzk1cWwydHMydA==',
     recommendations: ['黒毛和牛のユッケ', 'カメノコ', 'ハツ'],
@@ -432,7 +432,6 @@ const Extras = () => {
               <article key={spot.id} className={styles.spotCard}>
                 <div className={styles.spotMetaRow}>
                   <p className={styles.spotCategory}>{spot.category}</p>
-                  {spot.recommendations?.length > 0 && <p className={styles.spotFeatured}>おすすめあり</p>}
                 </div>
                 <h4 className={styles.spotName}>{spot.name}</h4>
                 <p className={styles.spotDescription}>{getSpotLocation(spot)}</p>
