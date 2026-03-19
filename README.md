@@ -169,7 +169,7 @@ eventsite/                   # 当日ゲストサイト
         SeatMap.jsx          # 座席表
         Extras.jsx           # おまけ（参考情報・動画アーカイブ・GitHub）
         Gift.jsx             # 引出物案内
-        Gallery.jsx          # ギャラリー（写真 + Drive導線）
+        Gallery.jsx          # ギャラリー（写真閲覧 + S3画像/動画アップロード）
         Schedule.jsx         # 旧進行表ページ（参考用、未使用）
 
 layers/
@@ -211,6 +211,11 @@ infrastructure-notes.md      # インフラ設定メモ (Git管理外 ⚠️)
 | `EVENTSITE_SEATS_API_ENDPOINT` | 座席表 API Gateway URL |
 | `EVENTSITE_SEATS_LAMBDA_NAME` | 座席情報 Lambda 関数名 |
 | `EVENTSITE_GALLERY_LAMBDA_NAME` | ギャラリー Lambda 関数名 |
+| `EVENTSITE_GALLERY_API_ENDPOINT` | ギャラリー API Gateway URL |
+| `EVENTSITE_GALLERY_MAX_IMAGE_MB` | ギャラリー画像上限 MB |
+| `EVENTSITE_GALLERY_MAX_VIDEO_MB` | ギャラリー動画上限 MB |
+| `EVENTSITE_GALLERY_MAX_VIDEO_DURATION_SECONDS` | ギャラリー動画秒数上限 |
+| `EVENTSITE_GALLERY_VIEW_URL` | 任意の外部アルバム/管理画面 URL |
 
 > 💡 各 Secret の実際の値は `infrastructure-notes.md` (Git 管理外) に記録しています。
 
@@ -228,6 +233,15 @@ infrastructure-notes.md      # インフラ設定メモ (Git管理外 ⚠️)
 | **SES** | RSVP メール通知 (現在無効化中) | — |
 | **S3** | `/invitation/` | `/eventsite/`, ギャラリーアップロード用 private bucket |
 | **Secrets Manager** | Google Sheets 認証情報 | — |
+
+### ギャラリーアップロードデータフロー
+
+1. ブラウザが `POST /prod/gallery` に `action: "initUpload"` を送信する
+2. Gallery Lambda が `WeddingGuests` を `guest_id + email` で照合する
+3. Gallery Lambda が `WeddingGuestUploads` に `PENDING` レコードを書き込み、署名付き `PUT` URL を返す
+4. ブラウザが画像または動画を private S3 bucket へ直接アップロードする
+5. ブラウザが `action: "completeUpload"` を送信し、Lambda が S3 上の存在確認後に `COMPLETE` へ更新する
+6. `/gallery` 表示時は `action: "listUploads"` で本人の履歴一覧を取得し、署名付き preview URL を返す
 
 ---
 

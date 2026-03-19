@@ -12,9 +12,12 @@
 
 ## 2. システム構成 (AWS アーキテクチャ)
 - **Frontend:** React 19 + Vite 7 (S3 + CloudFront)
-- **API:** Amazon API Gateway + AWS Lambda (Node.js 24.x)
-- **Database:** Amazon DynamoDB — テーブル名 `WeddingGuests`
-- **Content:** YouTube(動画埋め込み) / Google Drive(写真一括閲覧・投稿)
+- **API:** Amazon API Gateway + AWS Lambda
+  - Login Lambda: Node.js 24.x
+  - Seats Lambda: Node.js 20.x
+  - Gallery Lambda: Node.js 20.x
+- **Database:** Amazon DynamoDB — `WeddingGuests`, `WeddingGuestUploads`
+- **Content:** S3 private guest uploads / YouTube(動画埋め込み)
 - **CI/CD:** GitHub Actions（フロントエンド・Lambda 個別デプロイ）
 
 ### 主要ライブラリ
@@ -145,6 +148,10 @@
 - **アップロード:** ログイン済みユーザーの `guest_id` と `email` を用いて Gallery API が本人確認し、署名付き URL を返却。ファイル本体はブラウザから直接 S3 へ送信する。
 - **制限:** 画像は 20MB、動画は 150MB、動画長は 60 秒を初期値とし、環境変数で調整可能にする。
 - **履歴:** 同じログインユーザーがアップロードしたファイル一覧を `/gallery` 上に表示する。
+- **API アクション:** `initUpload`, `completeUpload`, `listUploads`
+- **保存先:** private S3 bucket `wedding-gallery-uploads-prod`
+- **オブジェクトキー形式:** `guest-uploads/YYYY/MM/DD/guest-{guestId}/{uploadId}-{sanitizedFileName}`
+- **プレビュー:** `COMPLETE` のみ署名付き `GetObject` URL を返却する。
 - **補足:** 動画アーカイブは `/extras` へ移管。
 
 ---
@@ -189,6 +196,39 @@
 | completed_at | String | 完了日時 (ISO8601) |
 | updated_at | String | 最終更新日時 (ISO8601) |
 
+追加候補:
+- `duration_seconds` Number: 動画長の監査や将来表示用
+- `delete_at_epoch` Number: 2026-05-31 クローズ後の TTL 用
+
+### Gallery API レスポンス例
+```json
+{
+  "ok": true,
+  "guest": {
+    "guestId": 1,
+    "name": "末永 晃理",
+    "email": "aki.basket@icloud.com"
+  },
+  "uploads": [
+    {
+      "uploadId": "4d5a36f8-2df3-4d1d-a115-0e9821917137",
+      "guestId": 1,
+      "name": "末永 晃理",
+      "email": "aki.basket@icloud.com",
+      "fileName": "IMG_1234.HEIC",
+      "mediaKind": "image",
+      "contentType": "image/heic",
+      "fileSize": 4281930,
+      "status": "COMPLETE",
+      "createdAt": "2026-03-19T10:15:22.000Z",
+      "completedAt": "2026-03-19T10:15:31.000Z",
+      "previewUrl": "https://example-signed-url",
+      "previewUrlExpiresIn": 3600
+    }
+  ]
+}
+```
+
 ### Login API レスポンス例
 ```json
 {
@@ -226,6 +266,7 @@
 | 200 | ゲスト情報返却（ログイン成功） |
 | 400 | リクエスト不正（`email` 未送信 / `kanaSei,kanaMei,side` 不足 / `side` が新郎/新婦以外 / `loginType` 不正 / `verifyGiftAccess` の `guestId,email` 不足） |
 | 401 | ゲスト未登録、または `verifyGiftAccess` のメール照合不一致 `{"message": "Guest not found"}` |
+| 409 | ギャラリーの `completeUpload` 実行時に S3 上のオブジェクト未検出 |
 | 500 | サーバーエラー |
 
 ---
@@ -259,7 +300,10 @@ eventsite/
   api/
     login/
       index.js              # ログイン Lambda (Node.js — DynamoDB 認証)
-    lambda/                 # (将来拡張用)
+    gallery/
+      index.js              # ギャラリー Lambda (Node.js — 署名付きURL発行 + 履歴取得)
+    lambda/
+      index.js              # 座席情報 Lambda (Node.js — テーブルごとのゲスト一覧取得)
   guest-site/
     index.html              # エントリポイント
     vite.config.js          # Vite 設定
@@ -285,6 +329,8 @@ eventsite/
         SeatMap.module.css
         Extras.jsx           # おまけ (参考リンク + 動画アーカイブ + GitHub)
         Extras.module.css
+        Gallery.jsx          # ギャラリー (画像閲覧 + 画像/動画アップロード)
+        Gallery.module.css
         Gift.jsx             # 引出物案内 (ギフトリンク)
         Gift.module.css
 ```
@@ -307,7 +353,7 @@ eventsite/
     - Noto Serif JP フォント導入、グローバル CSS テーマ確定。
 - **第3週: 演出コンテンツ & 仕上げ**
     - ギャラリー (Gallery) ページ実装。 ✅ 完了
-    - Google Drive 連携（閲覧/投稿）実装。YouTube 埋め込みは Extras へ移管。
+  - S3 直接アップロード型のギャラリー導線実装。YouTube 埋め込みは Extras へ移管。
     - 引出物ページのゲスト別リンク実装。
     - Home 内プロフィール情報と Extras のお店リンク・動画情報を本番データへ差し替え。
 - **第4週: データ投入 & 実機確認**
