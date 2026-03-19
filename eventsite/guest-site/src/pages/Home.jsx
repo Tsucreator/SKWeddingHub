@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import styles from './Home.module.css';
 import heroImage from '../assets/hero.webp';
 import gallery1Image from '../assets/gallery1.webp';
@@ -91,6 +92,19 @@ const Home = () => {
     };
   }, [needsIntro]);
 
+  useEffect(() => {
+    if (!selectedPhoto) {
+      return undefined;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [selectedPhoto]);
+
   return (
     <div className={styles.page}>
       {/* ヒーローセクション */}
@@ -163,7 +177,7 @@ const Home = () => {
         </div>
       </section>
 
-      {selectedPhoto && (
+      {selectedPhoto && createPortal(
         <button
           type="button"
           className={styles.modal}
@@ -176,7 +190,8 @@ const Home = () => {
             alt={selectedPhoto.alt}
             className={styles.modalImage}
           />
-        </button>
+        </button>,
+        document.body
       )}
     </div>
   );
