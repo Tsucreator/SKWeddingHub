@@ -90,8 +90,8 @@ const Login = () => {
       console.error(err);
       setError(
         loginType === LOGIN_TYPE_EMAIL
-          ? '招待状にお送りしたメールアドレスをご確認ください。'
-          : 'ふりがな（せい・めい）と新郎/新婦をご確認ください。'
+          ? '招待状にお送りしたメールアドレスをご確認ください'
+          : 'ふりがな（せい・めい）と新郎/新婦をご確認ください'
       );
     } finally {
       setLoading(false);

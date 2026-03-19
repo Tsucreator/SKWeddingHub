@@ -34,7 +34,7 @@ const Gift = () => {
   const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT || '';
   const guestName = guest?.name || '';
   const shouldAutoRedirect = isVerified && giftAccess?.deliveryType === GIFT_DELIVERY_TYPE_CATALOG && Boolean(giftAccess?.giftUrl);
-  const directHandMessage = giftAccess?.message || `${guestName}様の引出物は別途ご用意しております\n当日 ホストの2人より直接お渡しいたします。`;
+  const directHandMessage = giftAccess?.message || `${guestName}様の引出物は別途ご用意しております\n当日 ホストの2人より直接お渡しいたします`;
 
   useEffect(() => {
     try {

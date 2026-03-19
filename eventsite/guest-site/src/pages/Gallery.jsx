@@ -210,7 +210,7 @@ const Gallery = () => {
     }
 
     if (!guest?.guest_id || !guest?.email) {
-      setErrorMessage('ログイン情報が見つかりません。再ログインしてください');
+      setErrorMessage('ログイン情報が見つかりません 再ログインしてください');
       return;
     }
 
@@ -257,7 +257,7 @@ const Gallery = () => {
           <Camera size={18} /> Official Photos
         </h3>
         <p className={styles.sectionDescription}>
-          前撮りやこれまでの思い出を掲載しています。
+          前撮りやこれまでの思い出を掲載しています
         </p>
 
         <div className={styles.photoGrid}>
@@ -343,7 +343,7 @@ const Gallery = () => {
           <Film size={18} /> Your Uploads
         </h3>
         <p className={styles.sectionDescription}>
-          ログイン中のメールアドレスに紐づくアップロード履歴です。アップロード済みかどうかをここで確認できます。
+          アップロード済みかどうかをここで確認できます
         </p>
 
         {isLoadingUploads ? (
@@ -351,7 +351,7 @@ const Gallery = () => {
         ) : uploadsErrorMessage ? (
           <p className={styles.errorMessage}>{uploadsErrorMessage}</p>
         ) : uploads.length === 0 ? (
-          <p className={styles.note}>まだアップロードはありません。</p>
+          <p className={styles.note}>まだアップロードはありません</p>
         ) : (
           <div className={styles.uploadGrid}>
             {uploads.map((item) => (
