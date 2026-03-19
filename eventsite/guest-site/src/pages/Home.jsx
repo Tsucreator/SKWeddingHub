@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import styles from './Home.module.css';
 import heroImage from '../assets/hero.webp';
-import shinnosukePortrait from '../assets/profiles/shinnosuke-sample.webp';
-import kahoPortrait from '../assets/profiles/kaho-sample.webp';
+import shinnosukePortrait from '../assets/profiles/shinnosuke.webp';
+import kahoPortrait from '../assets/profiles/kaho.webp';
 
 const HOME_INTRO_PENDING_KEY = 'home_intro_pending';
 const INTRO_MIN_DELAY_MS = 500;

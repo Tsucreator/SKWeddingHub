@@ -1,0 +1,53 @@
+name: Deploy Event Site Gallery Lambda
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'eventsite/api/gallery/**'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Build & Deploy Gallery Lambda (Node.js)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        working-directory: eventsite/api/gallery
+        run: |
+          if [ -f package.json ]; then
+            npm ci --omit=dev
+          fi
+
+      - name: Create deployment package
+        working-directory: eventsite/api/gallery
+        run: |
+          zip -r ../gallery-lambda.zip . -x "*.test.*" "*.spec.*" "__tests__/*"
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy to Lambda
+        run: |
+          aws lambda update-function-code \
+            --function-name "${{ secrets.EVENTSITE_GALLERY_LAMBDA_NAME }}" \
+            --zip-file fileb://eventsite/api/gallery-lambda.zip
+
+      - name: Deployment Summary
+        run: |
+          echo "✅ Event Site Gallery Lambda deployment complete"
+          echo "Function: ${{ secrets.EVENTSITE_GALLERY_LAMBDA_NAME }}"

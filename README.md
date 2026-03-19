@@ -29,9 +29,10 @@ GitHub リポジトリ: https://github.com/Tsucreator/wedding-invitation-landing
        └──▶ Seats → DynamoDB
 ```
 
-**API エンドポイント:** 招待状 (`/submit`), ログイン (`/prod/login`), 座席情報 (`/prod/seats`)。
+**API エンドポイント:** 招待状 (`/submit`), ログイン (`/prod/login`), 座席情報 (`/prod/seats`), ギャラリー (`/prod/gallery`)。
 座席情報 Lambda はテーブル ID を受け取り、`WeddingGuests` テーブルから該当席一覧を返します。
 引出物ページは UX 優先で名前ログインを残しつつ、`/prod/login` の `action: "verifyGiftAccess"` により `guest_id + email` の再照合が通過した場合のみ「ギフトを選ぶ」導線を有効化します。
+ギャラリーは `guest_id + email` を再照合した上で署名付き S3 URL を発行し、画像・動画をブラウザから直接 S3 へアップロードします。
 
 ---
 
@@ -75,6 +76,10 @@ npm run dev
 ```
 VITE_API_ENDPOINT=https://qlydtknsq4.execute-api.ap-northeast-1.amazonaws.com/prod/login
 VITE_SEATS_API_ENDPOINT=https://qlydtknsq4.execute-api.ap-northeast-1.amazonaws.com/prod/seats
+VITE_GALLERY_API_ENDPOINT=https://qlydtknsq4.execute-api.ap-northeast-1.amazonaws.com/prod/gallery
+VITE_GALLERY_MAX_IMAGE_MB=20
+VITE_GALLERY_MAX_VIDEO_MB=150
+VITE_GALLERY_MAX_VIDEO_DURATION_SECONDS=60
 VITE_MUSICLIST_URL=https://<cloudfront-domain>/eventsite/musiclist.csv
 ```
 
@@ -109,6 +114,7 @@ curl -X POST "$VITE_API_ENDPOINT" \
     deploy-eventsite-frontend.yml  # ゲストサイト → S3
     deploy-eventsite-login.yml     # ログイン Lambda → AWS Lambda
     deploy-eventsite-seats.yml     # 座席情報 Lambda → AWS Lambda
+    deploy-eventsite-gallery.yml   # ギャラリー Lambda → AWS Lambda
 
 invitation/                  # 招待状サイト
   specification.md           # 仕様書
@@ -128,6 +134,8 @@ eventsite/                   # 当日ゲストサイト
   specification.md           # 仕様書 (v8.1)
   api/login/
     index.js                 # ログイン Lambda (Node.js 24 — DynamoDB 認証)
+  api/gallery/
+    index.js                 # ギャラリー Lambda (Node.js 20 — S3 署名 URL + アップロード履歴)
   api/lambda/
     index.js                 # 座席情報 Lambda (Node.js 20 — DynamoDB Scan)
     package.json             # Lambda 依存管理
@@ -165,6 +173,7 @@ infrastructure-notes.md      # インフラ設定メモ (Git管理外 ⚠️)
 | `deploy-eventsite-frontend.yml` | `eventsite/guest-site/**` | npm ci → vite build → S3 同期 → CloudFront 無効化 |
 | `deploy-eventsite-login.yml` | `eventsite/api/login/**` | npm ci → zip → Lambda デプロイ |
 | `deploy-eventsite-seats.yml` | `eventsite/api/lambda/**` | npm ci → zip → 座席情報 Lambda デプロイ |
+| `deploy-eventsite-gallery.yml` | `eventsite/api/gallery/**` | npm ci → zip → ギャラリー Lambda デプロイ |
 
 すべてのワークフローは `workflow_dispatch` にも対応しているため、GitHub UI から手動実行も可能です。
 
@@ -183,6 +192,7 @@ infrastructure-notes.md      # インフラ設定メモ (Git管理外 ⚠️)
 | `EVENTSITE_API_ENDPOINT` | ゲストサイト API Gateway URL |
 | `EVENTSITE_SEATS_API_ENDPOINT` | 座席表 API Gateway URL |
 | `EVENTSITE_SEATS_LAMBDA_NAME` | 座席情報 Lambda 関数名 |
+| `EVENTSITE_GALLERY_LAMBDA_NAME` | ギャラリー Lambda 関数名 |
 
 > 💡 各 Secret の実際の値は `infrastructure-notes.md` (Git 管理外) に記録しています。
 
@@ -194,10 +204,11 @@ infrastructure-notes.md      # インフラ設定メモ (Git管理外 ⚠️)
 |---|---|---|
 | **S3** | `/invitation/` | `/eventsite/` |
 | **CloudFront** | 共通ディストリビューション | 同左 |
-| **API Gateway** | POST `/submit` | POST `/prod/login`, GET `/prod/seats` |
-| **Lambda** | `writeGoogleSpreadSheet` (Python 3.12) | `weddingGuestLogin` (Node.js 24), 座席情報 Lambda (Node.js 20) |
-| **DynamoDB** | — | `WeddingGuests` テーブル |
+| **API Gateway** | POST `/submit` | POST `/prod/login`, GET `/prod/seats`, POST `/prod/gallery` |
+| **Lambda** | `writeGoogleSpreadSheet` (Python 3.12) | `weddingGuestLogin` (Node.js 24), 座席情報 Lambda (Node.js 20), ギャラリー Lambda (Node.js 20) |
+| **DynamoDB** | — | `WeddingGuests` テーブル, `WeddingGuestUploads` テーブル |
 | **SES** | RSVP メール通知 (現在無効化中) | — |
+| **S3** | `/invitation/` | `/eventsite/`, ギャラリーアップロード用 private bucket |
 | **Secrets Manager** | Google Sheets 認証情報 | — |
 
 ---

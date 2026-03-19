@@ -83,6 +83,41 @@
   gap: 10px;
 }
 
+.uploadPanel {
+  display: grid;
+  gap: 14px;
+}
+
+.guestBadge {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(201, 169, 110, 0.1);
+  color: var(--color-black);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+.guidelineList {
+  display: grid;
+  gap: 6px;
+  font-size: 0.8rem;
+  line-height: 1.7;
+  color: var(--color-text-light);
+}
+
+.guidelineList p {
+  margin: 0;
+}
+
+.fileInput {
+  display: none;
+}
+
 .actionButton,
 .actionButtonSub {
   display: flex;
@@ -105,11 +140,126 @@
   background-color: var(--color-white);
 }
 
+.actionButton:disabled {
+  opacity: 0.55;
+}
+
+.progressCard {
+  border: 1px solid rgba(201, 169, 110, 0.26);
+  border-radius: 10px;
+  padding: 14px;
+  background: #fffaf1;
+}
+
+.progressHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--color-text);
+  margin-bottom: 10px;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+.progressBar {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.progressFill {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #c9a96e 0%, #e2c791 100%);
+}
+
+.progressLabel {
+  margin-top: 8px;
+  margin-bottom: 0;
+  text-align: right;
+  font-size: 0.76rem;
+  color: var(--color-text-muted);
+}
+
+.successMessage,
+.errorMessage {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.7;
+}
+
+.successMessage {
+  color: #2b6b42;
+}
+
+.errorMessage {
+  color: #8f2d1c;
+}
+
 .note {
   margin-top: 12px;
   font-size: 0.75rem;
   color: var(--color-text-muted);
   line-height: 1.7;
+}
+
+.uploadGrid {
+  display: grid;
+  gap: 12px;
+}
+
+.uploadCard {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  padding: 12px;
+  background: var(--color-white);
+}
+
+.uploadMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+}
+
+.uploadType {
+  color: var(--color-gold-dark);
+}
+
+.uploadStatus {
+  color: var(--color-text-muted);
+}
+
+.uploadPreviewImage,
+.uploadPreviewVideo {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 10px;
+  background: #000;
+  display: block;
+}
+
+.uploadFileName {
+  margin-top: 10px;
+  margin-bottom: 4px;
+  font-size: 0.84rem;
+  color: var(--color-text);
+  word-break: break-all;
+}
+
+.uploadDetail {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
 }
 
 .movieList {
@@ -172,5 +322,19 @@
 
   .photoGrid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .uploadGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
   }
 }

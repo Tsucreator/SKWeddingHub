@@ -1,0 +1,12 @@
+{
+  "name": "eventsite-gallery-lambda",
+  "version": "1.0.0",
+  "description": "Lambda for guest gallery uploads with S3 direct upload",
+  "main": "index.js",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.922.0",
+    "@aws-sdk/client-s3": "^3.922.0",
+    "@aws-sdk/lib-dynamodb": "^3.922.0",
+    "@aws-sdk/s3-request-presigner": "^3.922.0"
+  }
+}

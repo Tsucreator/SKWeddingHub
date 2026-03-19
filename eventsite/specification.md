@@ -141,7 +141,10 @@
 
 ### 4.7 ギャラリー (Gallery) — ✅ 実装済み
 - **パス:** `/gallery`
-- **内容:** 前撮り写真等の閲覧（モーダル拡大表示）＋ Google Drive への写真アップロード/閲覧ボタン。
+- **内容:** 前撮り写真等の閲覧（モーダル拡大表示）＋ S3 への画像/動画アップロード。
+- **アップロード:** ログイン済みユーザーの `guest_id` と `email` を用いて Gallery API が本人確認し、署名付き URL を返却。ファイル本体はブラウザから直接 S3 へ送信する。
+- **制限:** 画像は 20MB、動画は 150MB、動画長は 60 秒を初期値とし、環境変数で調整可能にする。
+- **履歴:** 同じログインユーザーがアップロードしたファイル一覧を `/gallery` 上に表示する。
 - **補足:** 動画アーカイブは `/extras` へ移管。
 
 ---
@@ -166,6 +169,25 @@
 | gift_delivery_type | String | 引出物受け取り方式 (`catalog` / `direct_hand`) |
 | gift_url | String | カタログギフト遷移先 URL (`catalog` の場合のみ使用) |
 | gift_message | String | `direct_hand` 時に表示する任意メッセージ |
+
+### WeddingGuestUploads テーブル
+| 項目 | 型 | 説明 |
+| :--- | :--- | :--- |
+| guest_id | Number (PK) | アップロード所有者のゲスト ID |
+| upload_id | String (SK) | アップロード識別子 (UUID) |
+| name | String | アップロード時点のゲスト名 |
+| email | String | アップロード時点のメールアドレス |
+| file_name | String | 表示用ファイル名 |
+| original_file_name | String | 元のファイル名 |
+| media_kind | String | `image` / `video` |
+| content_type | String | MIME type |
+| file_size | Number | バイト数 |
+| status | String | `PENDING` / `COMPLETE` |
+| s3_bucket | String | 保存先 S3 バケット |
+| s3_key | String | 保存先オブジェクトキー |
+| created_at | String | 生成日時 (ISO8601) |
+| completed_at | String | 完了日時 (ISO8601) |
+| updated_at | String | 最終更新日時 (ISO8601) |
 
 ### Login API レスポンス例
 ```json
