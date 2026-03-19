@@ -6,19 +6,21 @@ const FAVORITE_SPOTS = [
     id: 1,
     category: '焼肉',
     prefecture: '東京都',
-    city: '台東区',
+    city: '文京区',
     area: '湯島',
     name: 'たん清',
-    url: 'https://tabelog.com/tokyo/A1311/A131101/13282209/',
+    url: 'https://www.tankiyo.com',
+    recommendations: ['上タン塩焼き', 'ハラミ(ネギ塩)', 'キムチ盛り合わせ'],
   },
   {
     id: 2,
     category: '焼肉',
     prefecture: '東京都',
-    city: '台東区',
-    area: '上野',
-    name: 'TOKYO焼肉ごぉ 3号店',
-    url: 'https://tabelog.com/tokyo/A1311/A131101/13265088/',
+    city: '',
+    area: '',
+    name: '焼肉木村',
+    url: 'https://www.instagram.com/yakiniku.kimura?igsh=ZGtuMW1seGMzNXYy',
+    recommendations: ['ブルスケッタ', '黒タン', 'レバー', 'キムチ'],
   },
   {
     id: 3,
@@ -26,27 +28,29 @@ const FAVORITE_SPOTS = [
     prefecture: '東京都',
     city: '港区',
     area: '虎ノ門',
-    name: '焼肉ホルモン 山水縁 虎ノ門本店',
-    url: 'https://tabelog.com/tokyo/A1308/A130802/13225975/',
+    name: '山水縁',
+    url: 'https://www.instagram.com/sansuien_toranomon?igsh=MTVkcXczYnRhZW95YQ==',
+    recommendations: ['厚切り生タン塩ネギ包み焼き', 'ハチノス'],
   },
   {
     id: 4,
     category: '焼肉',
-    prefecture: '千葉県',
-    city: '柏市',
-    area: '柏',
-    name: 'ホルモン焼肉 肉の大山',
-    url: 'https://tabelog.com/chiba/A1203/A120301/12025599/',
+    prefecture: '東京都',
+    city: '',
+    area: '',
+    name: 'NO MEAT, NO LIFE.1st',
+    url: 'https://www.instagram.com/nomeatnolife?igsh=MTJybzk1cWwydHMydA==',
+    recommendations: ['黒毛和牛のユッケ', 'カメノコ', 'ハツ'],
   },
   {
     id: 5,
     category: '焼肉',
-    prefecture: '岐阜県',
-    city: '岐阜市',
-    area: '岐阜',
-    name: '飛騨牛一頭家 馬喰一代 岐阜神田',
-    url: 'https://tabelog.com/gifu/A2101/A210101/21000284/',
-    featured: true,
+    prefecture: '千葉県',
+    city: '柏市',
+    area: '柏',
+    name: '肉の大山',
+    url: 'https://www.nikunooyama.co.jp/shop/hormon-yakiniku-kashiwa',
+    recommendations: ['特上炙りロース', 'ハチノス'],
   },
 ];
 
@@ -415,6 +419,8 @@ const Extras = () => {
 
   const renderTabContent = () => {
     if (activeTab === 'spots') {
+      const getSpotLocation = (spot) => [spot.prefecture, spot.city, spot.area].filter(Boolean).join(' ');
+
       return (
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>かほログ</h3>
@@ -426,10 +432,20 @@ const Extras = () => {
               <article key={spot.id} className={styles.spotCard}>
                 <div className={styles.spotMetaRow}>
                   <p className={styles.spotCategory}>{spot.category}</p>
-                  {spot.featured && <p className={styles.spotFeatured}>おすすめ</p>}
+                  {spot.recommendations?.length > 0 && <p className={styles.spotFeatured}>おすすめあり</p>}
                 </div>
                 <h4 className={styles.spotName}>{spot.name}</h4>
-                <p className={styles.spotDescription}>{`${spot.prefecture} ${spot.city} ${spot.area}`}</p>
+                <p className={styles.spotDescription}>{getSpotLocation(spot)}</p>
+                {spot.recommendations?.length > 0 && (
+                  <div className={styles.spotRecommendationBlock}>
+                    <p className={styles.spotRecommendationTitle}>おすすめ</p>
+                    <ul className={styles.spotRecommendationList}>
+                      {spot.recommendations.map((item) => (
+                        <li key={item} className={styles.spotRecommendationItem}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
                 <a href={spot.url} target="_blank" rel="noopener noreferrer" className={styles.linkButton}>
                   Webサイトを見る
                 </a>
