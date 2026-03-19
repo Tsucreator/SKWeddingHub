@@ -88,20 +88,6 @@
   gap: 14px;
 }
 
-.guestBadge {
-  min-height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: rgba(201, 169, 110, 0.1);
-  color: var(--color-black);
-  font-size: 0.85rem;
-  letter-spacing: 0.04em;
-  text-align: center;
-}
-
 .guidelineList {
   display: grid;
   gap: 6px;

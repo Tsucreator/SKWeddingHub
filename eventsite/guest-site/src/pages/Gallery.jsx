@@ -8,8 +8,8 @@ const heroImageAlt = heroImage;
 const GALLERY_API_ENDPOINT = import.meta.env.VITE_GALLERY_API_ENDPOINT || '';
 const GALLERY_VIEW_URL = import.meta.env.VITE_GALLERY_VIEW_URL || '';
 const MAX_IMAGE_MB = Number(import.meta.env.VITE_GALLERY_MAX_IMAGE_MB || 20);
-const MAX_VIDEO_MB = Number(import.meta.env.VITE_GALLERY_MAX_VIDEO_MB || 150);
-const MAX_VIDEO_DURATION_SECONDS = Number(import.meta.env.VITE_GALLERY_MAX_VIDEO_DURATION_SECONDS || 60);
+const MAX_VIDEO_MB = Number(import.meta.env.VITE_GALLERY_MAX_VIDEO_MB || 300);
+const MAX_VIDEO_DURATION_SECONDS = Number(import.meta.env.VITE_GALLERY_MAX_VIDEO_DURATION_SECONDS || 120);
 
 const PHOTO_ITEMS = [
   { id: 1, title: 'Pre Photo', image: heroImage, alt: '前撮り写真 1' },
@@ -282,21 +282,15 @@ const Gallery = () => {
 
       <section className={styles.section}>
         <h3 className={styles.sectionTitle}>
-          <Upload size={18} /> Guest Upload
+          <Upload size={18} /> アップロード
         </h3>
         <p className={styles.sectionDescription}>
-          ゲストの皆さまの写真・動画投稿エリアです。スマートフォンからそのままアップロードできます。
+          ぜひみなさんの撮った動画の投稿をお願いします！
         </p>
 
         <div className={styles.uploadPanel}>
-          <div className={styles.guestBadge}>
-            {guest?.name ? `${guest.name} 様としてログイン中` : 'ログイン情報を確認中'}
-          </div>
-
           <div className={styles.guidelineList}>
-            <p>画像は {MAX_IMAGE_MB}MB まで、動画は {MAX_VIDEO_MB}MB まで対応します。</p>
-            <p>動画は {MAX_VIDEO_DURATION_SECONDS} 秒以内を目安にしてください。</p>
-            <p>iPhone の Live Photos や Android の動画も、そのまま選択できます。</p>
+            <p>画像は {MAX_IMAGE_MB}MB まで 動画は {MAX_VIDEO_MB}MB までの投稿が可能です 動画の目安は2分ほどです</p>
           </div>
 
           <input

@@ -83,6 +83,24 @@ VITE_GALLERY_MAX_VIDEO_DURATION_SECONDS=60
 VITE_MUSICLIST_URL=https://<cloudfront-domain>/eventsite/musiclist.csv
 ```
 
+本番の CloudFront 配信で使う値は、実行時に S3 や CloudFront に置くのではなく、GitHub Actions の build 時に Secrets から渡します。
+`.github/workflows/deploy-eventsite-frontend.yml` では以下の Secrets を設定するとよいです。
+
+```
+EVENTSITE_API_ENDPOINT=https://qlydtknsq4.execute-api.ap-northeast-1.amazonaws.com/prod/login
+EVENTSITE_SEATS_API_ENDPOINT=https://qlydtknsq4.execute-api.ap-northeast-1.amazonaws.com/prod/seats
+EVENTSITE_GALLERY_API_ENDPOINT=https://qlydtknsq4.execute-api.ap-northeast-1.amazonaws.com/prod/gallery
+EVENTSITE_GALLERY_MAX_IMAGE_MB=20
+EVENTSITE_GALLERY_MAX_VIDEO_MB=150
+EVENTSITE_GALLERY_MAX_VIDEO_DURATION_SECONDS=60
+EVENTSITE_GALLERY_VIEW_URL=
+```
+
+補足:
+- Vite の `VITE_*` はフロントのビルド時に JS へ埋め込まれる
+- そのため、S3 や CloudFront 側に後から環境変数として置く方式では反映されない
+- 値を変えたら GitHub Actions で eventsite frontend を再ビルドして再デプロイする必要がある
+
 ```bash
 # 本番ビルド
 npm run build    # → dist/ に出力

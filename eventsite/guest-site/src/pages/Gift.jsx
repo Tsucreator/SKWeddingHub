@@ -31,7 +31,7 @@ const Gift = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [giftAccess, setGiftAccess] = useState(null);
 
-  const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT || 'https://qlydtknsq4.execute-api.ap-northeast-1.amazonaws.com/prod/login';
+  const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT || '';
   const guestName = guest?.name || '';
   const shouldAutoRedirect = isVerified && giftAccess?.deliveryType === GIFT_DELIVERY_TYPE_CATALOG && Boolean(giftAccess?.giftUrl);
   const directHandMessage = giftAccess?.message || `${guestName}様の引出物は別途ご用意しております\n当日 ホストの2人より直接お渡しいたします。`;

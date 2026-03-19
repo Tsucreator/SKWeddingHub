@@ -37,6 +37,12 @@ jobs:
         working-directory: eventsite/guest-site
         env:
           VITE_API_ENDPOINT: ${{ secrets.EVENTSITE_API_ENDPOINT }}
+          VITE_SEATS_API_ENDPOINT: ${{ secrets.EVENTSITE_SEATS_API_ENDPOINT }}
+          VITE_GALLERY_API_ENDPOINT: ${{ secrets.EVENTSITE_GALLERY_API_ENDPOINT }}
+          VITE_GALLERY_MAX_IMAGE_MB: ${{ secrets.EVENTSITE_GALLERY_MAX_IMAGE_MB }}
+          VITE_GALLERY_MAX_VIDEO_MB: ${{ secrets.EVENTSITE_GALLERY_MAX_VIDEO_MB }}
+          VITE_GALLERY_MAX_VIDEO_DURATION_SECONDS: ${{ secrets.EVENTSITE_GALLERY_MAX_VIDEO_DURATION_SECONDS }}
+          VITE_GALLERY_VIEW_URL: ${{ secrets.EVENTSITE_GALLERY_VIEW_URL }}
         run: npm run build
 
       - name: Configure AWS Credentials

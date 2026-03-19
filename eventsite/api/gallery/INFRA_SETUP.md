@@ -48,7 +48,6 @@ S3 コンソールの CORS 設定に以下を入れる。
   }
 ]
 ```
-
 置き換える値:
 - `https://YOUR_CLOUDFRONT_DOMAIN` → 実際の eventsite 配信ドメイン
 
@@ -187,10 +186,10 @@ MVP の動作には不要だが、後で便利になる属性。
 
 ```json
 {
-  "guest_id": 12,
+  "guest_id": 1,
   "upload_id": "4d5a36f8-2df3-4d1d-a115-0e9821917137",
-  "name": "山田 花子",
-  "email": "guest@example.com",
+  "name": "テスト スタッフ",
+  "email": "test@test.com",
   "file_name": "IMG_1234.HEIC",
   "original_file_name": "IMG_1234.HEIC",
   "media_kind": "image",
@@ -397,6 +396,11 @@ curl -X POST "https://YOUR_API_ID.execute-api.ap-northeast-1.amazonaws.com/prod/
     "limit":5
   }'
 ```
+
+補足:
+- `guest@example.com` はサンプル値
+- ここは実際に `WeddingGuests` に登録されているゲストのメールアドレスへ置き換える
+- `YOUR_API_ID` のようなプレースホルダ文字列のままだと `curl: (6)` になる
 
 期待値:
 - `200 OK`

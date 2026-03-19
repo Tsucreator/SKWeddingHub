@@ -4,7 +4,7 @@ import axios from "axios";
 import styles from './SeatMap.module.css';
 
 const SEATS_API_ENDPOINT = import.meta.env.VITE_SEATS_API_ENDPOINT
-  || 'https://qlydtknsq4.execute-api.ap-northeast-1.amazonaws.com/prod/seats';
+  || '';
 
 /**
  * 円形テーブル周囲に seats 個の席を配置する座標を返す。
