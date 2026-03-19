@@ -420,6 +420,7 @@ const Extras = () => {
   const renderTabContent = () => {
     if (activeTab === 'spots') {
       const getSpotLocation = (spot) => [spot.prefecture, spot.city, spot.area].filter(Boolean).join(' ');
+      const getSpotLinkLabel = (spot) => (spot.url.includes('instagram.com') ? 'Instagramを見る' : 'ホームページを見る');
 
       return (
         <section className={styles.section}>
@@ -446,7 +447,7 @@ const Extras = () => {
                   </div>
                 )}
                 <a href={spot.url} target="_blank" rel="noopener noreferrer" className={styles.linkButton}>
-                  Webサイトを見る
+                  {getSpotLinkLabel(spot)}
                 </a>
               </article>
             ))}
