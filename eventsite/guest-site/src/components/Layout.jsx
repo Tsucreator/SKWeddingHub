@@ -14,7 +14,7 @@ const Layout = () => {
     { to: '/',         icon: Home,     label: 'Top' },
     { to: '/map',      icon: MapPin,   label: '座席表' },
     { to: '/menu',     icon: Utensils, label: 'お料理' },
-    { to: '/gallery',  icon: Camera,   label: 'ギャラリー' },
+    { to: '/gallery',  icon: Camera,   label: 'アップロード' },
     { to: '/gift',     icon: Gift,     label: '引出物' },
     { to: '/extras',   icon: Heart,    label: 'おまけ' },
   ];

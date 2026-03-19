@@ -1,22 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import { Camera, Film, LoaderCircle, Upload } from 'lucide-react';
+import { Film, LoaderCircle, Upload } from 'lucide-react';
 import styles from './Gallery.module.css';
-import heroImage from '../assets/hero.webp';
-const heroImageAlt = heroImage;
 
 const GALLERY_API_ENDPOINT = import.meta.env.VITE_GALLERY_API_ENDPOINT || '';
 const GALLERY_VIEW_URL = import.meta.env.VITE_GALLERY_VIEW_URL || '';
 const MAX_IMAGE_MB = Number(import.meta.env.VITE_GALLERY_MAX_IMAGE_MB || 20);
 const MAX_VIDEO_MB = Number(import.meta.env.VITE_GALLERY_MAX_VIDEO_MB || 300);
 const MAX_VIDEO_DURATION_SECONDS = Number(import.meta.env.VITE_GALLERY_MAX_VIDEO_DURATION_SECONDS || 120);
-
-const PHOTO_ITEMS = [
-  { id: 1, title: 'Pre Photo', image: heroImage, alt: '前撮り写真 1' },
-  { id: 2, title: 'Memory', image: heroImageAlt, alt: '思い出写真 1' },
-  { id: 3, title: 'Pre Photo', image: heroImageAlt, alt: '前撮り写真 2' },
-  { id: 4, title: 'Memory', image: heroImage, alt: '思い出写真 2' },
-];
 
 const formatBytes = (bytes) => {
   if (!Number.isFinite(bytes) || bytes <= 0) {
@@ -64,7 +55,6 @@ const readGuest = () => {
 };
 
 const Gallery = () => {
-  const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [guest, setGuest] = useState(null);
   const [uploads, setUploads] = useState([]);
   const [isLoadingUploads, setIsLoadingUploads] = useState(false);
@@ -248,39 +238,9 @@ const Gallery = () => {
   return (
     <div className={styles.page}>
       <header className={styles.header}>
-        <h2 className={styles.title}>GALLERY</h2>
-        <p className={styles.subtitle}>思い出の写真とムービー</p>
+        <h2 className={styles.title}>UPLOAD</h2>
+        <p className={styles.subtitle}>写真と動画の投稿</p>
       </header>
-
-      <section className={styles.section}>
-        <h3 className={styles.sectionTitle}>
-          <Camera size={18} /> Official Photos
-        </h3>
-        <p className={styles.sectionDescription}>
-          前撮りやこれまでの思い出を掲載しています
-        </p>
-
-        <div className={styles.photoGrid}>
-          {PHOTO_ITEMS.map((photo) => (
-            <button
-              key={photo.id}
-              type="button"
-              className={styles.photoCard}
-              onClick={() => setSelectedPhoto(photo)}
-              aria-label={`${photo.title} を拡大表示`}
-            >
-              <img
-                src={photo.image}
-                srcSet={`${photo.image} 1x, ${photo.image} 2x`}
-                alt={photo.alt}
-                loading="lazy"
-                className={styles.photoImage}
-              />
-              <span className={styles.photoLabel}>{photo.title}</span>
-            </button>
-          ))}
-        </div>
-      </section>
 
       <section className={styles.section}>
         <h3 className={styles.sectionTitle}>
@@ -340,7 +300,7 @@ const Gallery = () => {
 
       <section className={styles.section}>
         <h3 className={styles.sectionTitle}>
-          <Film size={18} /> Your Uploads
+          <Film size={18} /> アップロード履歴
         </h3>
         <p className={styles.sectionDescription}>
           アップロード済みかどうかをここで確認できます
@@ -388,22 +348,6 @@ const Gallery = () => {
           </div>
         )}
       </section>
-
-      {selectedPhoto && (
-        <button
-          type="button"
-          className={styles.modal}
-          onClick={() => setSelectedPhoto(null)}
-          aria-label="拡大画像を閉じる"
-        >
-          <img
-            src={selectedPhoto.image}
-            srcSet={`${selectedPhoto.image} 1x, ${selectedPhoto.image} 2x`}
-            alt={selectedPhoto.alt}
-            className={styles.modalImage}
-          />
-        </button>
-      )}
     </div>
   );
 };

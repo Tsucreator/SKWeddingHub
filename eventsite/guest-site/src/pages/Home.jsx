@@ -4,11 +4,19 @@ import heroImage from '../assets/hero.webp';
 import shinnosukePortrait from '../assets/profiles/shinnosuke.webp';
 import kahoPortrait from '../assets/profiles/kaho.webp';
 
+const PHOTO_ITEMS = [
+  { id: 1, title: 'Pre Photo', image: heroImage, alt: '前撮り写真 1' },
+  { id: 2, title: 'Memory', image: heroImage, alt: '思い出写真 1' },
+  { id: 3, title: 'Pre Photo', image: heroImage, alt: '前撮り写真 2' },
+  { id: 4, title: 'Memory', image: heroImage, alt: '思い出写真 2' },
+];
+
 const HOME_INTRO_PENDING_KEY = 'home_intro_pending';
 const INTRO_MIN_DELAY_MS = 500;
 const INTRO_MAX_WAIT_MS = 2200;
 
 const Home = () => {
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [needsIntro] = useState(() => {
     try {
       return sessionStorage.getItem(HOME_INTRO_PENDING_KEY) === '1';
@@ -124,6 +132,50 @@ const Home = () => {
           </article>
         </div>
       </section>
+
+      <section className={styles.gallerySection}>
+        <div className={styles.galleryHeader}>
+          <h3 className={styles.galleryTitle}>PHOTO GALLERY</h3>
+          <p className={styles.galleryLead}>おふたりの写真を横にスワイプしてご覧いただけます</p>
+        </div>
+
+        <div className={styles.photoRail}>
+          {PHOTO_ITEMS.map((photo) => (
+            <button
+              key={photo.id}
+              type="button"
+              className={styles.photoCard}
+              onClick={() => setSelectedPhoto(photo)}
+              aria-label={`${photo.title} を拡大表示`}
+            >
+              <img
+                src={photo.image}
+                srcSet={`${photo.image} 1x, ${photo.image} 2x`}
+                alt={photo.alt}
+                loading="lazy"
+                className={styles.photoImage}
+              />
+              <span className={styles.photoLabel}>{photo.title}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {selectedPhoto && (
+        <button
+          type="button"
+          className={styles.modal}
+          onClick={() => setSelectedPhoto(null)}
+          aria-label="拡大画像を閉じる"
+        >
+          <img
+            src={selectedPhoto.image}
+            srcSet={`${selectedPhoto.image} 1x, ${selectedPhoto.image} 2x`}
+            alt={selectedPhoto.alt}
+            className={styles.modalImage}
+          />
+        </button>
+      )}
     </div>
   );
 };
