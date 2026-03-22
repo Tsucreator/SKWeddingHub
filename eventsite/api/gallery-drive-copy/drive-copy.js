@@ -1,4 +1,5 @@
 const path = require('node:path');
+const { Readable } = require('node:stream');
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const { S3Client, HeadObjectCommand, GetObjectCommand } = require('@aws-sdk/client-s3');
 const {
@@ -131,6 +132,8 @@ const readS3Object = async ({ bucket, key }) => {
   return streamToBuffer(result.Body);
 };
 
+const bufferToReadable = (buffer) => Readable.from(buffer);
+
 const updateCopyState = async (item, values) => {
   const now = new Date().toISOString();
   const expressionNames = {
@@ -199,7 +202,7 @@ const copyUploadRecordToDrive = async (item) => {
       },
       media: {
         mimeType: item.content_type || 'application/octet-stream',
-        body,
+        body: bufferToReadable(body),
       },
       fields: 'id,name,webViewLink',
       supportsAllDrives: true,
