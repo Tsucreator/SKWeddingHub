@@ -99,6 +99,14 @@ DynamoDB は RDB のように全列を事前定義するというより、まず
 - `status`
 - `s3_bucket`
 - `s3_key`
+- `drive_copy_status`
+- `drive_copy_attempts`
+- `drive_file_id`
+- `drive_file_name`
+- `drive_file_link`
+- `drive_folder_id`
+- `drive_copied_at`
+- `drive_copy_error`
 - `created_at`
 - `completed_at`
 - `updated_at`
@@ -119,6 +127,14 @@ DynamoDB は RDB のように全列を事前定義するというより、まず
 | `status` | String | 必須 | `PENDING` / `COMPLETE` |
 | `s3_bucket` | String | 必須 | 保存先バケット名 |
 | `s3_key` | String | 必須 | 保存先キー |
+| `drive_copy_status` | String | 必須 | `PENDING` / `COPIED` / `FAILED` |
+| `drive_copy_attempts` | Number | 必須 | Google Drive へのコピー試行回数 |
+| `drive_file_id` | String | 任意 | Google Drive 上のファイル ID |
+| `drive_file_name` | String | 任意 | Google Drive 上の保存ファイル名 |
+| `drive_file_link` | String | 任意 | Google Drive 上の閲覧リンク |
+| `drive_folder_id` | String | 任意 | コピー先フォルダ ID |
+| `drive_copied_at` | String | 任意 | Google Drive コピー完了日時 |
+| `drive_copy_error` | String | 任意 | コピー失敗理由 |
 | `created_at` | String | 必須 | ISO8601。作成日時 |
 | `completed_at` | String | 任意 | 完了日時 |
 | `updated_at` | String | 必須 | 最終更新日時 |
@@ -381,6 +397,110 @@ aws lambda update-function-code \
 ```
 
 今後は main への push で workflow デプロイしてよい。
+
+## 10. Google Drive コピーを有効にする
+
+### 方針
+
+- 今後分: S3 `ObjectCreated` イベントで自動コピー
+- 既存分: 手動バックフィルスクリプトで一括コピー
+- コピー先: 単一フォルダ `結婚式_写真フォルダ`
+- Drive 上のファイル名: 元ファイル名の末尾に送信者名を付ける
+
+### 個人 Google Drive を使う場合の前提
+
+個人 Drive でも実装可能。最も簡単なのは以下。
+
+1. Google Cloud でサービスアカウントを作成する
+2. コピー先フォルダ `結婚式_写真フォルダ` を作る
+3. そのフォルダをサービスアカウントのメールアドレスに共有する
+
+### 追加する Lambda
+
+実装済みディレクトリ:
+- [eventsite/api/gallery-drive-copy/index.js](eventsite/api/gallery-drive-copy/index.js)
+- [eventsite/api/gallery-drive-copy/backfill.js](eventsite/api/gallery-drive-copy/backfill.js)
+
+必要な Lambda 環境変数:
+
+```text
+UPLOADS_TABLE_NAME=WeddingGuestUploads
+GOOGLE_DRIVE_FOLDER_ID=<folder id>
+GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL=<service account email>
+GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY=<private key with newline escaped>
+```
+
+補足:
+- `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY` は改行を `\n` にエスケープして保存する
+- ファイル名は `元ファイル名_送信者名.拡張子` 形式で Drive へコピーされる
+
+### Google Drive コピー Lambda の IAM 権限
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadUploadsTable",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+      ],
+      "Resource": "arn:aws:dynamodb:ap-northeast-1:YOUR_ACCOUNT_ID:table/WeddingGuestUploads"
+    },
+    {
+      "Sid": "ReadUploadsBucket",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:HeadObject"
+      ],
+      "Resource": "arn:aws:s3:::wedding-gallery-uploads-prod/*"
+    }
+  ]
+}
+```
+
+### S3 イベント設定
+
+対象:
+- バケット: `UPLOADS_BUCKET_NAME`
+- イベント: `s3:ObjectCreated:*`
+- 送信先: Google Drive コピー Lambda
+
+これで今後アップロードされるファイルは自動コピーされる。
+
+### GitHub Secrets を追加する
+
+```text
+EVENTSITE_GALLERY_DRIVE_COPY_LAMBDA_NAME=weddingGuestGalleryDriveCopy
+```
+
+workflow:
+- [.github/workflows/deploy-eventsite-gallery-drive-copy.yml](.github/workflows/deploy-eventsite-gallery-drive-copy.yml)
+
+### 既存ファイルをバックフィルする
+
+```bash
+cd eventsite/api/gallery-drive-copy
+npm ci
+node backfill.js --dry-run
+node backfill.js
+```
+
+任意で件数制限:
+
+```bash
+node backfill.js --limit 20
+```
+
+挙動:
+- `status = COMPLETE` のレコードだけ対象
+- すでに `drive_copy_status = COPIED` かつ `drive_file_id` があるレコードはスキップ
+- 成功時は DDB に Google Drive 側のファイル情報を保存
+- 失敗時は `drive_copy_status = FAILED` とエラー内容を保存
 
 ## 9. 疎通確認をする
 

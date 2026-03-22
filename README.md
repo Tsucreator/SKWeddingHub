@@ -33,6 +33,7 @@ GitHub リポジトリ: https://github.com/Tsucreator/wedding-invitation-landing
 座席情報 Lambda はテーブル ID を受け取り、`WeddingGuests` テーブルから該当席一覧を返します。
 引出物ページは UX 優先で名前ログインを残しつつ、`/prod/login` の `action: "verifyGiftAccess"` により `guest_id + email` の再照合が通過した場合のみ「ギフトを選ぶ」導線を有効化します。
 ギャラリーは `guest_id + email` を再照合した上で署名付き S3 URL を発行し、画像・動画をブラウザから直接 S3 へアップロードします。
+アップロード後のファイルは、S3 `ObjectCreated` イベントをトリガーに別 Lambda で Google Drive フォルダへ自動コピーできます。既存の保存済みファイルは手動バックフィル用スクリプトで一括コピーします。
 
 ---
 
@@ -154,6 +155,9 @@ eventsite/                   # 当日ゲストサイト
     index.js                 # ログイン Lambda (Node.js 24 — DynamoDB 認証)
   api/gallery/
     index.js                 # ギャラリー Lambda (Node.js 20 — S3 署名 URL + アップロード履歴)
+  api/gallery-drive-copy/
+    index.js                 # S3 → Google Drive 自動コピー Lambda (Node.js 20)
+    backfill.js              # 既存 S3 ファイルを Google Drive へ手動バックフィルするスクリプト
   api/lambda/
     index.js                 # 座席情報 Lambda (Node.js 20 — DynamoDB Scan)
     package.json             # Lambda 依存管理
@@ -192,6 +196,7 @@ infrastructure-notes.md      # インフラ設定メモ (Git管理外 ⚠️)
 | `deploy-eventsite-login.yml` | `eventsite/api/login/**` | npm ci → zip → Lambda デプロイ |
 | `deploy-eventsite-seats.yml` | `eventsite/api/lambda/**` | npm ci → zip → 座席情報 Lambda デプロイ |
 | `deploy-eventsite-gallery.yml` | `eventsite/api/gallery/**` | npm ci → zip → ギャラリー Lambda デプロイ |
+| `deploy-eventsite-gallery-drive-copy.yml` | `eventsite/api/gallery-drive-copy/**` | npm ci → zip → Google Drive コピー Lambda デプロイ |
 
 すべてのワークフローは `workflow_dispatch` にも対応しているため、GitHub UI から手動実行も可能です。
 
@@ -211,11 +216,23 @@ infrastructure-notes.md      # インフラ設定メモ (Git管理外 ⚠️)
 | `EVENTSITE_SEATS_API_ENDPOINT` | 座席表 API Gateway URL |
 | `EVENTSITE_SEATS_LAMBDA_NAME` | 座席情報 Lambda 関数名 |
 | `EVENTSITE_GALLERY_LAMBDA_NAME` | ギャラリー Lambda 関数名 |
+| `EVENTSITE_GALLERY_DRIVE_COPY_LAMBDA_NAME` | Google Drive コピー Lambda 関数名 |
 | `EVENTSITE_GALLERY_API_ENDPOINT` | ギャラリー API Gateway URL |
 | `EVENTSITE_GALLERY_MAX_IMAGE_MB` | ギャラリー画像上限 MB |
 | `EVENTSITE_GALLERY_MAX_VIDEO_MB` | ギャラリー動画上限 MB |
 | `EVENTSITE_GALLERY_MAX_VIDEO_DURATION_SECONDS` | ギャラリー動画秒数上限 |
 | `EVENTSITE_GALLERY_VIEW_URL` | 任意の外部アルバム/管理画面 URL |
+
+Google Drive コピー Lambda には、GitHub Secrets ではなく Lambda 環境変数として以下も必要です。
+
+```
+UPLOADS_TABLE_NAME=WeddingGuestUploads
+GOOGLE_DRIVE_FOLDER_ID=<Google Drive folder ID>
+GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL=<service account email>
+GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY=<private key with newline escaped>
+```
+
+個人の Google Drive を使う場合でも、コピー先フォルダをサービスアカウントへ共有すれば自動コピーできます。
 
 > 💡 各 Secret の実際の値は `infrastructure-notes.md` (Git 管理外) に記録しています。
 

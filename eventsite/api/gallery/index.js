@@ -215,6 +215,8 @@ const handleInitUpload = async (body) => {
       media_kind: mediaKind,
       file_size: fileSize,
       status: STATUS_PENDING,
+      drive_copy_status: 'PENDING',
+      drive_copy_attempts: 0,
       s3_bucket: UPLOADS_BUCKET_NAME,
       s3_key: objectKey,
       created_at: createdAt,

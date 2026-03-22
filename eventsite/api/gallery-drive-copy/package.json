@@ -1,0 +1,15 @@
+{
+  "name": "eventsite-gallery-drive-copy",
+  "version": "1.0.0",
+  "description": "Copies gallery uploads from S3 to Google Drive",
+  "main": "index.js",
+  "scripts": {
+    "backfill": "node backfill.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.922.0",
+    "@aws-sdk/client-s3": "^3.922.0",
+    "@aws-sdk/lib-dynamodb": "^3.922.0",
+    "googleapis": "^144.0.0"
+  }
+}
