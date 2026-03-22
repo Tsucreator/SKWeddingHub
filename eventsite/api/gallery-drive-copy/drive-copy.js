@@ -20,6 +20,9 @@ const GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL = String(process.env.GOOGLE_SERVICE_AC
 const GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = String(process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY || '')
   .replace(/\\n/g, '\n')
   .trim();
+const GOOGLE_OAUTH_CLIENT_ID = String(process.env.GOOGLE_OAUTH_CLIENT_ID || '').trim();
+const https://www.googleapis.com/auth/drive.filehttps://www.googleapis.com/auth/drive.filehttps://www.googleapis.com/auth/drive.file= String(process.env.GOOGLE_OAUTH_CLIENT_SECRET || '').trim();
+const GOOGLE_OAUTH_REFRESH_TOKEN = String(process.env.GOOGLE_OAUTH_REFRESH_TOKEN || '').trim();
 
 const DRIVE_COPY_STATUS_PENDING = 'PENDING';
 const DRIVE_COPY_STATUS_COPIED = 'COPIED';
@@ -32,23 +35,36 @@ const assertConfigured = () => {
     throw new Error('GOOGLE_DRIVE_FOLDER_ID is not configured');
   }
 
-  if (!GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL) {
-    throw new Error('GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL is not configured');
-  }
+  const hasServiceAccountAuth = GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL && GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY;
+  const hasOAuthAuth = GOOGLE_OAUTH_CLIENT_ID && GOOGLE_OAUTH_CLIENT_SECRET && GOOGLE_OAUTH_REFRESH_TOKEN;
 
-  if (!GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY) {
-    throw new Error('GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY is not configured');
+  if (!hasServiceAccountAuth && !hasOAuthAuth) {
+    throw new Error(
+      'Google Drive auth is not configured. Set GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL and GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY, or set GOOGLE_OAUTH_CLIENT_ID, GOOGLE_OAUTH_CLIENT_SECRET, and GOOGLE_OAUTH_REFRESH_TOKEN'
+    );
   }
 };
 
 const getDriveClient = () => {
   assertConfigured();
 
-  const auth = new google.auth.JWT({
-    email: GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL,
-    key: GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY,
-    scopes: ['https://www.googleapis.com/auth/drive.file'],
-  });
+  let auth;
+
+  if (GOOGLE_OAUTH_CLIENT_ID && GOOGLE_OAUTH_CLIENT_SECRET && GOOGLE_OAUTH_REFRESH_TOKEN) {
+    auth = new google.auth.OAuth2(
+      GOOGLE_OAUTH_CLIENT_ID,
+      GOOGLE_OAUTH_CLIENT_SECRET
+    );
+    auth.setCredentials({
+      refresh_token: GOOGLE_OAUTH_REFRESH_TOKEN,
+    });
+  } else {
+    auth = new google.auth.JWT({
+      email: GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL,
+      key: GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY,
+      scopes: ['https://www.googleapis.com/auth/drive.file'],
+    });
+  }
 
   return google.drive({ version: 'v3', auth });
 };

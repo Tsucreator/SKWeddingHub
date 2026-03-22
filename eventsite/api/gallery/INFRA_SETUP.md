@@ -434,6 +434,16 @@ GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY=<private key with newline escaped>
 - `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY` は改行を `\n` にエスケープして保存する
 - ファイル名は `元ファイル名_送信者名.拡張子` 形式で Drive へコピーされる
 
+個人 Google Drive を使う場合にサービスアカウントのクォータ制約へ当たるときは、代わりに OAuth を使う。
+
+```text
+GOOGLE_OAUTH_CLIENT_ID=<oauth client id>
+GOOGLE_OAUTH_CLIENT_SECRET=<oauth client secret>
+GOOGLE_OAUTH_REFRESH_TOKEN=<oauth refresh token>
+```
+
+実装は OAuth が設定されていればそちらを優先する。
+
 ### Google Drive コピー Lambda の IAM 権限
 
 ```json

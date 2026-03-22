@@ -232,7 +232,15 @@ GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL=<service account email>
 GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY=<private key with newline escaped>
 ```
 
-個人の Google Drive を使う場合でも、コピー先フォルダをサービスアカウントへ共有すれば自動コピーできます。
+個人の Google Drive を使う場合、サービスアカウントはストレージクォータ制約に当たることがあります。その場合は OAuth リフレッシュトークン方式を使います。
+
+```text
+GOOGLE_OAUTH_CLIENT_ID=<oauth client id>
+GOOGLE_OAUTH_CLIENT_SECRET=<oauth client secret>
+GOOGLE_OAUTH_REFRESH_TOKEN=<oauth refresh token>
+```
+
+実装は OAuth を優先し、未設定ならサービスアカウント方式を使います。
 
 > 💡 各 Secret の実際の値は `infrastructure-notes.md` (Git 管理外) に記録しています。
 

@@ -14,6 +14,8 @@ S3 に保存されたギャラリー画像・動画を Google Drive フォルダ
 2. そのフォルダをサービスアカウントへ共有する
 3. サービスアカウントキーを Lambda 環境変数に設定する
 
+個人 Google Drive を使う場合にサービスアカウントのストレージクォータ制約へ当たる場合は、OAuth リフレッシュトークン方式を使う。
+
 ## 必要な環境変数
 
 ```text
@@ -22,6 +24,18 @@ GOOGLE_DRIVE_FOLDER_ID=<folder id>
 GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL=<service account email>
 GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY=<private key with newline escaped>
 ```
+
+または、個人 Drive 向けに OAuth で設定する。
+
+```text
+UPLOADS_TABLE_NAME=WeddingGuestUploads
+GOOGLE_DRIVE_FOLDER_ID=<folder id>
+GOOGLE_OAUTH_CLIENT_ID=<oauth client id>
+GOOGLE_OAUTH_CLIENT_SECRET=<oauth client secret>
+GOOGLE_OAUTH_REFRESH_TOKEN=<oauth refresh token>
+```
+
+OAuth が設定されていれば、実装はそちらを優先して使う。
 
 ## ファイル名ルール
 
