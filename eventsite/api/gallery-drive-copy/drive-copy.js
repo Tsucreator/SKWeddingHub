@@ -21,7 +21,7 @@ const GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = String(process.env.GOOGLE_SERVICE_ACC
   .replace(/\\n/g, '\n')
   .trim();
 const GOOGLE_OAUTH_CLIENT_ID = String(process.env.GOOGLE_OAUTH_CLIENT_ID || '').trim();
-const https://www.googleapis.com/auth/drive.filehttps://www.googleapis.com/auth/drive.filehttps://www.googleapis.com/auth/drive.file= String(process.env.GOOGLE_OAUTH_CLIENT_SECRET || '').trim();
+const GOOGLE_OAUTH_CLIENT_SECRET = String(process.env.GOOGLE_OAUTH_CLIENT_SECRET || '').trim();
 const GOOGLE_OAUTH_REFRESH_TOKEN = String(process.env.GOOGLE_OAUTH_REFRESH_TOKEN || '').trim();
 
 const DRIVE_COPY_STATUS_PENDING = 'PENDING';
